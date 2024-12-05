@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
+import ModelDirectory from "./pages/ModelDirectory";
+import ModelProfile from "./pages/ModelProfile";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,15 @@ const App = () => (
               </PrivateRoute>
             }
           />
+          <Route
+            path="/models"
+            element={
+              <PrivateRoute>
+                <ModelDirectory />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/models/:id" element={<ModelProfile />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Image, Home } from "lucide-react";
+import { Menu, X, User, Image, Home, Users } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -46,6 +46,7 @@ const Header = () => {
 
   const navigationItems = session ? [
     { label: "Home", path: "/", icon: Home },
+    { label: "Models", path: "/models", icon: Users },
     { label: "Portfolio", path: "/portfolio", icon: Image },
     { label: "Profile", path: "/profile", icon: User },
   ] : [
