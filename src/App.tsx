@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
 import ModelDirectory from "./pages/ModelDirectory";
 import ModelProfile from "./pages/ModelProfile";
+import TravelPlans from "./pages/TravelPlans";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,14 @@ const App = () => (
             }
           />
           <Route path="/models/:id" element={<ModelProfile />} />
+          <Route
+            path="/travel"
+            element={
+              <PrivateRoute>
+                <TravelPlans />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
