@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +17,31 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  const handleAuthClick = () => {
+    navigate("/auth");
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
 
   return (
     <header
@@ -39,12 +68,25 @@ const Header = () => {
               </a>
             </nav>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="hover:text-modelboard-red">
-                Sign in
-              </Button>
-              <Button className="bg-modelboard-red hover:bg-red-600 text-white">
-                Join now
-              </Button>
+              {session ? (
+                <>
+                  <Button variant="ghost" onClick={handleProfileClick} className="hover:text-modelboard-red">
+                    Profile
+                  </Button>
+                  <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white">
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" onClick={handleAuthClick} className="hover:text-modelboard-red">
+                    Sign in
+                  </Button>
+                  <Button onClick={handleAuthClick} className="bg-modelboard-red hover:bg-red-600 text-white">
+                    Join now
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -68,12 +110,25 @@ const Header = () => {
               <a href="#pricing" className="hover:text-modelboard-red transition-colors">
                 Pricing
               </a>
-              <Button variant="ghost" className="hover:text-modelboard-red w-full">
-                Sign in
-              </Button>
-              <Button className="bg-modelboard-red hover:bg-red-600 text-white w-full">
-                Join now
-              </Button>
+              {session ? (
+                <>
+                  <Button variant="ghost" onClick={handleProfileClick} className="hover:text-modelboard-red w-full">
+                    Profile
+                  </Button>
+                  <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white w-full">
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" onClick={handleAuthClick} className="hover:text-modelboard-red w-full">
+                    Sign in
+                  </Button>
+                  <Button onClick={handleAuthClick} className="bg-modelboard-red hover:bg-red-600 text-white w-full">
+                    Join now
+                  </Button>
+                </>
+              )}
             </nav>
           </div>
         )}
