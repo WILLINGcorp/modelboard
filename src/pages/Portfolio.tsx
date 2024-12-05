@@ -5,12 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus, Image, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import type { Database } from "@/integrations/supabase/types";
+
+type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 
 const Portfolio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ const Portfolio = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setItems(data);
+      setItems(data || []);
     } catch (error) {
       toast({
         title: "Erreur",
@@ -45,22 +48,30 @@ const Portfolio = () => {
     }
   };
 
-  const addPortfolioItem = async (e) => {
+  const addPortfolioItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const mediaUrl = formData.get("media_url");
+    const formData = new FormData(e.currentTarget);
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const mediaUrl = formData.get("media_url") as string;
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase.from("portfolio_items").insert({
-        profile_id: user.id,
-        title,
-        description,
-        media_url: mediaUrl,
-        media_type: "image", // Pour l'instant, on ne gère que les images
-      });
+      
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("portfolio_items")
+        .insert({
+          profile_id: user.id,
+          title,
+          description,
+          media_url: mediaUrl,
+          media_type: "image", // Pour l'instant, on ne gère que les images
+        });
 
       if (error) throw error;
       
@@ -70,7 +81,7 @@ const Portfolio = () => {
       });
       
       getPortfolioItems();
-      e.target.reset();
+      e.currentTarget.reset();
     } catch (error) {
       toast({
         title: "Erreur",
@@ -80,7 +91,7 @@ const Portfolio = () => {
     }
   };
 
-  const deletePortfolioItem = async (id) => {
+  const deletePortfolioItem = async (id: string) => {
     try {
       const { error } = await supabase
         .from("portfolio_items")

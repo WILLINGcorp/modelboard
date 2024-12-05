@@ -9,69 +9,79 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string
-          username: string | null
-          display_name: string | null
-          bio: string | null
-          location: string | null
-          website: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          username?: string | null
-          display_name?: string | null
-          bio?: string | null
-          location?: string | null
-          website?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          username?: string | null
-          display_name?: string | null
-          bio?: string | null
-          location?: string | null
-          website?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-      }
       portfolio_items: {
         Row: {
+          created_at: string
+          description: string | null
           id: string
+          media_type: string
+          media_url: string
           profile_id: string
           title: string
-          description: string | null
-          media_url: string
-          media_type: string
-          created_at: string
           updated_at: string
         }
         Insert: {
+          created_at?: string
+          description?: string | null
           id?: string
+          media_type: string
+          media_url: string
           profile_id: string
           title: string
-          description?: string | null
-          media_url: string
-          media_type: string
-          created_at?: string
           updated_at?: string
         }
         Update: {
+          created_at?: string
+          description?: string | null
           id?: string
+          media_type?: string
+          media_url?: string
           profile_id?: string
           title?: string
-          description?: string | null
-          media_url?: string
-          media_type?: string
-          created_at?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          location: string | null
+          updated_at: string
+          username: string | null
+          website: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          location?: string | null
+          updated_at?: string
+          username?: string | null
+          website?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          location?: string | null
+          updated_at?: string
+          username?: string | null
+          website?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
