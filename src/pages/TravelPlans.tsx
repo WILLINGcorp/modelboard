@@ -24,6 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Plus, MapPin, Calendar as CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 type TravelPlan = {
   id: string;
@@ -36,11 +37,18 @@ type TravelPlan = {
 
 const TravelPlans = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: travelPlans, refetch } = useQuery({
     queryKey: ["travel-plans"],
     queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        navigate("/auth");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("travel_plans")
         .select("*")
@@ -60,13 +68,25 @@ const TravelPlans = () => {
     },
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: {
+    destination: string;
+    description: string;
+    start_date: Date;
+    end_date: Date;
+  }) => {
     try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        navigate("/auth");
+        return;
+      }
+
       const { error } = await supabase.from("travel_plans").insert({
         destination: values.destination,
         description: values.description,
         start_date: values.start_date.toISOString(),
         end_date: values.end_date.toISOString(),
+        profile_id: session.session.user.id,
       });
 
       if (error) throw error;
