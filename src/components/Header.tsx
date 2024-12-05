@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu, X, User, Image, Home } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
@@ -39,9 +40,19 @@ const Header = () => {
     navigate("/auth");
   };
 
-  const handleProfileClick = () => {
-    navigate("/profile");
+  const isActive = (path) => {
+    return location.pathname === path;
   };
+
+  const navigationItems = session ? [
+    { label: "Home", path: "/", icon: Home },
+    { label: "Portfolio", path: "/portfolio", icon: Image },
+    { label: "Profile", path: "/profile", icon: User },
+  ] : [
+    { label: "Features", path: "#features" },
+    { label: "How it works", path: "#how-it-works" },
+    { label: "Pricing", path: "#pricing" },
+  ];
 
   return (
     <header
@@ -57,26 +68,35 @@ const Header = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             <nav className="flex items-center space-x-8">
-              <a href="#features" className="hover:text-modelboard-red transition-colors">
-                Features
-              </a>
-              <a href="#how-it-works" className="hover:text-modelboard-red transition-colors">
-                How it works
-              </a>
-              <a href="#pricing" className="hover:text-modelboard-red transition-colors">
-                Pricing
-              </a>
+              {navigationItems.map((item) => (
+                <Button
+                  key={item.path}
+                  variant="ghost"
+                  className={`flex items-center space-x-2 ${
+                    isActive(item.path) ? "text-modelboard-red" : "hover:text-modelboard-red"
+                  } transition-colors`}
+                  onClick={() => item.path.startsWith("#") ? null : navigate(item.path)}
+                  asChild={item.path.startsWith("#")}
+                >
+                  {item.path.startsWith("#") ? (
+                    <a href={item.path}>
+                      {item.icon && <item.icon className="w-4 h-4 mr-2" />}
+                      {item.label}
+                    </a>
+                  ) : (
+                    <span>
+                      {item.icon && <item.icon className="w-4 h-4 mr-2" />}
+                      {item.label}
+                    </span>
+                  )}
+                </Button>
+              ))}
             </nav>
             <div className="flex items-center space-x-4">
               {session ? (
-                <>
-                  <Button variant="ghost" onClick={handleProfileClick} className="hover:text-modelboard-red">
-                    Profile
-                  </Button>
-                  <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white">
-                    Sign out
-                  </Button>
-                </>
+                <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white">
+                  Sign out
+                </Button>
               ) : (
                 <>
                   <Button variant="ghost" onClick={handleAuthClick} className="hover:text-modelboard-red">
@@ -101,24 +121,38 @@ const Header = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 animate-fadeIn">
             <nav className="flex flex-col space-y-4">
-              <a href="#features" className="hover:text-modelboard-red transition-colors">
-                Features
-              </a>
-              <a href="#how-it-works" className="hover:text-modelboard-red transition-colors">
-                How it works
-              </a>
-              <a href="#pricing" className="hover:text-modelboard-red transition-colors">
-                Pricing
-              </a>
+              {navigationItems.map((item) => (
+                <Button
+                  key={item.path}
+                  variant="ghost"
+                  className={`flex items-center space-x-2 justify-start w-full ${
+                    isActive(item.path) ? "text-modelboard-red" : "hover:text-modelboard-red"
+                  } transition-colors`}
+                  onClick={() => {
+                    if (!item.path.startsWith("#")) {
+                      navigate(item.path);
+                      setIsMobileMenuOpen(false);
+                    }
+                  }}
+                  asChild={item.path.startsWith("#")}
+                >
+                  {item.path.startsWith("#") ? (
+                    <a href={item.path}>
+                      {item.icon && <item.icon className="w-4 h-4 mr-2" />}
+                      {item.label}
+                    </a>
+                  ) : (
+                    <span>
+                      {item.icon && <item.icon className="w-4 h-4 mr-2" />}
+                      {item.label}
+                    </span>
+                  )}
+                </Button>
+              ))}
               {session ? (
-                <>
-                  <Button variant="ghost" onClick={handleProfileClick} className="hover:text-modelboard-red w-full">
-                    Profile
-                  </Button>
-                  <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white w-full">
-                    Sign out
-                  </Button>
-                </>
+                <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white w-full">
+                  Sign out
+                </Button>
               ) : (
                 <>
                   <Button variant="ghost" onClick={handleAuthClick} className="hover:text-modelboard-red w-full">
