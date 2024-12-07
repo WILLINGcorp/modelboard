@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -10,33 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Plus, MapPin, Calendar as CalendarIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-type TravelPlan = {
-  id: string;
-  destination: string;
-  start_date: string;
-  end_date: string;
-  description: string | null;
-  status: string;
-};
+import TravelPlanForm from "@/components/travel/TravelPlanForm";
+import TravelPlanCard from "@/components/travel/TravelPlanCard";
 
 const TravelPlans = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -55,58 +33,9 @@ const TravelPlans = () => {
         .order("start_date", { ascending: true });
 
       if (error) throw error;
-      return data as TravelPlan[];
+      return data;
     },
   });
-
-  const form = useForm({
-    defaultValues: {
-      destination: "",
-      description: "",
-      start_date: new Date(),
-      end_date: new Date(),
-    },
-  });
-
-  const onSubmit = async (values: {
-    destination: string;
-    description: string;
-    start_date: Date;
-    end_date: Date;
-  }) => {
-    try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session) {
-        navigate("/auth");
-        return;
-      }
-
-      const { error } = await supabase.from("travel_plans").insert({
-        destination: values.destination,
-        description: values.description,
-        start_date: values.start_date.toISOString(),
-        end_date: values.end_date.toISOString(),
-        profile_id: session.session.user.id,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Succès",
-        description: "Voyage planifié avec succès",
-      });
-
-      form.reset();
-      setIsDialogOpen(false);
-      refetch();
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de planifier le voyage",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
     <div className="min-h-screen bg-modelboard-dark p-4">
@@ -124,119 +53,17 @@ const TravelPlans = () => {
               <DialogHeader>
                 <DialogTitle>Planifier un nouveau voyage</DialogTitle>
               </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="destination"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Destination</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            className="bg-modelboard-dark border-modelboard-gray"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            className="bg-modelboard-dark border-modelboard-gray"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="start_date"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Date de début</FormLabel>
-                          <FormControl>
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              className="bg-modelboard-dark text-white rounded-md border border-modelboard-gray"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="end_date"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Date de fin</FormLabel>
-                          <FormControl>
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              className="bg-modelboard-dark text-white rounded-md border border-modelboard-gray"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full bg-modelboard-red hover:bg-red-600">
-                    Planifier
-                  </Button>
-                </form>
-              </Form>
+              <TravelPlanForm
+                onSuccess={refetch}
+                onClose={() => setIsDialogOpen(false)}
+              />
             </DialogContent>
           </Dialog>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {travelPlans?.map((plan) => (
-            <div
-              key={plan.id}
-              className="bg-modelboard-gray rounded-lg p-6 space-y-4"
-            >
-              <div className="flex items-center space-x-2 text-white">
-                <MapPin className="h-5 w-5" />
-                <h3 className="text-xl font-semibold">{plan.destination}</h3>
-              </div>
-              {plan.description && (
-                <p className="text-gray-400">{plan.description}</p>
-              )}
-              <div className="flex items-center space-x-2 text-gray-400">
-                <CalendarIcon className="h-4 w-4" />
-                <span>
-                  {format(new Date(plan.start_date), "dd/MM/yyyy")} -{" "}
-                  {format(new Date(plan.end_date), "dd/MM/yyyy")}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span
-                  className={`px-2 py-1 rounded-full text-sm ${
-                    plan.status === "upcoming"
-                      ? "bg-blue-500/20 text-blue-500"
-                      : "bg-green-500/20 text-green-500"
-                  }`}
-                >
-                  {plan.status === "upcoming" ? "À venir" : "Terminé"}
-                </span>
-              </div>
-            </div>
+            <TravelPlanCard key={plan.id} plan={plan} />
           ))}
         </div>
       </div>
