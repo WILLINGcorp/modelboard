@@ -25,9 +25,12 @@ const CollabProposalsList = () => {
       const { data, error } = await supabase
         .from("collab_proposals")
         .select(`
-          *,
-          sender:profiles!collab_proposals_sender_id_fkey(display_name),
-          receiver:profiles!collab_proposals_receiver_id_fkey(display_name)
+          id,
+          status,
+          message,
+          created_at,
+          sender:profiles!collab_proposals_sender_id_fkey(id, display_name),
+          receiver:profiles!collab_proposals_receiver_id_fkey(id, display_name)
         `)
         .or(`sender_id.eq.${session.session.user.id},receiver_id.eq.${session.session.user.id}`)
         .order("created_at", { ascending: false });
@@ -80,10 +83,10 @@ const CollabProposalsList = () => {
             {proposals?.map((proposal) => (
               <TableRow key={proposal.id} className="bg-modelboard-dark">
                 <TableCell className="text-white">
-                  {proposal.sender.display_name || "Anonymous"}
+                  {proposal.sender?.display_name || "Anonymous"}
                 </TableCell>
                 <TableCell className="text-white">
-                  {proposal.receiver.display_name || "Anonymous"}
+                  {proposal.receiver?.display_name || "Anonymous"}
                 </TableCell>
                 <TableCell className="text-white">{proposal.message}</TableCell>
                 <TableCell className="text-white">
