@@ -5,19 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import TravelPlanCard from "@/components/travel/TravelPlanCard";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
+type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
 
 const Portfolio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [items, setItems] = useState<PortfolioItem[]>([]);
+  const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     getPortfolioItems();
+    getUpcomingTravelPlans();
   }, []);
 
   const getPortfolioItems = async () => {
@@ -48,29 +53,76 @@ const Portfolio = () => {
     }
   };
 
-  const addPortfolioItem = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const mediaUrl = formData.get("media_url") as string;
-
+  const getUpcomingTravelPlans = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("travel_plans")
+        .select("*")
+        .eq("profile_id", user.id)
+        .eq("status", "upcoming")
+        .order("start_date", { ascending: true });
+
+      if (error) throw error;
+      setTravelPlans(data || []);
+    } catch (error) {
+      console.error("Error fetching travel plans:", error);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      setUploading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("portfolio")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("portfolio")
+        .getPublicUrl(filePath);
+
+      const formData = new FormData(event.target.closest("form") as HTMLFormElement);
+      await addPortfolioItem(formData, publicUrl);
+      
+      event.target.value = "";
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'uploader l'image",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const addPortfolioItem = async (formData: FormData, mediaUrl: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
 
       const { error } = await supabase
         .from("portfolio_items")
         .insert({
           profile_id: user.id,
-          title,
-          description,
+          title: formData.get("title") as string,
+          description: formData.get("description") as string,
           media_url: mediaUrl,
-          media_type: "image", // Pour l'instant, on ne gère que les images
+          media_type: "image",
         });
 
       if (error) throw error;
@@ -81,7 +133,7 @@ const Portfolio = () => {
       });
       
       getPortfolioItems();
-      e.currentTarget.reset();
+      (document.getElementById("portfolio-form") as HTMLFormElement).reset();
     } catch (error) {
       toast({
         title: "Erreur",
@@ -91,8 +143,15 @@ const Portfolio = () => {
     }
   };
 
-  const deletePortfolioItem = async (id: string) => {
+  const deletePortfolioItem = async (id: string, mediaUrl: string) => {
     try {
+      // Delete the file from storage
+      const filePath = mediaUrl.split("/").slice(-2).join("/");
+      await supabase.storage
+        .from("portfolio")
+        .remove([filePath]);
+
+      // Delete the database record
       const { error } = await supabase
         .from("portfolio_items")
         .delete()
@@ -128,7 +187,18 @@ const Portfolio = () => {
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold text-white">Mon Portfolio</h1>
 
-        <form onSubmit={addPortfolioItem} className="space-y-4 bg-modelboard-gray p-6 rounded-lg">
+        {travelPlans.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-white">Voyages à venir</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {travelPlans.map((plan) => (
+                <TravelPlanCard key={plan.id} plan={plan} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <form id="portfolio-form" className="space-y-4 bg-modelboard-gray p-6 rounded-lg">
           <div>
             <label className="text-sm font-medium text-white">Titre</label>
             <Input
@@ -148,36 +218,53 @@ const Portfolio = () => {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-white">URL de l'image</label>
+            <label className="text-sm font-medium text-white">Image</label>
             <Input
-              name="media_url"
-              type="url"
+              name="media"
+              type="file"
+              accept="image/*"
               required
+              onChange={handleFileUpload}
               className="bg-modelboard-dark border-modelboard-gray text-white"
             />
           </div>
 
-          <Button type="submit" className="w-full bg-modelboard-red hover:bg-red-600">
-            <Plus className="mr-2" />
-            Ajouter au portfolio
+          <Button 
+            type="submit" 
+            className="w-full bg-modelboard-red hover:bg-red-600"
+            disabled={uploading}
+          >
+            {uploading ? (
+              <>
+                <Upload className="mr-2 h-4 w-4 animate-spin" />
+                Upload en cours...
+              </>
+            ) : (
+              <>
+                <Plus className="mr-2" />
+                Ajouter au portfolio
+              </>
+            )}
           </Button>
         </form>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {items.map((item) => (
             <div key={item.id} className="bg-modelboard-gray rounded-lg overflow-hidden">
-              <img
-                src={item.media_url}
-                alt={item.title}
-                className="w-full h-48 object-cover"
-              />
+              <div className="aspect-square">
+                <img
+                  src={item.media_url}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="p-4">
                 <h3 className="text-xl font-bold text-white">{item.title}</h3>
                 <p className="text-gray-400 mt-2">{item.description}</p>
                 <Button
                   variant="ghost"
                   className="mt-4 text-red-500 hover:text-red-600"
-                  onClick={() => deletePortfolioItem(item.id)}
+                  onClick={() => deletePortfolioItem(item.id, item.media_url)}
                 >
                   <Trash2 className="mr-2" />
                   Supprimer

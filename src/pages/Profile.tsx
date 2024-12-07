@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { User, MapPin, Globe, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User, MapPin, Globe, LogOut, Upload, Camera } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -42,6 +44,48 @@ const Profile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      setUploading(true);
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${profile.id}/${crypto.randomUUID()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("id", profile.id);
+
+      if (updateError) throw updateError;
+
+      setProfile({ ...profile, avatar_url: publicUrl });
+      toast({
+        title: "Succès",
+        description: "Photo de profil mise à jour",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour la photo de profil",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -89,6 +133,30 @@ const Profile = () => {
             <LogOut className="mr-2" />
             Déconnexion
           </Button>
+        </div>
+
+        <div className="flex justify-center mb-8">
+          <div className="relative">
+            <Avatar className="h-32 w-32">
+              <AvatarImage src={profile?.avatar_url} />
+              <AvatarFallback>
+                <User className="h-16 w-16" />
+              </AvatarFallback>
+            </Avatar>
+            <label 
+              htmlFor="avatar-upload" 
+              className="absolute bottom-0 right-0 p-2 bg-modelboard-red rounded-full cursor-pointer hover:bg-red-600 transition-colors"
+            >
+              <Camera className="h-4 w-4 text-white" />
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
 
         <form onSubmit={updateProfile} className="space-y-6 bg-modelboard-gray p-6 rounded-lg">
