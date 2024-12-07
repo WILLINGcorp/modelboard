@@ -13,6 +13,7 @@ import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import TravelPlanForm from "@/components/travel/TravelPlanForm";
 import TravelPlanCard from "@/components/travel/TravelPlanCard";
+import CollabProposalsList from "@/components/travel/CollabProposalsList";
 
 const TravelPlans = () => {
   const navigate = useNavigate();
@@ -42,17 +43,17 @@ const TravelPlans = () => {
     <div className="min-h-screen bg-modelboard-dark p-4">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-white">Mes Voyages</h1>
+          <h1 className="text-3xl font-bold text-white">My Travel Plans</h1>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-modelboard-red hover:bg-red-600">
                 <Plus className="mr-2" />
-                Planifier un voyage
+                Plan a Trip
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-modelboard-gray text-white">
               <DialogHeader>
-                <DialogTitle>Planifier un nouveau voyage</DialogTitle>
+                <DialogTitle>Plan a New Trip</DialogTitle>
               </DialogHeader>
               <TravelPlanForm
                 onSuccess={refetch}
@@ -67,6 +68,8 @@ const TravelPlans = () => {
             <TravelPlanCard key={plan.id} plan={plan} />
           ))}
         </div>
+
+        <CollabProposalsList />
       </div>
     </div>
   );
