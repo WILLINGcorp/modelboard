@@ -29,7 +29,8 @@ const TravelPlans = () => {
 
       const { data, error } = await supabase
         .from("travel_plans")
-        .select("*")
+        .select()
+        .match({ profile_id: session.session.user.id })
         .order("start_date", { ascending: true });
 
       if (error) throw error;
