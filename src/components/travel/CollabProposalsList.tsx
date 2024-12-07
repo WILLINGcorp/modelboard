@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,7 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
-import { Check, X } from "lucide-react";
+import ProposalStatusBadge from "./ProposalStatusBadge";
+import ProposalActions from "./ProposalActions";
 
 const CollabProposalsList = () => {
   const { toast } = useToast();
@@ -93,39 +93,14 @@ const CollabProposalsList = () => {
                   {format(new Date(proposal.created_at), "dd/MM/yyyy")}
                 </TableCell>
                 <TableCell>
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-sm ${
-                      proposal.status === "accepted"
-                        ? "bg-green-500/20 text-green-500"
-                        : proposal.status === "rejected"
-                        ? "bg-red-500/20 text-red-500"
-                        : "bg-blue-500/20 text-blue-500"
-                    }`}
-                  >
-                    {proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1)}
-                  </span>
+                  <ProposalStatusBadge status={proposal.status} />
                 </TableCell>
                 <TableCell>
-                  {proposal.status === "pending" && (
-                    <div className="flex space-x-2">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="hover:text-green-500"
-                        onClick={() => handleUpdateStatus(proposal.id, "accepted")}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="hover:text-red-500"
-                        onClick={() => handleUpdateStatus(proposal.id, "rejected")}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
+                  <ProposalActions
+                    status={proposal.status}
+                    onAccept={() => handleUpdateStatus(proposal.id, "accepted")}
+                    onReject={() => handleUpdateStatus(proposal.id, "rejected")}
+                  />
                 </TableCell>
               </TableRow>
             ))}
