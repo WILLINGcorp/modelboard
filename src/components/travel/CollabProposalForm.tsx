@@ -47,8 +47,8 @@ const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFo
       if (error) throw error;
 
       toast({
-        title: "Succès",
-        description: "Proposition de collaboration envoyée",
+        title: "Success",
+        description: "Collaboration proposal sent",
       });
 
       form.reset();
@@ -56,8 +56,8 @@ const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFo
       onClose();
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Impossible d'envoyer la proposition",
+        title: "Error",
+        description: "Could not send the proposal",
         variant: "destructive",
       });
     }
@@ -75,7 +75,7 @@ const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFo
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Écrivez un message pour expliquer votre intérêt à collaborer..."
+                  placeholder="Write a message explaining your interest in collaborating..."
                   className="bg-modelboard-dark border-modelboard-gray"
                 />
               </FormControl>
@@ -84,7 +84,7 @@ const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFo
           )}
         />
         <Button type="submit" className="w-full bg-modelboard-red hover:bg-red-600">
-          Envoyer la proposition
+          Send Proposal
         </Button>
       </form>
     </Form>

@@ -39,7 +39,7 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
           </DialogTrigger>
           <DialogContent className="bg-modelboard-gray text-white">
             <DialogHeader>
-              <DialogTitle>Proposer une collaboration</DialogTitle>
+              <DialogTitle>Propose Collaboration</DialogTitle>
             </DialogHeader>
             <CollabProposalForm
               travelPlanId={plan.id}
@@ -68,7 +68,7 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
               : "bg-green-500/20 text-green-500"
           }`}
         >
-          {plan.status === "upcoming" ? "À venir" : "Terminé"}
+          {plan.status === "upcoming" ? "Upcoming" : "Completed"}
         </span>
       </div>
     </div>
