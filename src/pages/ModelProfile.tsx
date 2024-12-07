@@ -25,21 +25,21 @@ const ModelProfile = () => {
           return;
         }
 
-        // Fetch profile
+        // Fetch profile using .match() instead of .eq()
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("*")
-          .eq("id", id)
+          .select()
+          .match({ id })
           .single();
 
         if (profileError) throw profileError;
         setProfile(profileData);
 
-        // Fetch portfolio items
+        // Fetch portfolio items using .match() instead of .eq()
         const { data: portfolioData, error: portfolioError } = await supabase
           .from("portfolio_items")
-          .select("*")
-          .eq("profile_id", id)
+          .select()
+          .match({ profile_id: id })
           .order("created_at", { ascending: false });
 
         if (portfolioError) throw portfolioError;
