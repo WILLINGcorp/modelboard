@@ -10,44 +10,50 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 
 const ModelProfile = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
-      getProfileAndPortfolio(id);
-    }
+    const getProfileAndPortfolio = async () => {
+      try {
+        if (!id) {
+          setError("No profile ID provided");
+          setLoading(false);
+          return;
+        }
+
+        // Fetch profile
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (profileError) throw profileError;
+        setProfile(profileData);
+
+        // Fetch portfolio items
+        const { data: portfolioData, error: portfolioError } = await supabase
+          .from("portfolio_items")
+          .select("*")
+          .eq("profile_id", id)
+          .order("created_at", { ascending: false });
+
+        if (portfolioError) throw portfolioError;
+        setPortfolio(portfolioData);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setError("Failed to load profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProfileAndPortfolio();
   }, [id]);
-
-  const getProfileAndPortfolio = async (profileId: string) => {
-    try {
-      // Fetch profile
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", profileId)
-        .single();
-
-      if (profileError) throw profileError;
-      setProfile(profileData);
-
-      // Fetch portfolio items
-      const { data: portfolioData, error: portfolioError } = await supabase
-        .from("portfolio_items")
-        .select("*")
-        .eq("profile_id", profileId)
-        .order("created_at", { ascending: false });
-
-      if (portfolioError) throw portfolioError;
-      setPortfolio(portfolioData);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -57,10 +63,10 @@ const ModelProfile = () => {
     );
   }
 
-  if (!profile) {
+  if (error || !profile) {
     return (
       <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
-        <div className="text-white">Profile not found</div>
+        <div className="text-white">{error || "Profile not found"}</div>
       </div>
     );
   }
