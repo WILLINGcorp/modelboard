@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2, Upload, MessageCircle } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import TravelPlanCard from "@/components/travel/TravelPlanCard";
+import MessagingModal from "@/components/messaging/MessagingModal";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const Portfolio = () => {
   const navigate = useNavigate();
@@ -19,11 +21,8 @@ const Portfolio = () => {
   const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    getPortfolioItems();
-    getUpcomingTravelPlans();
-  }, []);
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
 
   const getPortfolioItems = async () => {
     try {
@@ -174,10 +173,30 @@ const Portfolio = () => {
     }
   };
 
+  const handleMessageClick = async (profileId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", profileId)
+        .single();
+
+      if (error) throw error;
+      setSelectedProfile(data);
+      setIsMessagingOpen(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load profile information",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
-        <div className="text-white">Chargement...</div>
+        <div className="text-white">Loading...</div>
       </div>
     );
   }
@@ -185,7 +204,16 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-modelboard-dark p-4">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-white">Mon Portfolio</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-white">Portfolio</h1>
+          <Button
+            onClick={() => handleMessageClick(items[0]?.profile_id)}
+            className="bg-modelboard-red hover:bg-red-600"
+          >
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Message
+          </Button>
+        </div>
 
         {travelPlans.length > 0 && (
           <div className="space-y-4">
@@ -261,19 +289,41 @@ const Portfolio = () => {
               <div className="p-4">
                 <h3 className="text-xl font-bold text-white">{item.title}</h3>
                 <p className="text-gray-400 mt-2">{item.description}</p>
-                <Button
-                  variant="ghost"
-                  className="mt-4 text-red-500 hover:text-red-600"
-                  onClick={() => deletePortfolioItem(item.id, item.media_url)}
-                >
-                  <Trash2 className="mr-2" />
-                  Supprimer
-                </Button>
+                <div className="flex justify-between mt-4">
+                  <Button
+                    variant="ghost"
+                    className="text-red-500 hover:text-red-600"
+                    onClick={() => deletePortfolioItem(item.id, item.media_url)}
+                  >
+                    <Trash2 className="mr-2" />
+                    Delete
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="text-modelboard-red hover:text-red-600"
+                    onClick={() => handleMessageClick(item.profile_id)}
+                  >
+                    <MessageCircle className="mr-2" />
+                    Message
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {selectedProfile && (
+        <MessagingModal
+          isOpen={isMessagingOpen}
+          onClose={() => {
+            setIsMessagingOpen(false);
+            setSelectedProfile(null);
+          }}
+          receiverId={selectedProfile.id}
+          receiverName={selectedProfile.display_name || "User"}
+        />
+      )}
     </div>
   );
 };
