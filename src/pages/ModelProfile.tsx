@@ -5,19 +5,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { User, MapPin, Globe } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { format } from "date-fns";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
+type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
 
 const ModelProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getProfileAndPortfolio = async () => {
+    const getProfileData = async () => {
       try {
         if (!id) {
           setError("No profile ID provided");
@@ -25,7 +28,7 @@ const ModelProfile = () => {
           return;
         }
 
-        // Fetch profile using .match() instead of .eq()
+        // Fetch profile
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select()
@@ -35,7 +38,7 @@ const ModelProfile = () => {
         if (profileError) throw profileError;
         setProfile(profileData);
 
-        // Fetch portfolio items using .match() instead of .eq()
+        // Fetch portfolio items
         const { data: portfolioData, error: portfolioError } = await supabase
           .from("portfolio_items")
           .select()
@@ -44,15 +47,25 @@ const ModelProfile = () => {
 
         if (portfolioError) throw portfolioError;
         setPortfolio(portfolioData);
+
+        // Fetch upcoming travel plans
+        const { data: travelData, error: travelError } = await supabase
+          .from("travel_plans")
+          .select()
+          .match({ profile_id: id, status: 'upcoming' })
+          .order("start_date", { ascending: true });
+
+        if (travelError) throw travelError;
+        setTravelPlans(travelData);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error fetching profile data:", error);
         setError("Failed to load profile");
       } finally {
         setLoading(false);
       }
     };
 
-    getProfileAndPortfolio();
+    getProfileData();
   }, [id]);
 
   if (loading) {
@@ -111,6 +124,30 @@ const ModelProfile = () => {
             </div>
           </div>
         </div>
+
+        {travelPlans.length > 0 && (
+          <>
+            <h2 className="text-2xl font-bold text-white mb-6">Upcoming Trips</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {travelPlans.map((plan) => (
+                <Card
+                  key={plan.id}
+                  className="bg-modelboard-gray overflow-hidden"
+                >
+                  <CardContent className="p-4">
+                    <h3 className="text-xl font-bold text-white mb-2">{plan.destination}</h3>
+                    <div className="text-gray-300 mb-2">
+                      {format(new Date(plan.start_date), "MMM d, yyyy")} - {format(new Date(plan.end_date), "MMM d, yyyy")}
+                    </div>
+                    {plan.description && (
+                      <p className="text-gray-400">{plan.description}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
 
         <h2 className="text-2xl font-bold text-white mb-6">Portfolio</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
