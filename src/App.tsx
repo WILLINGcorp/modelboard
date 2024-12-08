@@ -11,7 +11,7 @@ import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
 import ModelDirectory from "./pages/ModelDirectory";
 import ModelProfile from "./pages/ModelProfile";
-import TravelPlans from "./pages/TravelPlans";
+import Location from "./pages/Location";
 
 const queryClient = new QueryClient();
 
@@ -78,10 +78,10 @@ const App = () => (
           />
           <Route path="/models/:id" element={<ModelProfile />} />
           <Route
-            path="/travel"
+            path="/location"
             element={
               <PrivateRoute>
-                <TravelPlans />
+                <Location />
               </PrivateRoute>
             }
           />
