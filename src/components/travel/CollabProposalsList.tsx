@@ -1,17 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
-import ProposalStatusBadge from "./ProposalStatusBadge";
-import ProposalActions from "./ProposalActions";
+import ProposalsTable from "./ProposalsTable";
 
 const CollabProposalsList = () => {
   const { toast } = useToast();
@@ -28,6 +18,7 @@ const CollabProposalsList = () => {
           id,
           status,
           message,
+          location,
           created_at,
           sender:profiles!collab_proposals_sender_id_fkey(id, display_name),
           receiver:profiles!collab_proposals_receiver_id_fkey(id, display_name)
@@ -67,46 +58,7 @@ const CollabProposalsList = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold text-white">Collaboration Proposals</h2>
-      <div className="rounded-md border border-modelboard-gray">
-        <Table>
-          <TableHeader className="bg-modelboard-gray">
-            <TableRow>
-              <TableHead className="text-white">From</TableHead>
-              <TableHead className="text-white">To</TableHead>
-              <TableHead className="text-white">Message</TableHead>
-              <TableHead className="text-white">Date</TableHead>
-              <TableHead className="text-white">Status</TableHead>
-              <TableHead className="text-white">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {proposals?.map((proposal) => (
-              <TableRow key={proposal.id} className="bg-modelboard-dark">
-                <TableCell className="text-white">
-                  {proposal.sender?.display_name || "Anonymous"}
-                </TableCell>
-                <TableCell className="text-white">
-                  {proposal.receiver?.display_name || "Anonymous"}
-                </TableCell>
-                <TableCell className="text-white">{proposal.message}</TableCell>
-                <TableCell className="text-white">
-                  {format(new Date(proposal.created_at), "dd/MM/yyyy")}
-                </TableCell>
-                <TableCell>
-                  <ProposalStatusBadge status={proposal.status} />
-                </TableCell>
-                <TableCell>
-                  <ProposalActions
-                    status={proposal.status}
-                    onAccept={() => handleUpdateStatus(proposal.id, "accepted")}
-                    onReject={() => handleUpdateStatus(proposal.id, "rejected")}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      <ProposalsTable proposals={proposals || []} onUpdateStatus={handleUpdateStatus} />
     </div>
   );
 };
