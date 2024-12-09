@@ -17,11 +17,12 @@ import { useToast } from "@/components/ui/use-toast";
 interface CollabProposalFormProps {
   travelPlanId: string;
   receiverId: string;
+  location: string;
   onSuccess: () => void;
   onClose: () => void;
 }
 
-const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFormProps) => {
+const CollabProposalForm = ({ receiverId, location, onSuccess, onClose }: CollabProposalFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const form = useForm({
@@ -42,6 +43,7 @@ const CollabProposalForm = ({ receiverId, onSuccess, onClose }: CollabProposalFo
         sender_id: session.session.user.id,
         receiver_id: receiverId,
         message: values.message,
+        location: location,
       });
 
       if (error) throw error;

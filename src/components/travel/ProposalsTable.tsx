@@ -10,12 +10,16 @@ import {
 import ProposalStatusBadge from "./ProposalStatusBadge";
 import ProposalActions from "./ProposalActions";
 import MessageButton from "./MessageButton";
-import type { Database } from "@/integrations/supabase/types";
 
-type Proposal = Database["public"]["Tables"]["collab_proposals"]["Row"] & {
+interface Proposal {
+  id: string;
+  status: string;
+  message: string | null;
+  location: string;
+  created_at: string;
   sender: { id: string; display_name: string | null } | null;
   receiver: { id: string; display_name: string | null } | null;
-};
+}
 
 interface ProposalsTableProps {
   proposals: Proposal[];

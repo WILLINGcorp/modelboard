@@ -129,6 +129,7 @@ const TravelPlans = () => {
                 <CollabProposalForm
                   travelPlanId=""
                   receiverId={profile?.id || ""}
+                  location={profile?.location || ""}
                   onSuccess={() => {
                     toast({
                       title: "Success",
