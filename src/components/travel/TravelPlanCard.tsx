@@ -44,6 +44,7 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
             <CollabProposalForm
               travelPlanId={plan.id}
               receiverId={plan.profile_id}
+              location={plan.destination}
               onSuccess={() => {}}
               onClose={() => setIsDialogOpen(false)}
             />
