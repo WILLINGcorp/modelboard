@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { Json } from "@/integrations/supabase/types";
 
 const PLATFORMS = [
   "OnlyFans",
@@ -24,14 +25,14 @@ const PLATFORMS = [
   "FanCentro",
 ];
 
-interface CreatorPlatform {
+export interface CreatorPlatform {
   platform: string;
   handle: string;
 }
 
 interface CreatorPlatformsFieldProps {
-  value: CreatorPlatform[];
-  onChange: (platforms: CreatorPlatform[]) => void;
+  value: Json[];
+  onChange: (platforms: Json[]) => void;
 }
 
 export const CreatorPlatformsField = ({
@@ -41,26 +42,28 @@ export const CreatorPlatformsField = ({
   const [selectedPlatform, setSelectedPlatform] = useState<string>("");
   const [handle, setHandle] = useState<string>("");
 
+  const platforms = value as CreatorPlatform[];
+
   const handleAdd = () => {
     if (selectedPlatform && handle) {
-      onChange([...value, { platform: selectedPlatform, handle }]);
+      onChange([...platforms, { platform: selectedPlatform, handle }] as Json[]);
       setSelectedPlatform("");
       setHandle("");
     }
   };
 
   const handleRemove = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
+    onChange(platforms.filter((_, i) => i !== index) as Json[]);
   };
 
   const availablePlatforms = PLATFORMS.filter(
-    (platform) => !value.some((p) => p.platform === platform)
+    (platform) => !platforms.some((p) => p.platform === platform)
   );
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        {value.map((platform, index) => (
+        {platforms.map((platform, index) => (
           <div
             key={index}
             className="flex items-center gap-2 bg-modelboard-gray rounded-full px-3 py-1"
