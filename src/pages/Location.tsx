@@ -9,17 +9,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, MapPin } from "lucide-react";
+import { Plus, MapPin, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import TravelPlanForm from "@/components/travel/TravelPlanForm";
 import TravelPlanCard from "@/components/travel/TravelPlanCard";
 import CollabProposalsList from "@/components/travel/CollabProposalsList";
+import CollabProposalForm from "@/components/travel/CollabProposalForm";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
 const TravelPlans = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCollabDialogOpen, setIsCollabDialogOpen] = useState(false);
   const [isEditingLocation, setIsEditingLocation] = useState(false);
   const [newLocation, setNewLocation] = useState("");
   const { toast } = useToast();
@@ -104,10 +106,40 @@ const TravelPlans = () => {
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Current Location Section */}
         <div className="bg-card rounded-lg p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <MapPin className="h-6 w-6" />
-            Current Location
-          </h2>
+          <div className="flex justify-between items-start">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <MapPin className="h-6 w-6" />
+              Current Location
+            </h2>
+            <Dialog open={isCollabDialogOpen} onOpenChange={setIsCollabDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                  disabled={!profile?.location}
+                >
+                  <Share2 className="h-4 w-4" />
+                  Propose Collaboration
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-modelboard-gray text-white">
+                <DialogHeader>
+                  <DialogTitle>Send Collaboration Proposal</DialogTitle>
+                </DialogHeader>
+                <CollabProposalForm
+                  travelPlanId=""
+                  receiverId={profile?.id || ""}
+                  onSuccess={() => {
+                    toast({
+                      title: "Success",
+                      description: "Collaboration proposal sent successfully",
+                    });
+                  }}
+                  onClose={() => setIsCollabDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
           {isEditingLocation ? (
             <div className="flex gap-4">
               <Input
