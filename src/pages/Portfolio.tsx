@@ -10,14 +10,14 @@ import PortfolioForm from "@/components/portfolio/PortfolioForm";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 import TravelPlansSection from "@/components/portfolio/TravelPlansSection";
 
-type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
+type PortfolioItemType = Database['public']['Tables']['portfolio_items']['Row'];
 type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const Portfolio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [items, setItems] = useState<PortfolioItem[]>([]);
+  const [items, setItems] = useState<PortfolioItemType[]>([]);
   const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
