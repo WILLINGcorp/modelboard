@@ -135,7 +135,7 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-modelboard-dark p-4">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Portfolio</h1>
           <Button
@@ -151,7 +151,7 @@ const Portfolio = () => {
         
         <PortfolioForm onItemAdded={getPortfolioItems} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
           {items.map((item) => (
             <PortfolioItem
               key={item.id}

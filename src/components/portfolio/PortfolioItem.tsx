@@ -12,14 +12,13 @@ interface PortfolioItemProps {
 
 const PortfolioItem = ({ item, onDelete, onMessageClick }: PortfolioItemProps) => {
   return (
-    <div className="bg-modelboard-gray rounded-lg overflow-hidden">
-      <div className="aspect-square">
-        <img
-          src={item.media_url}
-          alt={item.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <div className="bg-modelboard-gray rounded-lg overflow-hidden break-inside-avoid mb-6">
+      <img
+        src={item.media_url}
+        alt={item.title}
+        className="w-full object-cover"
+        loading="lazy"
+      />
       <div className="p-4">
         <h3 className="text-xl font-bold text-white">{item.title}</h3>
         <p className="text-gray-400 mt-2">{item.description}</p>
