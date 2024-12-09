@@ -5,6 +5,9 @@ import type { Database } from "@/integrations/supabase/types";
 import ProfileHeader from "@/components/model/ProfileHeader";
 import TravelPlansSection from "@/components/model/TravelPlansSection";
 import PortfolioSection from "@/components/model/PortfolioSection";
+import MessagingModal from "@/components/messaging/MessagingModal";
+import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
@@ -17,6 +20,7 @@ const ModelProfile = () => {
   const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
   useEffect(() => {
     const getProfileData = async () => {
@@ -86,9 +90,25 @@ const ModelProfile = () => {
   return (
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
       <div className="max-w-7xl mx-auto">
-        <ProfileHeader profile={profile} />
+        <div className="flex justify-between items-start mb-8">
+          <ProfileHeader profile={profile} />
+          <Button
+            onClick={() => setIsMessageModalOpen(true)}
+            className="bg-modelboard-red hover:bg-red-600 text-white"
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            Message
+          </Button>
+        </div>
         <TravelPlansSection travelPlans={travelPlans} />
         <PortfolioSection portfolio={portfolio} />
+
+        <MessagingModal
+          isOpen={isMessageModalOpen}
+          onClose={() => setIsMessageModalOpen(false)}
+          receiverId={profile.id}
+          receiverName={profile.display_name || "Anonymous User"}
+        />
       </div>
     </div>
   );

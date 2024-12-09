@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Home, Users, Image, MapPin, User } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
-
-interface NavigationItem {
-  label: string;
-  path: string;
-  icon?: React.ComponentType<{ className?: string }>;
-}
+import { useNavigate, useLocation } from "react-router-dom";
+import { Home, Users, Image, MapPin, User, MessageSquare } from "lucide-react";
 
 interface NavigationItemsProps {
   isAuthenticated: boolean;
@@ -17,56 +11,103 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    onMobileMenuClose?.();
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
-  const authenticatedItems: NavigationItem[] = [
-    { label: "Home", path: "/", icon: Home },
-    { label: "Models", path: "/models", icon: Users },
-    { label: "Portfolio", path: "/portfolio", icon: Image },
-    { label: "Location", path: "/location", icon: MapPin },
-    { label: "Profile", path: "/profile", icon: User },
-  ];
-
-  const publicItems: NavigationItem[] = [
-    { label: "Features", path: "#features" },
-    { label: "How it works", path: "#how-it-works" },
-    { label: "Pricing", path: "#pricing" },
-  ];
-
-  const items = isAuthenticated ? authenticatedItems : publicItems;
-
-  const handleNavigation = (path: string) => {
-    if (!path.startsWith("#")) {
-      navigate(path);
-      onMobileMenuClose?.();
-    }
-  };
+  if (isAuthenticated) {
+    return (
+      <>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/")}
+        >
+          <Home className="w-4 h-4 mr-2" />
+          <span>Home</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/models") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/models")}
+        >
+          <Users className="w-4 h-4 mr-2" />
+          <span>Models</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/portfolio") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/portfolio")}
+        >
+          <Image className="w-4 h-4 mr-2" />
+          <span>Portfolio</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/location") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/location")}
+        >
+          <MapPin className="w-4 h-4 mr-2" />
+          <span>Location</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/messages") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/messages")}
+        >
+          <MessageSquare className="w-4 h-4 mr-2" />
+          <span>Messages</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/profile") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/profile")}
+        >
+          <User className="w-4 h-4 mr-2" />
+          <span>Profile</span>
+        </Button>
+      </>
+    );
+  }
 
   return (
     <>
-      {items.map((item) => (
-        <Button
-          key={item.path}
-          variant="ghost"
-          className={`flex items-center space-x-2 ${
-            isActive(item.path) ? "text-modelboard-red" : "hover:text-modelboard-red"
-          } transition-colors`}
-          onClick={() => handleNavigation(item.path)}
-          asChild={item.path.startsWith("#")}
-        >
-          {item.path.startsWith("#") ? (
-            <a href={item.path}>
-              {item.icon && <item.icon className="w-4 h-4 mr-2" />}
-              {item.label}
-            </a>
-          ) : (
-            <span>
-              {item.icon && <item.icon className="w-4 h-4 mr-2" />}
-              {item.label}
-            </span>
-          )}
-        </Button>
-      ))}
+      <Button
+        variant="ghost"
+        className="hover:text-modelboard-red transition-colors"
+        asChild
+      >
+        <a href="#features">Features</a>
+      </Button>
+      <Button
+        variant="ghost"
+        className="hover:text-modelboard-red transition-colors"
+        asChild
+      >
+        <a href="#how-it-works">How it works</a>
+      </Button>
+      <Button
+        variant="ghost"
+        className="hover:text-modelboard-red transition-colors"
+        asChild
+      >
+        <a href="#pricing">Pricing</a>
+      </Button>
     </>
   );
 };

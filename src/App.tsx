@@ -13,6 +13,7 @@ import Portfolio from "./pages/Portfolio";
 import ModelDirectory from "./pages/ModelDirectory";
 import ModelProfile from "./pages/ModelProfile";
 import Location from "./pages/Location";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,14 @@ const App = () => (
               element={
                 <PrivateRoute>
                   <Location />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <PrivateRoute>
+                  <Messages />
                 </PrivateRoute>
               }
             />
