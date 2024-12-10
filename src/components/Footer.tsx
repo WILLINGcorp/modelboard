@@ -6,7 +6,11 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">ModelBoard</h3>
+            <img 
+              src="/modelboard-logo.png" 
+              alt="ModelBoard" 
+              className="h-8 mb-4"
+            />
             <p className="text-gray-400">
               The premier platform for independent content creators.
             </p>
