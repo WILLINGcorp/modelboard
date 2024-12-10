@@ -71,7 +71,7 @@ const ModelProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center px-[50px]">
         <div className="text-white">Loading profile...</div>
       </div>
     );
@@ -79,14 +79,14 @@ const ModelProfile = () => {
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center px-[50px]">
         <div className="text-white">{error || "Profile not found"}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
+    <div className="min-h-screen bg-modelboard-dark p-4 pt-24 px-[50px]">
       <div className="max-w-7xl mx-auto">
         <ProfileHeader 
           profile={profile} 
