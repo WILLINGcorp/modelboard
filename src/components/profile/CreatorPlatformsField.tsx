@@ -25,7 +25,7 @@ const PLATFORMS = [
   "FanCentro",
 ] as const;
 
-export interface CreatorPlatform {
+interface CreatorPlatform {
   platform: string;
   handle: string;
 }
@@ -42,17 +42,25 @@ export const CreatorPlatformsField = ({
   const [selectedPlatform, setSelectedPlatform] = useState<string>("");
   const [handle, setHandle] = useState<string>("");
 
-  // Safely cast the Json array to CreatorPlatform array
-  const platforms = (Array.isArray(value) ? value : []) as CreatorPlatform[];
+  // Safely cast the Json array to CreatorPlatform array with type checking
+  const platforms = Array.isArray(value) 
+    ? (value as unknown as CreatorPlatform[]).filter(
+        (p): p is CreatorPlatform => 
+          typeof p === 'object' && 
+          p !== null && 
+          'platform' in p && 
+          'handle' in p
+      )
+    : [];
 
   const handleAdd = () => {
     if (selectedPlatform && handle) {
-      const newPlatform = { 
-        platform: selectedPlatform, 
-        handle 
-      } as unknown as Json;
+      const newPlatform = {
+        platform: selectedPlatform,
+        handle,
+      };
       
-      onChange([...platforms, newPlatform] as Json[]);
+      onChange([...platforms, newPlatform] as unknown as Json[]);
       setSelectedPlatform("");
       setHandle("");
     }
@@ -60,7 +68,7 @@ export const CreatorPlatformsField = ({
 
   const handleRemove = (index: number) => {
     const updatedPlatforms = platforms.filter((_, i) => i !== index);
-    onChange(updatedPlatforms as Json[]);
+    onChange(updatedPlatforms as unknown as Json[]);
   };
 
   const availablePlatforms = PLATFORMS.filter(

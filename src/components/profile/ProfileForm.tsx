@@ -93,7 +93,7 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
         <div>
           <label className="text-sm font-medium text-white">Creator Platforms</label>
           <CreatorPlatformsField
-            value={profile?.creator_platforms || []}
+            value={profile?.creator_platforms as Json[] || []}
             onChange={(platforms) => onProfileUpdate({ ...profile, creator_platforms: platforms })}
           />
         </div>
