@@ -64,8 +64,12 @@ const Header = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="text-2xl font-bold hover-effect">
-            ModelBoard
+          <a href="/" className="hover-effect">
+            <img 
+              src="/modelboard-logo.png" 
+              alt="ModelBoard" 
+              className="h-8 md:h-10"
+            />
           </a>
 
           <div className="hidden md:flex items-center space-x-8">
