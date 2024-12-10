@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
@@ -7,10 +7,10 @@ type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 interface PortfolioItemProps {
   item: PortfolioItem;
   onDelete: (id: string, mediaUrl: string) => void;
-  onMessageClick: (profileId: string) => void;
+  onUpdate: (item: PortfolioItem) => void;
 }
 
-const PortfolioItem = ({ item, onDelete, onMessageClick }: PortfolioItemProps) => {
+const PortfolioItem = ({ item, onDelete, onUpdate }: PortfolioItemProps) => {
   return (
     <div className="bg-modelboard-gray rounded-lg overflow-hidden break-inside-avoid mb-6">
       <img
@@ -33,11 +33,11 @@ const PortfolioItem = ({ item, onDelete, onMessageClick }: PortfolioItemProps) =
           </Button>
           <Button
             variant="ghost"
-            className="text-modelboard-red hover:text-red-600"
-            onClick={() => onMessageClick(item.profile_id)}
+            className="text-blue-500 hover:text-blue-600"
+            onClick={() => onUpdate(item)}
           >
-            <MessageCircle className="mr-2" />
-            Message
+            <Pencil className="mr-2" />
+            Update
           </Button>
         </div>
       </div>
