@@ -152,6 +152,7 @@ export type Database = {
           display_name: string | null
           id: string
           location: string | null
+          roles: Json | null
           updated_at: string
           username: string | null
           website: string | null
@@ -164,6 +165,7 @@ export type Database = {
           display_name?: string | null
           id: string
           location?: string | null
+          roles?: Json | null
           updated_at?: string
           username?: string | null
           website?: string | null
@@ -176,6 +178,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           location?: string | null
+          roles?: Json | null
           updated_at?: string
           username?: string | null
           website?: string | null
