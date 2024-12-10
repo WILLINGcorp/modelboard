@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CreatorPlatformsField } from "./creator-platforms/CreatorPlatformsField";
 import { TextFormField } from "./form-fields/TextFormField";
 import { TextareaFormField } from "./form-fields/TextareaFormField";
-import { Checkbox } from "@/components/ui/checkbox";
+import { RolesField } from "./form-fields/RolesField";
 import type { Database } from "@/integrations/supabase/types";
 import type { Json } from "@/integrations/supabase/types";
 
@@ -49,13 +49,6 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
     }
   };
 
-  const roles = [
-    { id: "performer", label: "Performer / Model" },
-    { id: "photographer", label: "Photographer / Videographer" },
-    { id: "creator", label: "Creator / Producer" },
-    { id: "institutional", label: "Institutional / Studio Representative / Casting" }
-  ];
-
   const selectedRoles = (profile.roles as string[]) || [];
 
   const handleRoleChange = (roleId: string, checked: boolean) => {
@@ -87,28 +80,10 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
           onChange={(value) => onProfileUpdate({ ...profile, bio: value })}
         />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-white">Roles</label>
-          <div className="flex flex-wrap gap-6">
-            {roles.map((role) => (
-              <div key={role.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={role.id}
-                  checked={selectedRoles.includes(role.id)}
-                  onCheckedChange={(checked) => 
-                    handleRoleChange(role.id, checked as boolean)
-                  }
-                />
-                <label
-                  htmlFor={role.id}
-                  className="text-sm text-gray-300 cursor-pointer"
-                >
-                  {role.label}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
+        <RolesField
+          selectedRoles={selectedRoles}
+          onRoleChange={handleRoleChange}
+        />
 
         <TextFormField
           label="Website"

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FormField } from "../form-fields/FormField";
 import { PlatformTag } from "./PlatformTag";
-import { PlatformInput, PLATFORMS } from "./PlatformInput";
+import { PlatformInput } from "./PlatformInput";
+import { PLATFORMS } from "@/constants/platforms";
 import type { Json } from "@/integrations/supabase/types";
 
 interface CreatorPlatform {
