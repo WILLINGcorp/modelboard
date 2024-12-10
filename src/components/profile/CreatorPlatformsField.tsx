@@ -23,7 +23,7 @@ const PLATFORMS = [
   "ModelHub",
   "FapHouse",
   "FanCentro",
-];
+] as const;
 
 export interface CreatorPlatform {
   platform: string;
@@ -42,18 +42,25 @@ export const CreatorPlatformsField = ({
   const [selectedPlatform, setSelectedPlatform] = useState<string>("");
   const [handle, setHandle] = useState<string>("");
 
-  const platforms = value as CreatorPlatform[];
+  // Safely cast the Json array to CreatorPlatform array
+  const platforms = (Array.isArray(value) ? value : []) as CreatorPlatform[];
 
   const handleAdd = () => {
     if (selectedPlatform && handle) {
-      onChange([...platforms, { platform: selectedPlatform, handle }] as Json[]);
+      const newPlatform = { 
+        platform: selectedPlatform, 
+        handle 
+      } as unknown as Json;
+      
+      onChange([...platforms, newPlatform] as Json[]);
       setSelectedPlatform("");
       setHandle("");
     }
   };
 
   const handleRemove = (index: number) => {
-    onChange(platforms.filter((_, i) => i !== index) as Json[]);
+    const updatedPlatforms = platforms.filter((_, i) => i !== index);
+    onChange(updatedPlatforms as Json[]);
   };
 
   const availablePlatforms = PLATFORMS.filter(
