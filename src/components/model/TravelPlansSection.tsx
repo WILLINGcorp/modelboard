@@ -1,6 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
+import { Button } from "@/components/ui/button";
+import { Handshake } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import CollabProposalForm from "@/components/travel/CollabProposalForm";
 
 type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
 
@@ -9,6 +20,9 @@ interface TravelPlansSectionProps {
 }
 
 const TravelPlansSection = ({ travelPlans }: TravelPlansSectionProps) => {
+  const [selectedPlan, setSelectedPlan] = useState<TravelPlan | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   if (travelPlans.length === 0) return null;
 
   return (
@@ -21,7 +35,36 @@ const TravelPlansSection = ({ travelPlans }: TravelPlansSectionProps) => {
             className="bg-modelboard-gray overflow-hidden"
           >
             <CardContent className="p-4">
-              <h3 className="text-xl font-bold text-white mb-2">{plan.destination}</h3>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-bold text-white">{plan.destination}</h3>
+                <Dialog open={isDialogOpen && selectedPlan?.id === plan.id} onOpenChange={(open) => {
+                  setIsDialogOpen(open);
+                  if (!open) setSelectedPlan(null);
+                }}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-white hover:text-modelboard-red"
+                      onClick={() => setSelectedPlan(plan)}
+                    >
+                      <Handshake className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-modelboard-gray text-white">
+                    <DialogHeader>
+                      <DialogTitle>Propose Collaboration in {plan.destination}</DialogTitle>
+                    </DialogHeader>
+                    <CollabProposalForm
+                      travelPlanId={plan.id}
+                      receiverId={plan.profile_id}
+                      location={plan.destination}
+                      onSuccess={() => setIsDialogOpen(false)}
+                      onClose={() => setIsDialogOpen(false)}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
               <div className="text-gray-300 mb-2">
                 {format(new Date(plan.start_date), "MMM d, yyyy")} - {format(new Date(plan.end_date), "MMM d, yyyy")}
               </div>
