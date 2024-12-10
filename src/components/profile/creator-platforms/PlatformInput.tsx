@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const PLATFORMS = [
+export const PLATFORMS = [
   "OnlyFans",
   "JustForFans",
   "Top4Fans",
@@ -73,5 +73,3 @@ export const PlatformInput = ({
     </Button>
   </div>
 );
-
-export { PLATFORMS };
