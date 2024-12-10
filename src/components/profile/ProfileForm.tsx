@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { CreatorPlatformsField } from "./CreatorPlatformsField";
+import { CreatorPlatformsField } from "./creator-platforms/CreatorPlatformsField";
+import { TextFormField } from "./form-fields/TextFormField";
+import { TextareaFormField } from "./form-fields/TextareaFormField";
 import type { Database } from "@/integrations/supabase/types";
+import type { Json } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -50,53 +51,35 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-modelboard-gray p-6 rounded-lg">
       <div className="space-y-4">
-        <div>
-          <label className="text-sm font-medium text-white">Username</label>
-          <Input
-            type="text"
-            value={profile?.username || ""}
-            onChange={(e) => onProfileUpdate({ ...profile, username: e.target.value })}
-            className="bg-modelboard-dark border-modelboard-gray text-white"
-          />
-        </div>
+        <TextFormField
+          label="Username"
+          value={profile?.username || ""}
+          onChange={(value) => onProfileUpdate({ ...profile, username: value })}
+        />
 
-        <div>
-          <label className="text-sm font-medium text-white">Display Name</label>
-          <Input
-            type="text"
-            value={profile?.display_name || ""}
-            onChange={(e) => onProfileUpdate({ ...profile, display_name: e.target.value })}
-            className="bg-modelboard-dark border-modelboard-gray text-white"
-          />
-        </div>
+        <TextFormField
+          label="Display Name"
+          value={profile?.display_name || ""}
+          onChange={(value) => onProfileUpdate({ ...profile, display_name: value })}
+        />
 
-        <div>
-          <label className="text-sm font-medium text-white">Bio</label>
-          <Textarea
-            value={profile?.bio || ""}
-            onChange={(e) => onProfileUpdate({ ...profile, bio: e.target.value })}
-            className="bg-modelboard-dark border-modelboard-gray text-white"
-            rows={4}
-          />
-        </div>
+        <TextareaFormField
+          label="Bio"
+          value={profile?.bio || ""}
+          onChange={(value) => onProfileUpdate({ ...profile, bio: value })}
+        />
 
-        <div>
-          <label className="text-sm font-medium text-white">Website</label>
-          <Input
-            type="url"
-            value={profile?.website || ""}
-            onChange={(e) => onProfileUpdate({ ...profile, website: e.target.value })}
-            className="bg-modelboard-dark border-modelboard-gray text-white"
-          />
-        </div>
+        <TextFormField
+          label="Website"
+          type="url"
+          value={profile?.website || ""}
+          onChange={(value) => onProfileUpdate({ ...profile, website: value })}
+        />
 
-        <div>
-          <label className="text-sm font-medium text-white">Creator Platforms</label>
-          <CreatorPlatformsField
-            value={profile?.creator_platforms as Json[] || []}
-            onChange={(platforms) => onProfileUpdate({ ...profile, creator_platforms: platforms })}
-          />
-        </div>
+        <CreatorPlatformsField
+          value={profile?.creator_platforms as Json[] || []}
+          onChange={(platforms) => onProfileUpdate({ ...profile, creator_platforms: platforms })}
+        />
       </div>
 
       <Button 
