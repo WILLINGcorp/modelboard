@@ -8,17 +8,14 @@ import type { Database } from "@/integrations/supabase/types";
 import MessagingModal from "@/components/messaging/MessagingModal";
 import PortfolioForm from "@/components/portfolio/PortfolioForm";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
-import TravelPlansSection from "@/components/portfolio/TravelPlansSection";
 
 type PortfolioItemType = Database['public']['Tables']['portfolio_items']['Row'];
-type TravelPlan = Database['public']['Tables']['travel_plans']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const Portfolio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [items, setItems] = useState<PortfolioItemType[]>([]);
-  const [travelPlans, setTravelPlans] = useState<TravelPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
@@ -48,26 +45,6 @@ const Portfolio = () => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getUpcomingTravelPlans = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("travel_plans")
-        .select("*")
-        .eq("profile_id", user.id)
-        .eq("status", "upcoming")
-        .order("start_date", { ascending: true });
-
-      if (error) throw error;
-      setTravelPlans(data || []);
-    } catch (error) {
-      console.error("Error fetching travel plans:", error);
     }
   };
 
@@ -122,7 +99,6 @@ const Portfolio = () => {
 
   useEffect(() => {
     getPortfolioItems();
-    getUpcomingTravelPlans();
   }, []);
 
   if (loading) {
@@ -146,8 +122,6 @@ const Portfolio = () => {
             Message
           </Button>
         </div>
-
-        <TravelPlansSection travelPlans={travelPlans} />
         
         <PortfolioForm onItemAdded={getPortfolioItems} />
 
