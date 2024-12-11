@@ -1,4 +1,4 @@
-import { Camera, ClapperBoard, Building } from "lucide-react";
+import { Camera, Clapperboard, Building } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 export type ProfileType = "producer" | "creator" | "studio";
@@ -24,7 +24,7 @@ export const ProfileTypeSelector = ({
       id: "creator" as const,
       title: "Content Creator",
       subtitle: "Performer / Model",
-      icon: ClapperBoard,
+      icon: Clapperboard,
       buttonText: "Make a Creator Profile",
     },
     {
