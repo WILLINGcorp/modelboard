@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Camera } from "lucide-react";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { ProfileTypeSelector, type ProfileType } from "@/components/profile/ProfileTypeSelector";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -16,6 +17,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileType, setProfileType] = useState<ProfileType | null>(null);
 
   useEffect(() => {
     getProfile();
@@ -108,7 +110,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-modelboard-dark p-4">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">My Profile</h1>
           <Button variant="ghost" onClick={handleSignOut} className="text-white">
@@ -117,32 +119,41 @@ const Profile = () => {
           </Button>
         </div>
 
-        <div className="flex justify-center mb-8">
-          <div className="relative">
-            <Avatar className="h-32 w-32">
-              <AvatarImage src={profile?.avatar_url} />
-              <AvatarFallback>
-                <User className="h-16 w-16" />
-              </AvatarFallback>
-            </Avatar>
-            <label 
-              htmlFor="avatar-upload" 
-              className="absolute bottom-0 right-0 p-2 bg-modelboard-red rounded-full cursor-pointer hover:bg-red-600 transition-colors"
-            >
-              <Camera className="h-4 w-4 text-white" />
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarUpload}
-                className="hidden"
-                disabled={uploading}
-              />
-            </label>
-          </div>
-        </div>
+        <ProfileTypeSelector
+          selectedType={profileType}
+          onTypeSelect={setProfileType}
+        />
 
-        <ProfileForm profile={profile} onProfileUpdate={setProfile} />
+        {profileType && (
+          <>
+            <div className="flex justify-center mb-8">
+              <div className="relative">
+                <Avatar className="h-32 w-32">
+                  <AvatarImage src={profile?.avatar_url} />
+                  <AvatarFallback>
+                    <User className="h-16 w-16" />
+                  </AvatarFallback>
+                </Avatar>
+                <label 
+                  htmlFor="avatar-upload" 
+                  className="absolute bottom-0 right-0 p-2 bg-modelboard-red rounded-full cursor-pointer hover:bg-red-600 transition-colors"
+                >
+                  <Camera className="h-4 w-4 text-white" />
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+            </div>
+
+            <ProfileForm profile={profile} onProfileUpdate={setProfile} />
+          </>
+        )}
       </div>
     </div>
   );
