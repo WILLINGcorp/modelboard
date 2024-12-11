@@ -67,7 +67,8 @@ export const ProfileTypeSelector = ({
               {type.buttonText}
             </button>
           </Card>
-        ))}
+        );
+      })}
     </div>
   );
 };
