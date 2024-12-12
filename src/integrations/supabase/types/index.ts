@@ -1,14 +1,17 @@
-export * from './common';
+// Re-export all types from individual files
+export * from './collaborations';
 export * from './profiles';
 export * from './portfolio';
 export * from './messages';
-export * from './collaborations';
 export * from './travel';
 
-// Re-export helper types
-export type { Database } from './common';
+// Re-export common types
+export type { Database, Json } from './common';
+
+// Define PublicSchema type
 export type PublicSchema = Database['public']
 
+// Helper types for working with tables
 export type Tables<
   PublicTableNameOrOptions extends
     | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
