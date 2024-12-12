@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Star, Calendar } from "lucide-react";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
+import { useOnlinePresence } from "@/hooks/use-online-presence";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -15,10 +16,20 @@ const ModelDirectory = () => {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("location");
   const [searchLocation, setSearchLocation] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string>();
+  const { isOnline } = useOnlinePresence(currentUserId);
 
   useEffect(() => {
+    getCurrentUser();
     getProfiles();
   }, []);
+
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      setCurrentUserId(user.id);
+    }
+  };
 
   useEffect(() => {
     filterProfiles(activeFilter, searchLocation);
@@ -47,8 +58,7 @@ const ModelDirectory = () => {
     // Apply main filter
     switch (filter) {
       case "online":
-        // In a real app, this would check the actual online status
-        filtered = filtered.filter(profile => Math.random() > 0.5);
+        filtered = filtered.filter(profile => isOnline(profile.id));
         break;
       case "creators":
         filtered = filtered.filter(profile => 
@@ -120,9 +130,11 @@ const ModelDirectory = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
                 <div className="absolute top-4 left-4">
-                  <span className="text-modelboard-red text-sm font-medium">
-                    Online Now
-                  </span>
+                  {isOnline(profile.id) && (
+                    <span className="text-modelboard-red text-sm font-medium">
+                      Online Now
+                    </span>
+                  )}
                 </div>
 
                 <div className="absolute top-4 right-4 flex gap-2">
