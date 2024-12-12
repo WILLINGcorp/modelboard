@@ -14,7 +14,7 @@ export const PlatformTag = ({ platform, handle, onRemove }: PlatformTagProps) =>
     <Button
       variant="ghost"
       size="icon"
-      className="h-5 w-5 rounded-full hover:bg-red-500/20 hover:text-red-500"
+      className="h-5 w-5 rounded-full hover:bg-red-500/20 hover:text-white"
       onClick={onRemove}
     >
       <X className="h-3 w-3" />

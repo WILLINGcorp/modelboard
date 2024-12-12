@@ -53,7 +53,7 @@ export const PlatformInput = ({
       size="icon"
       onClick={onAdd}
       disabled={!selectedPlatform || !handle}
-      className="hover:bg-green-500/20 hover:text-green-500"
+      className="hover:bg-green-500/20 hover:text-white"
     >
       <Plus className="h-4 w-4" />
     </Button>

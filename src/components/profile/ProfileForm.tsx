@@ -63,7 +63,7 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
 
       <Button 
         type="submit" 
-        className="w-full bg-modelboard-red hover:bg-red-600"
+        className="w-full bg-modelboard-red hover:bg-red-600 hover:text-white transition-colors"
         disabled={loading}
       >
         {loading ? "Saving..." : "Save Changes"}
