@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { User } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Star, Calendar } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -45,30 +44,49 @@ const ModelDirectory = () => {
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8">Model Directory</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {profiles.map((profile) => (
             <Card 
               key={profile.id}
-              className="bg-modelboard-gray hover:bg-gray-800 transition-colors cursor-pointer"
+              className="group relative aspect-[3/4] overflow-hidden cursor-pointer bg-cover bg-center"
+              style={{
+                backgroundImage: profile.avatar_url 
+                  ? `url(${profile.avatar_url})` 
+                  : "url(/placeholder.svg)"
+              }}
               onClick={() => navigate(`/models/${profile.id}`)}
             >
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback>
-                    <User className="h-8 w-8" />
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-xl font-semibold text-white">
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
+                {/* Online Status */}
+                <div className="absolute top-4 left-4">
+                  <span className="text-modelboard-red text-sm font-medium">
+                    Online Now
+                  </span>
+                </div>
+
+                {/* Action Icons */}
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <button className="p-2 rounded-full bg-black/20 hover:bg-modelboard-red/80 transition-colors">
+                    <Star className="w-4 h-4 text-white" />
+                  </button>
+                  <button className="p-2 rounded-full bg-black/20 hover:bg-modelboard-red/80 transition-colors">
+                    <Calendar className="w-4 h-4 text-white" />
+                  </button>
+                </div>
+
+                {/* Profile Info */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-xl font-semibold text-white mb-1">
                     {profile.display_name || "Anonymous Model"}
                   </h3>
-                  <p className="text-gray-400">{profile.location}</p>
+                  {profile.location && (
+                    <p className="text-gray-300 text-sm">
+                      {profile.location}
+                    </p>
+                  )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300 line-clamp-3">{profile.bio}</p>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
