@@ -8,12 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "./components/layout/AppLayout";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Profile from "./pages/Profile";
-import Portfolio from "./pages/Portfolio";
-import ModelDirectory from "./pages/ModelDirectory";
+import MyProfile from "./pages/Profile";
+import MyPortfolio from "./pages/Portfolio";
+import Network from "./pages/ModelDirectory";
 import ModelProfile from "./pages/ModelProfile";
-import Location from "./pages/Location";
-import Messages from "./pages/Messages";
+import MyLocation from "./pages/Location";
+import Communications from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -56,43 +56,43 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route
-              path="/profile"
+              path="/my-profile"
               element={
                 <PrivateRoute>
-                  <Profile />
+                  <MyProfile />
                 </PrivateRoute>
               }
             />
             <Route
-              path="/portfolio"
+              path="/my-portfolio"
               element={
                 <PrivateRoute>
-                  <Portfolio />
+                  <MyPortfolio />
                 </PrivateRoute>
               }
             />
             <Route
-              path="/models"
+              path="/network"
               element={
                 <PrivateRoute>
-                  <ModelDirectory />
+                  <Network />
                 </PrivateRoute>
               }
             />
             <Route path="/models/:id" element={<ModelProfile />} />
             <Route
-              path="/location"
+              path="/my-location"
               element={
                 <PrivateRoute>
-                  <Location />
+                  <MyLocation />
                 </PrivateRoute>
               }
             />
             <Route
-              path="/messages"
+              path="/communications"
               element={
                 <PrivateRoute>
-                  <Messages />
+                  <Communications />
                 </PrivateRoute>
               }
             />

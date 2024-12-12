@@ -34,52 +34,52 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/models") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/network") ? "text-modelboard-red" : "hover:text-modelboard-red"
           } transition-colors`}
-          onClick={() => handleNavigation("/models")}
+          onClick={() => handleNavigation("/network")}
         >
           <Users className="w-4 h-4 mr-2" />
-          <span>Models</span>
+          <span>Network</span>
         </Button>
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/portfolio") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/communications") ? "text-modelboard-red" : "hover:text-modelboard-red"
           } transition-colors`}
-          onClick={() => handleNavigation("/portfolio")}
-        >
-          <Image className="w-4 h-4 mr-2" />
-          <span>Portfolio</span>
-        </Button>
-        <Button
-          variant="ghost"
-          className={`flex items-center space-x-2 ${
-            isActive("/location") ? "text-modelboard-red" : "hover:text-modelboard-red"
-          } transition-colors`}
-          onClick={() => handleNavigation("/location")}
-        >
-          <MapPin className="w-4 h-4 mr-2" />
-          <span>Location</span>
-        </Button>
-        <Button
-          variant="ghost"
-          className={`flex items-center space-x-2 ${
-            isActive("/messages") ? "text-modelboard-red" : "hover:text-modelboard-red"
-          } transition-colors`}
-          onClick={() => handleNavigation("/messages")}
+          onClick={() => handleNavigation("/communications")}
         >
           <MessageSquare className="w-4 h-4 mr-2" />
-          <span>Messages</span>
+          <span>Communications</span>
         </Button>
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/profile") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/my-location") ? "text-modelboard-red" : "hover:text-modelboard-red"
           } transition-colors`}
-          onClick={() => handleNavigation("/profile")}
+          onClick={() => handleNavigation("/my-location")}
+        >
+          <MapPin className="w-4 h-4 mr-2" />
+          <span>My Location</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/my-portfolio") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/my-portfolio")}
+        >
+          <Image className="w-4 h-4 mr-2" />
+          <span>My Portfolio</span>
+        </Button>
+        <Button
+          variant="ghost"
+          className={`flex items-center space-x-2 ${
+            isActive("/my-profile") ? "text-modelboard-red" : "hover:text-modelboard-red"
+          } transition-colors`}
+          onClick={() => handleNavigation("/my-profile")}
         >
           <User className="w-4 h-4 mr-2" />
-          <span>Profile</span>
+          <span>My Profile</span>
         </Button>
       </>
     );
