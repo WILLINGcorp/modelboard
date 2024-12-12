@@ -24,7 +24,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/")}
         >
@@ -34,7 +34,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/network") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/network") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/network")}
         >
@@ -44,7 +44,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/communications") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/communications") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/communications")}
         >
@@ -54,7 +54,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/my-location") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/my-location") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/my-location")}
         >
@@ -64,7 +64,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/my-portfolio") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/my-portfolio") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/my-portfolio")}
         >
@@ -74,7 +74,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
         <Button
           variant="ghost"
           className={`flex items-center space-x-2 ${
-            isActive("/my-profile") ? "text-modelboard-red" : "hover:text-modelboard-red"
+            isActive("/my-profile") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
           } transition-colors`}
           onClick={() => handleNavigation("/my-profile")}
         >
@@ -89,21 +89,21 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
     <>
       <Button
         variant="ghost"
-        className="hover:text-modelboard-red transition-colors"
+        className="hover:text-white hover:bg-modelboard-red transition-colors"
         asChild
       >
         <a href="#features">Features</a>
       </Button>
       <Button
         variant="ghost"
-        className="hover:text-modelboard-red transition-colors"
+        className="hover:text-white hover:bg-modelboard-red transition-colors"
         asChild
       >
         <a href="#how-it-works">How it works</a>
       </Button>
       <Button
         variant="ghost"
-        className="hover:text-modelboard-red transition-colors"
+        className="hover:text-white hover:bg-modelboard-red transition-colors"
         asChild
       >
         <a href="#pricing">Pricing</a>
