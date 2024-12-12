@@ -1,3 +1,6 @@
+// Import Database type first
+import type { Database, Json } from './common';
+
 // Re-export all types from individual files
 export * from './collaborations';
 export * from './profiles';
@@ -6,7 +9,7 @@ export * from './messages';
 export * from './travel';
 
 // Re-export common types
-export type { Database, Json } from './common';
+export type { Database, Json };
 
 // Define PublicSchema type
 export type PublicSchema = Database['public']
