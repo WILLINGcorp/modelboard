@@ -52,17 +52,17 @@ const ModelDirectory = () => {
         break;
       case "creators":
         filtered = filtered.filter(profile => 
-          profile.roles?.includes("content_creator")
+          Array.isArray(profile.roles) && profile.roles.includes("content_creator")
         );
         break;
       case "producers":
         filtered = filtered.filter(profile => 
-          profile.roles?.includes("indie_producer")
+          Array.isArray(profile.roles) && profile.roles.includes("indie_producer")
         );
         break;
       case "studios":
         filtered = filtered.filter(profile => 
-          profile.roles?.includes("studio_executive")
+          Array.isArray(profile.roles) && profile.roles.includes("studio_executive")
         );
         break;
       default:
