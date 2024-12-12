@@ -1,33 +1,33 @@
 export interface CollabProposalsTable {
   Row: {
-    created_at: string
     id: string
-    location: string
-    message: string | null
-    receiver_id: string
     sender_id: string
+    receiver_id: string
     status: string
+    message: string | null
+    created_at: string
     updated_at: string
+    location: string
   }
   Insert: {
-    created_at?: string
     id?: string
-    location: string
-    message?: string | null
-    receiver_id: string
     sender_id: string
+    receiver_id: string
     status?: string
+    message?: string | null
+    created_at?: string
     updated_at?: string
+    location: string
   }
   Update: {
-    created_at?: string
     id?: string
-    location?: string
-    message?: string | null
-    receiver_id?: string
     sender_id?: string
+    receiver_id?: string
     status?: string
+    message?: string | null
+    created_at?: string
     updated_at?: string
+    location?: string
   }
   Relationships: [
     {

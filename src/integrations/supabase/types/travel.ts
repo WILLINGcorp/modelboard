@@ -1,35 +1,35 @@
 export interface TravelPlansTable {
   Row: {
-    created_at: string
-    description: string | null
-    destination: string
-    end_date: string
     id: string
     profile_id: string
+    destination: string
     start_date: string
+    end_date: string
+    description: string | null
     status: string
+    created_at: string
     updated_at: string
   }
   Insert: {
-    created_at?: string
-    description?: string | null
-    destination: string
-    end_date: string
     id?: string
     profile_id: string
+    destination: string
     start_date: string
+    end_date: string
+    description?: string | null
     status?: string
+    created_at?: string
     updated_at?: string
   }
   Update: {
-    created_at?: string
-    description?: string | null
-    destination?: string
-    end_date?: string
     id?: string
     profile_id?: string
+    destination?: string
     start_date?: string
+    end_date?: string
+    description?: string | null
     status?: string
+    created_at?: string
     updated_at?: string
   }
   Relationships: [

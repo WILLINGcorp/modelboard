@@ -6,7 +6,8 @@ export * from './collaborations';
 export * from './travel';
 
 // Re-export helper types
-export type PublicSchema = Database[Extract<keyof Database, "public">]
+export type { Database } from './common';
+export type PublicSchema = Database['public']
 
 export type Tables<
   PublicTableNameOrOptions extends

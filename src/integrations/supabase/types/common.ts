@@ -1,3 +1,9 @@
+import type { CollabProposalsTable } from './collaborations'
+import type { PortfolioItemsTable } from './portfolio'
+import type { PrivateMessagesTable } from './messages'
+import type { ProfilesTable } from './profiles'
+import type { TravelPlansTable } from './travel'
+
 export type Json =
   | string
   | number
@@ -6,7 +12,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       collab_proposals: CollabProposalsTable
