@@ -42,7 +42,7 @@ serve(async (req) => {
               name: `${hours}h Featured Profile Spot`,
               description: 'Get featured in the "Ready to Collab Now" section',
             },
-            unit_amount: 500 * hours, // $5 per hour
+            unit_amount: 100 * hours, // $1 per hour
           },
           quantity: 1,
         },

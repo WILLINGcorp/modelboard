@@ -75,10 +75,10 @@ export const PurchaseAdSpot = () => {
           </div>
           <div>
             <p className="text-lg font-semibold">
-              Total: ${(hours * 5).toFixed(2)}
+              Total: ${hours.toFixed(2)}
             </p>
             <p className="text-sm text-gray-400">
-              ($5 per hour)
+              ($1 per hour)
             </p>
           </div>
           <Button 
