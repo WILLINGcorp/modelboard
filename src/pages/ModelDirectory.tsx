@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
-import { Star, Calendar } from "lucide-react";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
 import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
 import { PurchaseAdSpot } from "@/components/network/PurchaseAdSpot";
+import { ModelGrid } from "@/components/network/ModelGrid";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
 import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
@@ -13,7 +12,6 @@ import type { Database } from "@/integrations/supabase/types";
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const ModelDirectory = () => {
-  const navigate = useNavigate();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +57,6 @@ const ModelDirectory = () => {
   const filterProfiles = (filter: string, location: string = "") => {
     let filtered = [...profiles];
 
-    // Apply main filter
     switch (filter) {
       case "online":
         filtered = filtered.filter(profile => isOnline(profile.id));
@@ -79,12 +76,8 @@ const ModelDirectory = () => {
           Array.isArray(profile.roles) && profile.roles.includes("studio_executive")
         );
         break;
-      default:
-        // "location" is default, no additional filtering needed
-        break;
     }
 
-    // Apply location search if provided
     if (location) {
       filtered = filtered.filter(profile =>
         profile.location?.toLowerCase().includes(location.toLowerCase())
@@ -135,39 +128,10 @@ const ModelDirectory = () => {
           onLocationSearch={handleLocationSearch}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProfiles.map((profile) => (
-            <Card 
-              key={profile.id}
-              className="group relative aspect-[3/4] overflow-hidden cursor-pointer bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${profile.avatar_url || "/creator_default_profile.jpg"})`
-              }}
-              onClick={() => navigate(`/models/${profile.id}`)}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
-                <div className="absolute top-4 left-4">
-                  {isOnline(profile.id) && (
-                    <span className="text-modelboard-red text-sm font-medium">
-                      Online Now
-                    </span>
-                  )}
-                </div>
-
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-semibold text-white mb-1">
-                    {profile.display_name || "Anonymous Model"}
-                  </h3>
-                  {profile.location && (
-                    <p className="text-gray-300 text-sm">
-                      {profile.location}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <ModelGrid 
+          profiles={filteredProfiles}
+          isOnline={isOnline}
+        />
       </div>
     </div>
   );
