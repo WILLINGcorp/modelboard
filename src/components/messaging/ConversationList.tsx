@@ -68,6 +68,11 @@ const ConversationList = ({ selectedUserId, onSelectUser }: ConversationListProp
     }
   };
 
+  const truncateMessage = (message: string, maxLength: number = 30) => {
+    if (message.length <= maxLength) return message;
+    return `${message.substring(0, maxLength)}...`;
+  };
+
   return (
     <div className="space-y-4">
       {conversations.map(({ profile, lastMessage }) => (
@@ -93,13 +98,13 @@ const ConversationList = ({ selectedUserId, onSelectUser }: ConversationListProp
                 <User className="h-6 w-6" />
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <h3 className="text-white font-semibold">
+            <div className="flex-1 min-w-0"> {/* Added min-w-0 to ensure text truncation works */}
+              <h3 className="text-white font-semibold truncate">
                 {profile.display_name || "Anonymous User"}
               </h3>
               {lastMessage && (
-                <p className="text-gray-400 text-sm truncate">
-                  {lastMessage.content}
+                <p className="text-gray-400 text-sm">
+                  {truncateMessage(lastMessage.content)}
                 </p>
               )}
             </div>
