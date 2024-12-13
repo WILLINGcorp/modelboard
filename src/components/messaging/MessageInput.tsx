@@ -20,7 +20,7 @@ const MessageInput = ({ onSendMessage, isLoading }: MessageInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t border-modelboard-gray">
+    <form onSubmit={handleSubmit} className="p-4 border-t border-modelboard-dark">
       <div className="flex space-x-2">
         <Textarea
           value={message}
