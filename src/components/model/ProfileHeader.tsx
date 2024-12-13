@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { User, MapPin, Globe, MessageSquare, Ruler, Scale, Eye, Palette, HandshakeIcon } from "lucide-react";
+import { User, MapPin, Globe, MessageSquare, HandshakeIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import {
   Dialog,
@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import CollabProposalForm from "@/components/travel/CollabProposalForm";
+import { PhysicalAttributesDisplay } from "./profile-sections/PhysicalAttributesDisplay";
+import { SexualPreferencesDisplay } from "./profile-sections/SexualPreferencesDisplay";
+import { SocialMediaDisplay } from "./profile-sections/SocialMediaDisplay";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -21,71 +24,6 @@ interface ProfileHeaderProps {
 
 const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
-  const platforms = Array.isArray(profile.creator_platforms) 
-    ? profile.creator_platforms.filter(
-        (p): p is { platform: string; handle: string } => 
-          typeof p === 'object' && 
-          p !== null && 
-          'platform' in p && 
-          'handle' in p
-      )
-    : [];
-
-  const socialMedia = profile.social_media as Record<string, string> || {};
-
-  const renderPhysicalAttributes = () => {
-    const attributes = [];
-    if (profile.height) attributes.push({ icon: Ruler, label: "Height", value: profile.height });
-    if (profile.weight) attributes.push({ icon: Scale, label: "Weight", value: profile.weight });
-    if (profile.eye_color) attributes.push({ icon: Eye, label: "Eyes", value: profile.eye_color });
-    if (profile.hair_color) attributes.push({ icon: Palette, label: "Hair", value: profile.hair_color });
-    
-    return attributes.length > 0 ? (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {attributes.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="flex items-center gap-2 text-gray-400">
-            <Icon className="h-4 w-4" />
-            <span>{label}: {value}</span>
-          </div>
-        ))}
-      </div>
-    ) : null;
-  };
-
-  const renderSexualPreferences = () => {
-    if (!profile.sexual_orientation && !profile.preferred_role) return null;
-    
-    return (
-      <div className="flex flex-wrap gap-2 mt-4">
-        {profile.sexual_orientation && (
-          <span className="bg-modelboard-dark px-3 py-1 rounded-full text-sm text-gray-300">
-            {profile.sexual_orientation}
-          </span>
-        )}
-        {profile.preferred_role && (
-          <span className="bg-modelboard-dark px-3 py-1 rounded-full text-sm text-gray-300">
-            {profile.preferred_role}
-          </span>
-        )}
-      </div>
-    );
-  };
-
-  const renderSocialMedia = () => {
-    if (!Object.keys(socialMedia).length) return null;
-
-    return (
-      <div className="flex flex-wrap gap-2 mt-4">
-        {Object.entries(socialMedia).map(([platform, handle]) => (
-          <div key={platform} className="bg-modelboard-dark rounded-full px-3 py-1">
-            <span className="text-white capitalize">{platform}</span>
-            <span className="text-gray-400 ml-1">@{handle}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="bg-modelboard-gray rounded-lg p-8 mb-8 animate-fadeIn">
@@ -138,24 +76,9 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
             <p className="text-gray-300 whitespace-pre-wrap">{profile.bio}</p>
           )}
           
-          {renderPhysicalAttributes()}
-          {renderSexualPreferences()}
-          
-          {platforms.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {platforms.map((platform, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 bg-modelboard-dark rounded-full px-3 py-1"
-                >
-                  <span className="text-white">{platform.platform}</span>
-                  <span className="text-gray-400">@{platform.handle}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {renderSocialMedia()}
+          <PhysicalAttributesDisplay profile={profile} />
+          <SexualPreferencesDisplay profile={profile} />
+          <SocialMediaDisplay profile={profile} />
         </div>
 
         <div className="flex flex-col gap-2 self-start">
