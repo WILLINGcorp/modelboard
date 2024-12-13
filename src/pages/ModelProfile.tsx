@@ -29,35 +29,46 @@ const ModelProfile = () => {
           return;
         }
 
-        // Fetch profile
+        // Fetch profile using eq for exact match
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select()
-          .match({ id })
+          .eq('id', id)
           .single();
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          if (profileError.code === 'PGRST116') {
+            setError("Profile not found");
+          } else {
+            setError("Error loading profile");
+          }
+          setLoading(false);
+          return;
+        }
+
         setProfile(profileData);
 
         // Fetch portfolio items
         const { data: portfolioData, error: portfolioError } = await supabase
           .from("portfolio_items")
           .select()
-          .match({ profile_id: id })
-          .order("created_at", { ascending: false });
+          .eq('profile_id', id)
+          .order('created_at', { ascending: false });
 
         if (portfolioError) throw portfolioError;
-        setPortfolio(portfolioData);
+        setPortfolio(portfolioData || []);
 
         // Fetch upcoming travel plans
         const { data: travelData, error: travelError } = await supabase
           .from("travel_plans")
           .select()
-          .match({ profile_id: id, status: 'upcoming' })
-          .order("start_date", { ascending: true });
+          .eq('profile_id', id)
+          .eq('status', 'upcoming')
+          .order('start_date', { ascending: true });
 
         if (travelError) throw travelError;
-        setTravelPlans(travelData);
+        setTravelPlans(travelData || []);
+
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setError("Failed to load profile");
