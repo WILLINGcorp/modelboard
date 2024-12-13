@@ -11,15 +11,21 @@ const ModerationDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [session, setSession] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // First, ensure we have a valid session
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (!session) {
+    const initializeAuth = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      setSession(currentSession);
+      setIsInitialized(true);
+
+      if (!currentSession) {
         navigate("/auth");
+        return;
       }
-    });
+    };
+
+    initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
@@ -31,49 +37,31 @@ const ModerationDashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Check if user is a moderator
-  const { data: isModerator, isLoading, error } = useQuery({
-    queryKey: ["isModerator"],
+  const { data: isModerator, isLoading } = useQuery({
+    queryKey: ["isModerator", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return false;
 
-      try {
-        const { data, error: moderatorError } = await supabase
-          .from("moderators")
-          .select("id")
-          .eq("id", session.user.id)
-          .single();
+      const { data, error } = await supabase
+        .from("moderators")
+        .select("id")
+        .eq("id", session.user.id)
+        .single();
 
-        console.log("Moderator check:", { 
-          userId: session.user.id,
-          data,
-          error: moderatorError
-        });
-
-        if (moderatorError) {
-          console.error("Error checking moderator status:", moderatorError);
-          toast({
-            title: "Error",
-            description: "Failed to verify moderator status",
-            variant: "destructive",
-          });
-          return false;
-        }
-
-        return !!data;
-      } catch (error) {
-        console.error("Unexpected error:", error);
+      if (error) {
+        console.error("Error checking moderator status:", error);
         return false;
       }
+
+      return !!data;
     },
     enabled: !!session?.user?.id,
+    staleTime: 30000, // Cache the result for 30 seconds
+    retry: false,
   });
 
-  if (!session) {
-    return null; // Let the useEffect handle the redirect
-  }
-
-  if (isLoading) {
+  // Wait for auth initialization before rendering
+  if (!isInitialized) {
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -81,10 +69,15 @@ const ModerationDashboard = () => {
     );
   }
 
-  if (error) {
+  // Don't show anything while checking auth
+  if (!session) {
+    return null;
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
-        <div className="text-white">Error loading moderator status. Please try again.</div>
+        <div className="text-white">Loading...</div>
       </div>
     );
   }
