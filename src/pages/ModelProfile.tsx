@@ -29,44 +29,47 @@ const ModelProfile = () => {
           return;
         }
 
-        // Fetch profile using eq for exact match
+        // First check if profile exists
+        const { count, error: countError } = await supabase
+          .from("profiles")
+          .select("*", { count: 'exact', head: true })
+          .eq('id', id);
+
+        if (countError) throw countError;
+
+        if (count === 0) {
+          setError("Profile not found");
+          setLoading(false);
+          return;
+        }
+
+        // Now fetch the profile data
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select()
           .eq('id', id)
           .single();
 
-        if (profileError) {
-          if (profileError.code === 'PGRST116') {
-            setError("Profile not found");
-          } else {
-            setError("Error loading profile");
-          }
-          setLoading(false);
-          return;
-        }
-
+        if (profileError) throw profileError;
         setProfile(profileData);
 
         // Fetch portfolio items
-        const { data: portfolioData, error: portfolioError } = await supabase
+        const { data: portfolioData } = await supabase
           .from("portfolio_items")
           .select()
           .eq('profile_id', id)
           .order('created_at', { ascending: false });
 
-        if (portfolioError) throw portfolioError;
         setPortfolio(portfolioData || []);
 
         // Fetch upcoming travel plans
-        const { data: travelData, error: travelError } = await supabase
+        const { data: travelData } = await supabase
           .from("travel_plans")
           .select()
           .eq('profile_id', id)
           .eq('status', 'upcoming')
           .order('start_date', { ascending: true });
 
-        if (travelError) throw travelError;
         setTravelPlans(travelData || []);
 
       } catch (error) {
