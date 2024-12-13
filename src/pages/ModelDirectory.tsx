@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Star, Calendar } from "lucide-react";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
+import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
+import { PurchaseAdSpot } from "@/components/network/PurchaseAdSpot";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
+import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -18,6 +21,7 @@ const ModelDirectory = () => {
   const [searchLocation, setSearchLocation] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>();
   const { isOnline } = useOnlinePresence(currentUserId);
+  const { toast } = useToast();
 
   useEffect(() => {
     getCurrentUser();
@@ -98,6 +102,16 @@ const ModelDirectory = () => {
     setSearchLocation(location);
   };
 
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') {
+      toast({
+        title: "Success!",
+        description: "Your featured spot has been purchased. It will be active shortly.",
+      });
+    }
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
@@ -109,7 +123,12 @@ const ModelDirectory = () => {
   return (
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Model Directory</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-white">Model Directory</h1>
+          <PurchaseAdSpot />
+        </div>
+        
+        <FeaturedProfiles />
         
         <NetworkFilters 
           onFilterChange={handleFilterChange}
@@ -135,15 +154,6 @@ const ModelDirectory = () => {
                       Online Now
                     </span>
                   )}
-                </div>
-
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button className="p-2 rounded-full bg-black/20 hover:bg-modelboard-red/80 transition-colors">
-                    <Star className="w-4 h-4 text-white" />
-                  </button>
-                  <button className="p-2 rounded-full bg-black/20 hover:bg-modelboard-red/80 transition-colors">
-                    <Calendar className="w-4 h-4 text-white" />
-                  </button>
                 </div>
 
                 <div className="absolute bottom-4 left-4 right-4">
