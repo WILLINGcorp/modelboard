@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import ProposalDetails from "./ProposalDetails";
 import WorkflowActions from "./WorkflowActions";
 import ApprovalsList from "./workflow/ApprovalsList";
