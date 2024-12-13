@@ -55,7 +55,7 @@ const CollabWorkflowModal = ({
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="h-[95vh] bg-modelboard-dark border-t border-modelboard-red/50">
-        <div className="mx-auto w-full max-w-4xl">
+        <div className="mx-auto w-full max-w-6xl">
           <DrawerHeader>
             <DrawerTitle className="text-2xl font-bold text-gradient">
               Collaboration Workflow
@@ -66,29 +66,33 @@ const CollabWorkflowModal = ({
           </DrawerHeader>
 
           <div className="p-6 space-y-6">
-            <ProposalDetails
-              location={proposal.location}
-              status={proposal.status}
-              message={proposal.message}
-              senderName={proposal.sender?.display_name}
-              senderUsername={proposal.sender?.username}
-              receiverName={proposal.receiver?.display_name}
-              receiverUsername={proposal.receiver?.username}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <ProposalDetails
+                  location={proposal.location}
+                  status={proposal.status}
+                  message={proposal.message}
+                  senderName={proposal.sender?.display_name}
+                  senderUsername={proposal.sender?.username}
+                  receiverName={proposal.receiver?.display_name}
+                  receiverUsername={proposal.receiver?.username}
+                />
+              </div>
+              
+              <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
+                <h3 className="text-lg font-bold text-gradient sticky top-0 bg-modelboard-dark py-2">
+                  Workflow Steps
+                </h3>
+                {steps.map((step) => (
+                  <WorkflowStepItem key={step.id} step={step} />
+                ))}
+              </div>
+            </div>
 
             <WorkflowActions
               proposalId={proposal.id}
               onSuccess={fetchWorkflowSteps}
             />
-
-            <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
-              <h3 className="text-lg font-bold text-gradient sticky top-0 bg-modelboard-dark py-2">
-                Workflow Steps
-              </h3>
-              {steps.map((step) => (
-                <WorkflowStepItem key={step.id} step={step} />
-              ))}
-            </div>
           </div>
         </div>
       </DrawerContent>
