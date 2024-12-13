@@ -20,8 +20,16 @@ interface Proposal {
   message: string | null;
   location: string;
   created_at: string;
-  sender: { id: string; display_name: string | null } | null;
-  receiver: { id: string; display_name: string | null } | null;
+  sender: {
+    id: string;
+    display_name: string | null;
+    username: string | null;
+  } | null;
+  receiver: {
+    id: string;
+    display_name: string | null;
+    username: string | null;
+  } | null;
 }
 
 interface ProposalsTableProps {
