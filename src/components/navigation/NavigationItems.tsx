@@ -1,6 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useNavigationItems } from "./useNavigationItems";
+import { useNavigate, useLocation } from "react-router-dom";
+import { AuthenticatedNav } from "./AuthenticatedNav";
+import { PublicNav } from "./PublicNav";
+import { AccountDropdown } from "./AccountDropdown";
 
 interface NavigationItemsProps {
   isAuthenticated: boolean;
@@ -9,26 +10,23 @@ interface NavigationItemsProps {
 
 export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: NavigationItemsProps) => {
   const navigate = useNavigate();
-  const items = useNavigationItems();
+  const location = useLocation();
 
-  const handleClick = (href: string) => {
-    navigate(href);
+  const handleNavigation = (path: string) => {
+    navigate(path);
     onMobileMenuClose?.();
   };
 
-  return (
-    <>
-      {items.map((item) => (
-        <Button
-          key={item.href}
-          variant="ghost"
-          className="flex items-center space-x-2"
-          onClick={() => handleClick(item.href)}
-        >
-          <item.icon className="w-4 h-4 mr-2" />
-          {item.title}
-        </Button>
-      ))}
-    </>
-  );
+  const isActive = (path: string) => location.pathname === path;
+
+  if (isAuthenticated) {
+    return (
+      <>
+        <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} />
+        <AccountDropdown onMobileMenuClose={onMobileMenuClose} />
+      </>
+    );
+  }
+
+  return <PublicNav />;
 };

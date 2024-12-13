@@ -29,49 +29,35 @@ const ModelProfile = () => {
           return;
         }
 
-        // First check if profile exists
-        const { count, error: countError } = await supabase
-          .from("profiles")
-          .select("*", { count: 'exact', head: true })
-          .eq('id', id);
-
-        if (countError) throw countError;
-
-        if (count === 0) {
-          setError("Profile not found");
-          setLoading(false);
-          return;
-        }
-
-        // Now fetch the profile data
+        // Fetch profile
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select()
-          .eq('id', id)
+          .match({ id })
           .single();
 
         if (profileError) throw profileError;
         setProfile(profileData);
 
         // Fetch portfolio items
-        const { data: portfolioData } = await supabase
+        const { data: portfolioData, error: portfolioError } = await supabase
           .from("portfolio_items")
           .select()
-          .eq('profile_id', id)
-          .order('created_at', { ascending: false });
+          .match({ profile_id: id })
+          .order("created_at", { ascending: false });
 
-        setPortfolio(portfolioData || []);
+        if (portfolioError) throw portfolioError;
+        setPortfolio(portfolioData);
 
         // Fetch upcoming travel plans
-        const { data: travelData } = await supabase
+        const { data: travelData, error: travelError } = await supabase
           .from("travel_plans")
           .select()
-          .eq('profile_id', id)
-          .eq('status', 'upcoming')
-          .order('start_date', { ascending: true });
+          .match({ profile_id: id, status: 'upcoming' })
+          .order("start_date", { ascending: true });
 
-        setTravelPlans(travelData || []);
-
+        if (travelError) throw travelError;
+        setTravelPlans(travelData);
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setError("Failed to load profile");

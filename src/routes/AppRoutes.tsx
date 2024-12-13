@@ -2,16 +2,15 @@ import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
-import Profile from "@/pages/Profile";
-import Portfolio from "@/pages/Portfolio";
-import Location from "@/pages/Location";
-import Messages from "@/pages/Messages";
-import ModelDirectory from "@/pages/ModelDirectory";
+import MyProfile from "@/pages/Profile";
+import MyPortfolio from "@/pages/Portfolio";
+import Network from "@/pages/ModelDirectory";
 import ModelProfile from "@/pages/ModelProfile";
-import ModerationDashboard from "@/pages/ModerationDashboard";
+import MyLocation from "@/pages/Location";
+import Communications from "@/pages/Messages";
+import Dashboard from "@/pages/Dashboard";
 
-const AppRoutes = () => {
+export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -28,7 +27,7 @@ const AppRoutes = () => {
         path="/my-profile"
         element={
           <PrivateRoute>
-            <Profile />
+            <MyProfile />
           </PrivateRoute>
         }
       />
@@ -36,38 +35,35 @@ const AppRoutes = () => {
         path="/my-portfolio"
         element={
           <PrivateRoute>
-            <Portfolio />
+            <MyPortfolio />
           </PrivateRoute>
         }
       />
+      <Route
+        path="/network"
+        element={
+          <PrivateRoute>
+            <Network />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/models/:id" element={<ModelProfile />} />
       <Route
         path="/my-location"
         element={
           <PrivateRoute>
-            <Location />
+            <MyLocation />
           </PrivateRoute>
         }
       />
       <Route
-        path="/messages"
+        path="/communications"
         element={
           <PrivateRoute>
-            <Messages />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/models" element={<ModelDirectory />} />
-      <Route path="/models/:id" element={<ModelProfile />} />
-      <Route
-        path="/moderation"
-        element={
-          <PrivateRoute>
-            <ModerationDashboard />
+            <Communications />
           </PrivateRoute>
         }
       />
     </Routes>
   );
 };
-
-export default AppRoutes;
