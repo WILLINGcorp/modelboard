@@ -9,6 +9,86 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      collab_approvals: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          profile_id: string
+          status: string
+          step_id: string
+          updated_at: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          profile_id: string
+          status?: string
+          step_id: string
+          updated_at?: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          profile_id?: string
+          status?: string
+          step_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_approvals_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collab_approvals_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "collab_workflow_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_assets: {
+        Row: {
+          asset_type: string
+          asset_url: string
+          created_at: string
+          id: string
+          step_id: string
+          updated_at: string
+        }
+        Insert: {
+          asset_type: string
+          asset_url: string
+          created_at?: string
+          id?: string
+          step_id: string
+          updated_at?: string
+        }
+        Update: {
+          asset_type?: string
+          asset_url?: string
+          created_at?: string
+          id?: string
+          step_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_assets_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "collab_workflow_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collab_proposals: {
         Row: {
           created_at: string
@@ -53,6 +133,44 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collab_workflow_steps: {
+        Row: {
+          created_at: string
+          data: Json | null
+          id: string
+          proposal_id: string
+          status: string
+          step_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          proposal_id: string
+          status?: string
+          step_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          proposal_id?: string
+          status?: string
+          step_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_workflow_steps_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "collab_proposals"
             referencedColumns: ["id"]
           },
         ]

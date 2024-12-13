@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,11 +15,11 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import WorkflowStepModal from "./workflow/WorkflowStepModal";
 
 interface WorkflowActionsProps {
-  onActionClick: (action: string) => void;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  proposalId: string;
+  onSuccess: () => void;
 }
 
 const workflowActions = [
@@ -64,15 +65,21 @@ const workflowActions = [
   },
 ];
 
-const WorkflowActions = ({ onActionClick, isOpen, onOpenChange }: WorkflowActionsProps) => {
+const WorkflowActions = ({ proposalId, onSuccess }: WorkflowActionsProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+
+  const handleActionClick = (action: string) => {
+    setSelectedAction(action);
+    setIsOpen(false);
+  };
+
   return (
     <div className="p-4 rounded-lg bg-modelboard-dark border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="flex justify-between items-center relative z-10">
-        <h3 className="text-lg font-bold text-gradient">
-          Workflow Actions
-        </h3>
-        <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
+        <h3 className="text-lg font-bold text-gradient">Workflow Actions</h3>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -86,7 +93,7 @@ const WorkflowActions = ({ onActionClick, isOpen, onOpenChange }: WorkflowAction
             {workflowActions.map((item, index) => (
               <DropdownMenuItem
                 key={index}
-                onClick={() => onActionClick(item.action)}
+                onClick={() => handleActionClick(item.action)}
                 className={cn(
                   "flex items-center gap-3 p-3 text-white hover:bg-modelboard-red/10 cursor-pointer transition-colors",
                   "animate-fade-in",
@@ -100,6 +107,16 @@ const WorkflowActions = ({ onActionClick, isOpen, onOpenChange }: WorkflowAction
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      {selectedAction && (
+        <WorkflowStepModal
+          isOpen={!!selectedAction}
+          onClose={() => setSelectedAction(null)}
+          stepType={selectedAction}
+          proposalId={proposalId}
+          onSuccess={onSuccess}
+        />
+      )}
     </div>
   );
 };
