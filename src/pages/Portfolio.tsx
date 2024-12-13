@@ -13,6 +13,7 @@ const Portfolio = () => {
   const { toast } = useToast();
   const [items, setItems] = useState<PortfolioItemType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [itemToEdit, setItemToEdit] = useState<PortfolioItemType | null>(null);
 
   const getPortfolioItems = async () => {
     try {
@@ -33,8 +34,8 @@ const Portfolio = () => {
       setItems(data || []);
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Impossible de charger le portfolio",
+        title: "Error",
+        description: "Unable to load portfolio",
         variant: "destructive",
       });
     } finally {
@@ -57,26 +58,23 @@ const Portfolio = () => {
       if (error) throw error;
       
       toast({
-        title: "Succès",
-        description: "Élément supprimé du portfolio",
+        title: "Success",
+        description: "Item removed from portfolio",
       });
       
       setItems(items.filter(item => item.id !== id));
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer l'élément",
+        title: "Error",
+        description: "Unable to delete item",
         variant: "destructive",
       });
     }
   };
 
   const handleUpdateItem = (item: PortfolioItemType) => {
-    // TODO: Implement update functionality
-    toast({
-      title: "Info",
-      description: "Update functionality coming soon",
-    });
+    setItemToEdit(item);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -98,7 +96,14 @@ const Portfolio = () => {
           <h1 className="text-3xl font-bold text-white">Portfolio</h1>
         </div>
         
-        <PortfolioForm onItemAdded={getPortfolioItems} />
+        <PortfolioForm 
+          onItemAdded={() => {
+            getPortfolioItems();
+            setItemToEdit(null);
+          }}
+          itemToEdit={itemToEdit}
+          onCancelEdit={() => setItemToEdit(null)}
+        />
 
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
           {items.map((item) => (
