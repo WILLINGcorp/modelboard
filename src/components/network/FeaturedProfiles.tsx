@@ -62,9 +62,7 @@ export const FeaturedProfiles = () => {
             key={profile.id}
             className="group relative aspect-[3/4] overflow-hidden cursor-pointer bg-cover bg-center"
             style={{
-              backgroundImage: profile.avatar_url 
-                ? `url(${profile.avatar_url})` 
-                : "url(/placeholder.svg)"
+              backgroundImage: `url(${profile.avatar_url || "/creator_default_profile.jpg"})`
             }}
             onClick={() => navigate(`/models/${profile.id}`)}
           >
