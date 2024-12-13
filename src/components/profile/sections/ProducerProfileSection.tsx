@@ -3,7 +3,8 @@ import { FormField } from "../form-fields/FormField";
 import { TextFormField } from "../form-fields/TextFormField";
 import { TextareaFormField } from "../form-fields/TextareaFormField";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Database } from "@/integrations/supabase/types";
+import { CreatorPlatformsField } from "../creator-platforms/CreatorPlatformsField";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

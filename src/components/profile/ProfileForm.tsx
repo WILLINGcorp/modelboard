@@ -7,7 +7,7 @@ import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { PhysicalAttributesSection } from "./sections/PhysicalAttributesSection";
 import { SexualPreferencesSection } from "./sections/SexualPreferencesSection";
 import { ProducerProfileSection } from "./sections/ProducerProfileSection";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
