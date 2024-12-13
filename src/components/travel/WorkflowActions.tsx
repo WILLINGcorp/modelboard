@@ -66,9 +66,10 @@ const workflowActions = [
 
 const WorkflowActions = ({ onActionClick, isOpen, onOpenChange }: WorkflowActionsProps) => {
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-modelboard-red">
+    <div className="p-4 rounded-lg bg-modelboard-dark border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="flex justify-between items-center relative z-10">
+        <h3 className="text-lg font-bold text-gradient">
           Workflow Actions
         </h3>
         <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
@@ -81,13 +82,13 @@ const WorkflowActions = ({ onActionClick, isOpen, onOpenChange }: WorkflowAction
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-72 bg-[#2A2A2A] border border-modelboard-red/20">
+          <DropdownMenuContent className="w-72 bg-modelboard-dark border border-modelboard-red/20">
             {workflowActions.map((item, index) => (
               <DropdownMenuItem
                 key={index}
                 onClick={() => onActionClick(item.action)}
                 className={cn(
-                  "flex items-center gap-3 p-3 text-[#E5DEFF] hover:bg-modelboard-red/10 cursor-pointer transition-colors",
+                  "flex items-center gap-3 p-3 text-white hover:bg-modelboard-red/10 cursor-pointer transition-colors",
                   "animate-fade-in",
                   { "animation-delay-100": index > 0 }
                 )}

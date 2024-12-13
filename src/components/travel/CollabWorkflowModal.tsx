@@ -52,17 +52,18 @@ const CollabWorkflowModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-[#1A1F2C] to-[#2A2A2A] text-white border border-modelboard-red/20">
+      <DialogContent className="sm:max-w-[600px] bg-modelboard-gray border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-modelboard-red to-red-400">
+          <DialogTitle className="text-2xl font-bold text-gradient">
             Collaboration Workflow
           </DialogTitle>
-          <DialogDescription className="text-[#8E9196]">
+          <DialogDescription className="text-sm text-gray-400">
             Manage your collaboration process step by step
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 relative z-10">
           <ProposalDetails
             location={proposal.location}
             status={proposal.status}
