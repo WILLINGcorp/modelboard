@@ -10,7 +10,7 @@ const AuthPage = () => {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/profile");
+        navigate("/dashboard");
       }
     });
 

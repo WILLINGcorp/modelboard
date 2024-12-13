@@ -42,7 +42,7 @@ const Dashboard = () => {
           <Card className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors cursor-pointer"
                 onClick={() => navigateToSection("/my-location")}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-modelboard-red">
                 <MapPin className="h-5 w-5" />
                 Location
               </CardTitle>
@@ -57,7 +57,7 @@ const Dashboard = () => {
           <Card className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors cursor-pointer"
                 onClick={() => navigateToSection("/my-portfolio")}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-modelboard-red">
                 <Image className="h-5 w-5" />
                 Portfolio
               </CardTitle>
@@ -72,7 +72,7 @@ const Dashboard = () => {
           <Card className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors cursor-pointer"
                 onClick={() => navigateToSection("/my-profile")}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-modelboard-red">
                 <User className="h-5 w-5" />
                 Profile
               </CardTitle>
