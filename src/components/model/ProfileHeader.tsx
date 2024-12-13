@@ -25,7 +25,10 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
     <div className="bg-modelboard-gray rounded-lg p-8 mb-8">
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <Avatar className="h-32 w-32">
-          <AvatarImage src={profile.avatar_url || undefined} />
+          <AvatarImage 
+            src={profile.avatar_url || "/creator_default_profile.jpg"} 
+            alt={profile.display_name || "Profile picture"}
+          />
           <AvatarFallback>
             <User className="h-16 w-16" />
           </AvatarFallback>
