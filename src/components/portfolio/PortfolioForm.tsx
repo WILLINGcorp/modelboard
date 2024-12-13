@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus, Upload, Save } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { uploadPortfolioImage } from "./utils/uploadUtils";
+import PortfolioFormFields from "./components/PortfolioFormFields";
+import PortfolioFormActions from "./components/PortfolioFormActions";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 
@@ -34,31 +33,12 @@ const PortfolioForm = ({ onItemAdded, itemToEdit, onCancelEdit }: PortfolioFormP
       if (!file) return;
 
       setUploading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      const fileExt = file.name.split(".").pop();
-      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("portfolio")
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("portfolio")
-        .getPublicUrl(filePath);
-
-      await addPortfolioItem(publicUrl);
+      const publicUrl = await uploadPortfolioImage(file, toast);
+      if (publicUrl) {
+        await addPortfolioItem(publicUrl);
+      }
       
       event.target.value = "";
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Unable to upload image",
-        variant: "destructive",
-      });
     } finally {
       setUploading(false);
     }
@@ -135,73 +115,20 @@ const PortfolioForm = ({ onItemAdded, itemToEdit, onCancelEdit }: PortfolioFormP
         }
       }}
     >
-      <div>
-        <label className="text-sm font-medium text-white">Title</label>
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="bg-modelboard-dark border-modelboard-gray text-white"
-        />
-      </div>
-
-      <div>
-        <label className="text-sm font-medium text-white">Description</label>
-        <Textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="bg-modelboard-dark border-modelboard-gray text-white"
-          rows={3}
-        />
-      </div>
-
-      {!itemToEdit && (
-        <div>
-          <label className="text-sm font-medium text-white">Image</label>
-          <Input
-            type="file"
-            accept="image/*"
-            required
-            onChange={handleFileUpload}
-            className="bg-modelboard-dark border-modelboard-gray text-white"
-          />
-        </div>
-      )}
-
-      <div className="flex gap-2">
-        <Button 
-          type="submit" 
-          className="flex-1 bg-modelboard-red hover:bg-red-600"
-          disabled={uploading}
-        >
-          {uploading ? (
-            <>
-              <Upload className="mr-2 h-4 w-4 animate-spin" />
-              Uploading...
-            </>
-          ) : itemToEdit ? (
-            <>
-              <Save className="mr-2" />
-              Update item
-            </>
-          ) : (
-            <>
-              <Plus className="mr-2" />
-              Add to portfolio
-            </>
-          )}
-        </Button>
-        {itemToEdit && (
-          <Button 
-            type="button" 
-            variant="outline"
-            onClick={resetForm}
-            className="bg-modelboard-dark text-white hover:bg-modelboard-gray"
-          >
-            Cancel
-          </Button>
-        )}
-      </div>
+      <PortfolioFormFields
+        title={title}
+        description={description}
+        onTitleChange={setTitle}
+        onDescriptionChange={setDescription}
+        itemToEdit={itemToEdit}
+        onFileChange={handleFileUpload}
+      />
+      
+      <PortfolioFormActions
+        uploading={uploading}
+        itemToEdit={itemToEdit}
+        onCancel={resetForm}
+      />
     </form>
   );
 };
