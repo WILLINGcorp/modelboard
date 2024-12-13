@@ -14,20 +14,31 @@ const ModerationDashboard = () => {
   const { data: isModerator, isLoading, error } = useQuery({
     queryKey: ["isModerator"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      console.log("Current user:", user);
+      
+      if (authError) {
+        console.error("Auth error:", authError);
+        return false;
+      }
+      
       if (!user) {
+        console.log("No user found");
         navigate("/auth");
         return false;
       }
 
-      const { data, error } = await supabase
+      const { data, error: moderatorError } = await supabase
         .from("moderators")
         .select("id")
         .eq("id", user.id)
         .single();
 
-      if (error) {
-        console.error("Error checking moderator status:", error);
+      console.log("Moderator check result:", { data, error: moderatorError });
+
+      if (moderatorError) {
+        console.error("Error checking moderator status:", moderatorError);
         toast({
           title: "Error",
           description: "Failed to verify moderator status",
@@ -36,7 +47,9 @@ const ModerationDashboard = () => {
         return false;
       }
 
-      return !!data;
+      const isMod = !!data;
+      console.log("Is moderator:", isMod);
+      return isMod;
     },
   });
 
@@ -49,6 +62,7 @@ const ModerationDashboard = () => {
   }
 
   if (error) {
+    console.error("Query error:", error);
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
         <div className="text-white">Error loading moderator status. Please try again.</div>
@@ -57,6 +71,7 @@ const ModerationDashboard = () => {
   }
 
   if (!isModerator) {
+    console.log("Access denied - not a moderator");
     toast({
       title: "Access Denied",
       description: "You don't have moderator privileges",
