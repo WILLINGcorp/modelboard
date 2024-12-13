@@ -1,9 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { ToastProps } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 export const uploadPortfolioImage = async (
   file: File,
-  toast: (props: ToastProps) => void
+  showToast: typeof toast
 ): Promise<string | null> => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -24,7 +24,7 @@ export const uploadPortfolioImage = async (
 
     return publicUrl;
   } catch (error) {
-    toast({
+    showToast({
       title: "Error",
       variant: "destructive",
     });
