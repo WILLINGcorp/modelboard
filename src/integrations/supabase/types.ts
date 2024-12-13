@@ -185,6 +185,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          business_model: Json | null
           created_at: string
           creator_platforms: Json | null
           display_name: string | null
@@ -195,10 +196,13 @@ export type Database = {
           height: string | null
           id: string
           location: string | null
+          other_skill: string | null
           preferred_role: string | null
           profile_type: string | null
           roles: Json | null
           sexual_orientation: string | null
+          skills: Json | null
+          social_media: Json | null
           updated_at: string
           username: string | null
           website: string | null
@@ -207,6 +211,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          business_model?: Json | null
           created_at?: string
           creator_platforms?: Json | null
           display_name?: string | null
@@ -217,10 +222,13 @@ export type Database = {
           height?: string | null
           id: string
           location?: string | null
+          other_skill?: string | null
           preferred_role?: string | null
           profile_type?: string | null
           roles?: Json | null
           sexual_orientation?: string | null
+          skills?: Json | null
+          social_media?: Json | null
           updated_at?: string
           username?: string | null
           website?: string | null
@@ -229,6 +237,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          business_model?: Json | null
           created_at?: string
           creator_platforms?: Json | null
           display_name?: string | null
@@ -239,10 +248,13 @@ export type Database = {
           height?: string | null
           id?: string
           location?: string | null
+          other_skill?: string | null
           preferred_role?: string | null
           profile_type?: string | null
           roles?: Json | null
           sexual_orientation?: string | null
+          skills?: Json | null
+          social_media?: Json | null
           updated_at?: string
           username?: string | null
           website?: string | null

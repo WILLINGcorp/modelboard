@@ -6,7 +6,8 @@ import { CreatorPlatformsField } from "./creator-platforms/CreatorPlatformsField
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { PhysicalAttributesSection } from "./sections/PhysicalAttributesSection";
 import { SexualPreferencesSection } from "./sections/SexualPreferencesSection";
-import type { Database, Json } from "@/integrations/supabase/types";
+import { ProducerProfileSection } from "./sections/ProducerProfileSection";
+import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -51,14 +52,19 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-modelboard-gray p-6 rounded-lg">
       <div className="space-y-6">
-        <BasicInfoSection profile={profile} onProfileUpdate={onProfileUpdate} />
-        <PhysicalAttributesSection profile={profile} onProfileUpdate={onProfileUpdate} />
-        <SexualPreferencesSection profile={profile} onProfileUpdate={onProfileUpdate} />
-        
-        <CreatorPlatformsField
-          value={profile?.creator_platforms as Json[] || []}
-          onChange={(platforms) => onProfileUpdate({ ...profile, creator_platforms: platforms })}
-        />
+        {profile.profile_type === "producer" ? (
+          <ProducerProfileSection profile={profile} onProfileUpdate={onProfileUpdate} />
+        ) : (
+          <>
+            <BasicInfoSection profile={profile} onProfileUpdate={onProfileUpdate} />
+            <PhysicalAttributesSection profile={profile} onProfileUpdate={onProfileUpdate} />
+            <SexualPreferencesSection profile={profile} onProfileUpdate={onProfileUpdate} />
+            <CreatorPlatformsField
+              value={profile?.creator_platforms as Json[] || []}
+              onChange={(platforms) => onProfileUpdate({ ...profile, creator_platforms: platforms })}
+            />
+          </>
+        )}
       </div>
 
       <Button 
