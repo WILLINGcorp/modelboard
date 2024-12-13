@@ -1,72 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Home,
-  Users,
-  MessageSquare,
-  MapPin,
-  Image,
-  User,
-  Shield,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useNavigationItems } from "./useNavigationItems";
 
-export const useNavigationItems = () => {
-  const { data: isModerator } = useQuery({
-    queryKey: ["isModerator"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
+interface NavigationItemsProps {
+  isAuthenticated: boolean;
+  onMobileMenuClose?: () => void;
+}
 
-      const { data } = await supabase
-        .from("moderators")
-        .select("id")
-        .eq("id", user.id)
-        .single();
+export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: NavigationItemsProps) => {
+  const navigate = useNavigate();
+  const items = useNavigationItems();
 
-      return !!data;
-    },
-  });
+  const handleClick = (href: string) => {
+    navigate(href);
+    onMobileMenuClose?.();
+  };
 
-  const items = [
-    {
-      title: "Home",
-      href: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Network",
-      href: "/models",
-      icon: Users,
-    },
-    {
-      title: "Messages",
-      href: "/messages",
-      icon: MessageSquare,
-    },
-    {
-      title: "My Location",
-      href: "/my-location",
-      icon: MapPin,
-    },
-    {
-      title: "My Portfolio",
-      href: "/my-portfolio",
-      icon: Image,
-    },
-    {
-      title: "My Profile",
-      href: "/my-profile",
-      icon: User,
-    },
-  ];
-
-  if (isModerator) {
-    items.push({
-      title: "Moderation",
-      href: "/moderation",
-      icon: Shield,
-    });
-  }
-
-  return items;
+  return (
+    <>
+      {items.map((item) => (
+        <Button
+          key={item.href}
+          variant="ghost"
+          className="flex items-center space-x-2"
+          onClick={() => handleClick(item.href)}
+        >
+          <item.icon className="w-4 h-4 mr-2" />
+          {item.title}
+        </Button>
+      ))}
+    </>
+  );
 };
