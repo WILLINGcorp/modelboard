@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PendingAvatars } from "@/components/moderation/PendingAvatars";
 import { PendingPortfolioItems } from "@/components/moderation/PendingPortfolioItems";
+import { useToast } from "@/components/ui/use-toast";
 
 const ModerationDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Check if user is a moderator
-  const { data: isModerator, isLoading } = useQuery({
+  const { data: isModerator, isLoading, error } = useQuery({
     queryKey: ["isModerator"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -18,21 +20,48 @@ const ModerationDashboard = () => {
         return false;
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("moderators")
         .select("id")
         .eq("id", user.id)
         .single();
+
+      if (error) {
+        console.error("Error checking moderator status:", error);
+        toast({
+          title: "Error",
+          description: "Failed to verify moderator status",
+          variant: "destructive",
+        });
+        return false;
+      }
 
       return !!data;
     },
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
+        <div className="text-white">Error loading moderator status. Please try again.</div>
+      </div>
+    );
   }
 
   if (!isModerator) {
+    toast({
+      title: "Access Denied",
+      description: "You don't have moderator privileges",
+      variant: "destructive",
+    });
     navigate("/");
     return null;
   }
