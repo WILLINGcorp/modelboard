@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import MessagingModal from "@/components/messaging/MessagingModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
+import CollabProposalsList from "@/components/travel/CollabProposalsList";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -70,7 +71,7 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold text-white mb-8">Messages</h1>
         
         <div className="space-y-4">
@@ -88,7 +89,10 @@ const Messages = () => {
             >
               <div className="flex items-center space-x-4">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={profile.avatar_url || undefined} />
+                  <AvatarImage 
+                    src={profile.avatar_url || "/creator_default_profile.jpg"} 
+                    alt={profile.display_name || "Profile picture"}
+                  />
                   <AvatarFallback>
                     <User className="h-6 w-6" />
                   </AvatarFallback>
@@ -119,6 +123,10 @@ const Messages = () => {
             receiverName={selectedUser.name}
           />
         )}
+
+        <div className="mt-12">
+          <CollabProposalsList />
+        </div>
       </div>
     </div>
   );
