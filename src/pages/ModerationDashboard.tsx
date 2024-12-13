@@ -14,46 +14,59 @@ const ModerationDashboard = () => {
   const { data: isModerator, isLoading, error } = useQuery({
     queryKey: ["isModerator"],
     queryFn: async () => {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
-      console.log("Current user:", user);
-      
-      if (authError) {
-        console.error("Auth error:", authError);
-        return false;
-      }
-      
-      if (!user) {
-        console.log("No user found");
-        navigate("/auth");
-        return false;
-      }
+      try {
+        // Get current user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        console.log("Auth check:", { user, authError });
+        
+        if (authError) {
+          console.error("Auth error:", authError);
+          return false;
+        }
+        
+        if (!user) {
+          console.log("No user found - redirecting to auth");
+          navigate("/auth");
+          return false;
+        }
 
-      const { data, error: moderatorError } = await supabase
-        .from("moderators")
-        .select("id")
-        .eq("id", user.id)
-        .single();
+        // Check if user is a moderator
+        const { data, error: moderatorError } = await supabase
+          .from("moderators")
+          .select("id")
+          .eq("id", user.id)
+          .single();
 
-      console.log("Moderator check result:", { data, error: moderatorError });
-
-      if (moderatorError) {
-        console.error("Error checking moderator status:", moderatorError);
-        toast({
-          title: "Error",
-          description: "Failed to verify moderator status",
-          variant: "destructive",
+        console.log("Moderator check:", { 
+          userId: user.id,
+          data,
+          error: moderatorError,
+          query: `moderators?select=id&id=eq.${user.id}`
         });
+
+        if (moderatorError) {
+          console.error("Error checking moderator status:", moderatorError);
+          toast({
+            title: "Error",
+            description: "Failed to verify moderator status",
+            variant: "destructive",
+          });
+          return false;
+        }
+
+        const isMod = !!data;
+        console.log("Is moderator:", isMod);
+        return isMod;
+      } catch (error) {
+        console.error("Unexpected error:", error);
         return false;
       }
-
-      const isMod = !!data;
-      console.log("Is moderator:", isMod);
-      return isMod;
     },
   });
 
   if (isLoading) {
+    console.log("Loading moderator status...");
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
         <div className="text-white">Loading...</div>
