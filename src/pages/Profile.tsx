@@ -17,7 +17,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [profileType, setProfileType] = useState<ProfileType | null>(null);
 
   useEffect(() => {
     getProfile();
@@ -48,6 +47,31 @@ const Profile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleProfileTypeSelect = async (type: ProfileType) => {
+    if (!profile) return;
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ profile_type: type })
+        .eq("id", profile.id);
+
+      if (error) throw error;
+
+      setProfile({ ...profile, profile_type: type });
+      toast({
+        title: "Success",
+        description: "Profile type updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Unable to update profile type",
+        variant: "destructive",
+      });
     }
   };
 
@@ -119,17 +143,20 @@ const Profile = () => {
           </Button>
         </div>
 
-        <ProfileTypeSelector
-          selectedType={profileType}
-          onTypeSelect={setProfileType}
-        />
-
-        {profileType && (
+        {!profile.profile_type ? (
+          <ProfileTypeSelector
+            selectedType={null}
+            onTypeSelect={handleProfileTypeSelect}
+          />
+        ) : (
           <>
             <div className="flex justify-center mb-8">
               <div className="relative">
                 <Avatar className="h-32 w-32">
-                  <AvatarImage src={profile?.avatar_url} />
+                  <AvatarImage 
+                    src={profile.avatar_url || "/creator_default_profile.jpg"} 
+                    alt={profile.display_name || "Profile picture"}
+                  />
                   <AvatarFallback>
                     <User className="h-16 w-16" />
                   </AvatarFallback>

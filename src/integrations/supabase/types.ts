@@ -158,6 +158,7 @@ export type Database = {
           id: string
           location: string | null
           preferred_role: string | null
+          profile_type: string | null
           roles: Json | null
           sexual_orientation: string | null
           updated_at: string
@@ -179,6 +180,7 @@ export type Database = {
           id: string
           location?: string | null
           preferred_role?: string | null
+          profile_type?: string | null
           roles?: Json | null
           sexual_orientation?: string | null
           updated_at?: string
@@ -200,6 +202,7 @@ export type Database = {
           id?: string
           location?: string | null
           preferred_role?: string | null
+          profile_type?: string | null
           roles?: Json | null
           sexual_orientation?: string | null
           updated_at?: string
