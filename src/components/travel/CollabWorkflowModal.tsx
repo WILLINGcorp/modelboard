@@ -52,7 +52,7 @@ const CollabWorkflowModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-modelboard-gray border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-modelboard-gray border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gradient">
