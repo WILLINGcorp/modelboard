@@ -2,12 +2,12 @@ import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
-import Profile from "@/pages/Profile";
-import ModelDirectory from "@/pages/ModelDirectory";
+import MyProfile from "@/pages/Profile";
+import MyPortfolio from "@/pages/Portfolio";
+import Network from "@/pages/ModelDirectory";
 import ModelProfile from "@/pages/ModelProfile";
-import Portfolio from "@/pages/Portfolio";
-import Location from "@/pages/Location";
-import Messages from "@/pages/Messages";
+import MyLocation from "@/pages/Location";
+import Communications from "@/pages/Messages";
 
 export const AppRoutes = () => {
   return (
@@ -15,50 +15,43 @@ export const AppRoutes = () => {
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route
-        path="/profile"
+        path="/my-profile"
         element={
           <PrivateRoute>
-            <Profile />
+            <MyProfile />
           </PrivateRoute>
         }
       />
       <Route
-        path="/models"
+        path="/my-portfolio"
         element={
           <PrivateRoute>
-            <ModelDirectory />
+            <MyPortfolio />
           </PrivateRoute>
         }
       />
       <Route
-        path="/models/:id"
+        path="/network"
         element={
           <PrivateRoute>
-            <ModelProfile />
+            <Network />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/models/:id" element={<ModelProfile />} />
+      <Route
+        path="/my-location"
+        element={
+          <PrivateRoute>
+            <MyLocation />
           </PrivateRoute>
         }
       />
       <Route
-        path="/portfolio"
+        path="/communications"
         element={
           <PrivateRoute>
-            <Portfolio />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/location"
-        element={
-          <PrivateRoute>
-            <Location />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/messages"
-        element={
-          <PrivateRoute>
-            <Messages />
+            <Communications />
           </PrivateRoute>
         }
       />
