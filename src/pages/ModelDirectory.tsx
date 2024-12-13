@@ -5,6 +5,7 @@ import { NetworkFilters } from "@/components/network/NetworkFilters";
 import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
 import { PurchaseAdSpot } from "@/components/network/PurchaseAdSpot";
 import { ModelGrid } from "@/components/network/ModelGrid";
+import { SponsorProfiles } from "@/components/network/SponsorProfiles";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
 import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
@@ -116,8 +117,7 @@ const ModelDirectory = () => {
   return (
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Model Directory</h1>
+        <div className="flex justify-end mb-8">
           <PurchaseAdSpot />
         </div>
         
@@ -132,6 +132,10 @@ const ModelDirectory = () => {
           profiles={filteredProfiles}
           isOnline={isOnline}
         />
+
+        <div className="mt-12">
+          <SponsorProfiles />
+        </div>
       </div>
     </div>
   );

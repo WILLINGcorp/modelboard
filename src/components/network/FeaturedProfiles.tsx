@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Star, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -19,7 +17,7 @@ export const FeaturedProfiles = () => {
 
   const getFeaturedProfiles = async () => {
     try {
-      // First try to get profiles with active ads
+      // First try to get creator profiles with active ads
       const { data: activeAds } = await supabase
         .from('paid_ads')
         .select('profile_id')
@@ -31,10 +29,11 @@ export const FeaturedProfiles = () => {
       if (activeAds?.length) {
         profileIds = activeAds.map(ad => ad.profile_id);
       } else {
-        // If no active ads, get random profiles
+        // If no active ads, get random creator profiles
         const { data: randomProfiles } = await supabase
           .from('profiles')
           .select('id')
+          .eq('profile_type', 'content_creator')
           .limit(4)
           .order('created_at', { ascending: false });
           
@@ -47,7 +46,8 @@ export const FeaturedProfiles = () => {
         const { data: profiles } = await supabase
           .from('profiles')
           .select('*')
-          .in('id', profileIds);
+          .in('id', profileIds)
+          .eq('profile_type', 'content_creator');
 
         setFeaturedProfiles(profiles || []);
       } else {
