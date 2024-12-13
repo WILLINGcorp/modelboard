@@ -19,25 +19,40 @@ export const FeaturedProfiles = () => {
 
   const getFeaturedProfiles = async () => {
     try {
+      // First try to get profiles with active ads
       const { data: activeAds } = await supabase
         .from('paid_ads')
         .select('profile_id')
         .eq('status', 'active')
         .gt('end_time', new Date().toISOString());
 
-      if (!activeAds?.length) {
-        setFeaturedProfiles([]);
-        return;
+      let profileIds: string[] = [];
+      
+      if (activeAds?.length) {
+        profileIds = activeAds.map(ad => ad.profile_id);
+      } else {
+        // If no active ads, get random profiles
+        const { data: randomProfiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .limit(4)
+          .order('created_at', { ascending: false });
+          
+        if (randomProfiles?.length) {
+          profileIds = randomProfiles.map(profile => profile.id);
+        }
       }
 
-      const profileIds = activeAds.map(ad => ad.profile_id);
-      
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('*')
-        .in('id', profileIds);
+      if (profileIds.length) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', profileIds);
 
-      setFeaturedProfiles(profiles || []);
+        setFeaturedProfiles(profiles || []);
+      } else {
+        setFeaturedProfiles([]);
+      }
     } catch (error) {
       console.error('Error fetching featured profiles:', error);
     } finally {
