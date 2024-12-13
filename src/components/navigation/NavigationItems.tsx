@@ -1,32 +1,72 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { AuthenticatedNav } from "./AuthenticatedNav";
-import { PublicNav } from "./PublicNav";
-import { AccountDropdown } from "./AccountDropdown";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Home,
+  Users,
+  MessageSquare,
+  MapPin,
+  Image,
+  User,
+  Shield,
+} from "lucide-react";
 
-interface NavigationItemsProps {
-  isAuthenticated: boolean;
-  onMobileMenuClose?: () => void;
-}
+export const useNavigationItems = () => {
+  const { data: isModerator } = useQuery({
+    queryKey: ["isModerator"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
 
-export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: NavigationItemsProps) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+      const { data } = await supabase
+        .from("moderators")
+        .select("id")
+        .eq("id", user.id)
+        .single();
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    onMobileMenuClose?.();
-  };
+      return !!data;
+    },
+  });
 
-  const isActive = (path: string) => location.pathname === path;
+  const items = [
+    {
+      title: "Home",
+      href: "/dashboard",
+      icon: Home,
+    },
+    {
+      title: "Network",
+      href: "/models",
+      icon: Users,
+    },
+    {
+      title: "Messages",
+      href: "/messages",
+      icon: MessageSquare,
+    },
+    {
+      title: "My Location",
+      href: "/my-location",
+      icon: MapPin,
+    },
+    {
+      title: "My Portfolio",
+      href: "/my-portfolio",
+      icon: Image,
+    },
+    {
+      title: "My Profile",
+      href: "/my-profile",
+      icon: User,
+    },
+  ];
 
-  if (isAuthenticated) {
-    return (
-      <>
-        <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} />
-        <AccountDropdown onMobileMenuClose={onMobileMenuClose} />
-      </>
-    );
+  if (isModerator) {
+    items.push({
+      title: "Moderation",
+      href: "/moderation",
+      icon: Shield,
+    });
   }
 
-  return <PublicNav />;
+  return items;
 };

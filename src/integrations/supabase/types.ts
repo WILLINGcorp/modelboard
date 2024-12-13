@@ -175,6 +175,24 @@ export type Database = {
           },
         ]
       }
+      moderators: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       paid_ads: {
         Row: {
           created_at: string
@@ -220,6 +238,8 @@ export type Database = {
           id: string
           media_type: string
           media_url: string
+          moderation_comment: string | null
+          moderation_status: string
           profile_id: string
           title: string
           updated_at: string
@@ -230,6 +250,8 @@ export type Database = {
           id?: string
           media_type: string
           media_url: string
+          moderation_comment?: string | null
+          moderation_status?: string
           profile_id: string
           title: string
           updated_at?: string
@@ -240,6 +262,8 @@ export type Database = {
           id?: string
           media_type?: string
           media_url?: string
+          moderation_comment?: string | null
+          moderation_status?: string
           profile_id?: string
           title?: string
           updated_at?: string
@@ -301,6 +325,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_moderation_comment: string | null
+          avatar_moderation_status: string
           avatar_url: string | null
           bio: string | null
           business_model: Json | null
@@ -327,6 +353,8 @@ export type Database = {
           weight: string | null
         }
         Insert: {
+          avatar_moderation_comment?: string | null
+          avatar_moderation_status?: string
           avatar_url?: string | null
           bio?: string | null
           business_model?: Json | null
@@ -353,6 +381,8 @@ export type Database = {
           weight?: string | null
         }
         Update: {
+          avatar_moderation_comment?: string | null
+          avatar_moderation_status?: string
           avatar_url?: string | null
           bio?: string | null
           business_model?: Json | null
