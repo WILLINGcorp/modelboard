@@ -5,44 +5,49 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PendingAvatars } from "@/components/moderation/PendingAvatars";
 import { PendingPortfolioItems } from "@/components/moderation/PendingPortfolioItems";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 const ModerationDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [session, setSession] = useState(null);
+
+  // First, ensure we have a valid session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   // Check if user is a moderator
   const { data: isModerator, isLoading, error } = useQuery({
     queryKey: ["isModerator"],
     queryFn: async () => {
-      try {
-        // Get current user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        
-        console.log("Auth check:", { user, authError });
-        
-        if (authError) {
-          console.error("Auth error:", authError);
-          return false;
-        }
-        
-        if (!user) {
-          console.log("No user found - redirecting to auth");
-          navigate("/auth");
-          return false;
-        }
+      if (!session?.user?.id) return false;
 
-        // Check if user is a moderator
+      try {
         const { data, error: moderatorError } = await supabase
           .from("moderators")
           .select("id")
-          .eq("id", user.id)
+          .eq("id", session.user.id)
           .single();
 
         console.log("Moderator check:", { 
-          userId: user.id,
+          userId: session.user.id,
           data,
-          error: moderatorError,
-          query: `moderators?select=id&id=eq.${user.id}`
+          error: moderatorError
         });
 
         if (moderatorError) {
@@ -55,18 +60,20 @@ const ModerationDashboard = () => {
           return false;
         }
 
-        const isMod = !!data;
-        console.log("Is moderator:", isMod);
-        return isMod;
+        return !!data;
       } catch (error) {
         console.error("Unexpected error:", error);
         return false;
       }
     },
+    enabled: !!session?.user?.id,
   });
 
+  if (!session) {
+    return null; // Let the useEffect handle the redirect
+  }
+
   if (isLoading) {
-    console.log("Loading moderator status...");
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -75,7 +82,6 @@ const ModerationDashboard = () => {
   }
 
   if (error) {
-    console.error("Query error:", error);
     return (
       <div className="min-h-screen bg-modelboard-dark p-4 flex items-center justify-center">
         <div className="text-white">Error loading moderator status. Please try again.</div>
@@ -84,7 +90,6 @@ const ModerationDashboard = () => {
   }
 
   if (!isModerator) {
-    console.log("Access denied - not a moderator");
     toast({
       title: "Access Denied",
       description: "You don't have moderator privileges",
