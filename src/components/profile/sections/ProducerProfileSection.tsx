@@ -4,6 +4,7 @@ import { TextFormField } from "../form-fields/TextFormField";
 import { TextareaFormField } from "../form-fields/TextareaFormField";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CreatorPlatformsField } from "../creator-platforms/CreatorPlatformsField";
+import { Twitter, Facebook, Instagram, AtSign } from "lucide-react";
 import type { Database, Json } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -31,10 +32,10 @@ const SKILLS = [
 ];
 
 const SOCIAL_MEDIA_PLATFORMS = [
-  { id: "twitter", label: "Twitter Handle" },
-  { id: "bluesky", label: "BlueSky Handle" },
-  { id: "instagram", label: "Instagram Handle" },
-  { id: "facebook", label: "Facebook Handle" },
+  { id: "twitter", label: "Twitter Handle", icon: Twitter },
+  { id: "bluesky", label: "BlueSky Handle", icon: AtSign },
+  { id: "instagram", label: "Instagram Handle", icon: Instagram },
+  { id: "facebook", label: "Facebook Handle", icon: Facebook },
 ];
 
 export const ProducerProfileSection = ({ profile, onProfileUpdate }: ProducerProfileSectionProps) => {
@@ -81,49 +82,51 @@ export const ProducerProfileSection = ({ profile, onProfileUpdate }: ProducerPro
         onChange={(value) => onProfileUpdate({ ...profile, bio: value })}
       />
 
-      <FormField label="Business Model">
-        <div className="grid grid-cols-2 gap-4">
-          {BUSINESS_MODELS.map((model) => (
-            <div key={model.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={`business-${model.id}`}
-                checked={businessModel.includes(model.id)}
-                onCheckedChange={(checked) => 
-                  handleBusinessModelChange(model.id, checked as boolean)
-                }
-              />
-              <label
-                htmlFor={`business-${model.id}`}
-                className="text-sm text-gray-300 cursor-pointer"
-              >
-                {model.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </FormField>
+      <div className="grid grid-cols-2 gap-6">
+        <FormField label="Business Model">
+          <div className="space-y-2">
+            {BUSINESS_MODELS.map((model) => (
+              <div key={model.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`business-${model.id}`}
+                  checked={businessModel.includes(model.id)}
+                  onCheckedChange={(checked) => 
+                    handleBusinessModelChange(model.id, checked as boolean)
+                  }
+                />
+                <label
+                  htmlFor={`business-${model.id}`}
+                  className="text-sm text-gray-300 cursor-pointer"
+                >
+                  {model.label}
+                </label>
+              </div>
+            ))}
+          </div>
+        </FormField>
 
-      <FormField label="Skills">
-        <div className="grid grid-cols-2 gap-4">
-          {SKILLS.map((skill) => (
-            <div key={skill.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={`skill-${skill.id}`}
-                checked={skills.includes(skill.id)}
-                onCheckedChange={(checked) => 
-                  handleSkillChange(skill.id, checked as boolean)
-                }
-              />
-              <label
-                htmlFor={`skill-${skill.id}`}
-                className="text-sm text-gray-300 cursor-pointer"
-              >
-                {skill.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </FormField>
+        <FormField label="Skills">
+          <div className="space-y-2">
+            {SKILLS.map((skill) => (
+              <div key={skill.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`skill-${skill.id}`}
+                  checked={skills.includes(skill.id)}
+                  onCheckedChange={(checked) => 
+                    handleSkillChange(skill.id, checked as boolean)
+                  }
+                />
+                <label
+                  htmlFor={`skill-${skill.id}`}
+                  className="text-sm text-gray-300 cursor-pointer"
+                >
+                  {skill.label}
+                </label>
+              </div>
+            ))}
+          </div>
+        </FormField>
+      </div>
 
       {skills.includes("other") && (
         <TextFormField
@@ -143,12 +146,14 @@ export const ProducerProfileSection = ({ profile, onProfileUpdate }: ProducerPro
       <FormField label="Social Media">
         <div className="space-y-4">
           {SOCIAL_MEDIA_PLATFORMS.map((platform) => (
-            <TextFormField
-              key={platform.id}
-              label={platform.label}
-              value={socialMedia[platform.id] || ""}
-              onChange={(value) => handleSocialMediaChange(platform.id, value)}
-            />
+            <div key={platform.id} className="flex items-center space-x-2">
+              <platform.icon className="h-5 w-5 text-gray-400" />
+              <TextFormField
+                label={platform.label}
+                value={socialMedia[platform.id] || ""}
+                onChange={(value) => handleSocialMediaChange(platform.id, value)}
+              />
+            </div>
           ))}
         </div>
       </FormField>
