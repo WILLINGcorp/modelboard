@@ -2,8 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { MessageSquare, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 export const NotificationCards = () => {
+  const navigate = useNavigate();
+
   const { data: unreadMessages = 0 } = useQuery({
     queryKey: ["unread-messages"],
     queryFn: async () => {
@@ -40,7 +43,10 @@ export const NotificationCards = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors">
+      <Card 
+        className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors cursor-pointer"
+        onClick={() => navigate("/communications")}
+      >
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -53,7 +59,10 @@ export const NotificationCards = () => {
         </CardContent>
       </Card>
 
-      <Card className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors">
+      <Card 
+        className="bg-modelboard-gray hover:bg-modelboard-gray/90 transition-colors cursor-pointer"
+        onClick={() => navigate("/communications")}
+      >
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
