@@ -1,6 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { ToastProps } from "@/components/ui/toast";
-import { toast } from "@/hooks/use-toast";
+import type { ToastProps } from "@/components/ui/use-toast";
 
 export const uploadPortfolioImage = async (
   file: File,
@@ -27,7 +26,6 @@ export const uploadPortfolioImage = async (
   } catch (error) {
     toast({
       title: "Error",
-      description: "Unable to upload image",
       variant: "destructive",
     });
     return null;
