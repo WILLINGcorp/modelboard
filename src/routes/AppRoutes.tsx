@@ -8,12 +8,21 @@ import Network from "@/pages/ModelDirectory";
 import ModelProfile from "@/pages/ModelProfile";
 import MyLocation from "@/pages/Location";
 import Communications from "@/pages/Messages";
+import Dashboard from "@/pages/Dashboard";
 
 export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/my-profile"
         element={
