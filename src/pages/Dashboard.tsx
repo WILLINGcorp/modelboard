@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Image, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { NotificationCards } from "@/components/dashboard/NotificationCards";
+import { PricingTable } from "@/components/dashboard/PricingTable";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -82,6 +83,13 @@ const Dashboard = () => {
               </p>
             </CardContent>
           </Card>
+        </div>
+
+        <NotificationCards />
+        
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold text-white">Premium Features</h2>
+          <PricingTable />
         </div>
       </div>
     </div>
