@@ -1,7 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { User, MapPin, Globe, MessageSquare, Ruler, Scale, Eye, Palette } from "lucide-react";
+import { User, MapPin, Globe, MessageSquare, Ruler, Scale, Eye, Palette, HandshakeIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import CollabProposalForm from "@/components/travel/CollabProposalForm";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -11,6 +20,8 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
   const platforms = Array.isArray(profile.creator_platforms) 
     ? profile.creator_platforms.filter(
         (p): p is { platform: string; handle: string } => 
@@ -147,13 +158,38 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
           {renderSocialMedia()}
         </div>
 
-        <Button
-          onClick={onMessageClick}
-          className="bg-modelboard-red hover:bg-red-600 text-white self-start"
-        >
-          <MessageSquare className="h-4 w-4 mr-2" />
-          Message
-        </Button>
+        <div className="flex flex-col gap-2 self-start">
+          <Button
+            onClick={onMessageClick}
+            className="bg-modelboard-red hover:bg-red-600 text-white"
+          >
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Message
+          </Button>
+
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                className="bg-modelboard-dark hover:bg-modelboard-gray text-white"
+              >
+                <HandshakeIcon className="h-4 w-4 mr-2" />
+                Send Proposal
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-modelboard-gray text-white">
+              <DialogHeader>
+                <DialogTitle>Send Collaboration Proposal</DialogTitle>
+              </DialogHeader>
+              <CollabProposalForm
+                travelPlanId=""
+                receiverId={profile.id}
+                location={profile.location || ""}
+                onSuccess={() => setIsDialogOpen(false)}
+                onClose={() => setIsDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </div>
   );

@@ -71,6 +71,16 @@ const TravelPlansSection = ({ travelPlans }: TravelPlansSectionProps) => {
               {plan.description && (
                 <p className="text-gray-400">{plan.description}</p>
               )}
+              <Button 
+                onClick={() => {
+                  setSelectedPlan(plan);
+                  setIsDialogOpen(true);
+                }}
+                className="w-full mt-4 bg-modelboard-dark hover:bg-modelboard-gray text-white"
+              >
+                <Handshake className="h-4 w-4 mr-2" />
+                Send Proposal
+              </Button>
             </CardContent>
           </Card>
         ))}
