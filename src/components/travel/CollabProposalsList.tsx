@@ -20,8 +20,8 @@ const CollabProposalsList = () => {
           message,
           location,
           created_at,
-          sender:profiles!collab_proposals_sender_id_fkey(id, display_name),
-          receiver:profiles!collab_proposals_receiver_id_fkey(id, display_name)
+          sender:profiles!collab_proposals_sender_id_fkey(id, display_name, username),
+          receiver:profiles!collab_proposals_receiver_id_fkey(id, display_name, username)
         `)
         .or(`sender_id.eq.${session.session.user.id},receiver_id.eq.${session.session.user.id}`)
         .order("created_at", { ascending: false });
