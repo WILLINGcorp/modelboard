@@ -6,12 +6,13 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Grid, Calendar, File, Package } from "lucide-react";
+import { Grid, Calendar, File, Package, Sparkles } from "lucide-react";
 import { Proposal } from "./types/workflow";
 import { CollaboratorsTab } from "./workflow/tabs/CollaboratorsTab";
 import { ScheduleTab } from "./workflow/tabs/ScheduleTab";
 import { ProjectFilesTab } from "./workflow/project-files/ProjectFilesTab";
 import { ReleaseAssetsTab } from "./workflow/tabs/ReleaseAssetsTab";
+import { ProServicesTab } from "./workflow/tabs/ProServicesTab";
 
 interface CollabWorkflowModalProps {
   isOpen: boolean;
@@ -62,6 +63,13 @@ const CollabWorkflowModal = ({
                   Project Files
                 </TabsTrigger>
                 <TabsTrigger 
+                  value="proservices"
+                  className="data-[state=active]:bg-modelboard-red/10"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Pro Services
+                </TabsTrigger>
+                <TabsTrigger 
                   value="release"
                   className="data-[state=active]:bg-modelboard-red/10"
                 >
@@ -80,6 +88,10 @@ const CollabWorkflowModal = ({
 
               <TabsContent value="files" className="p-6">
                 <ProjectFilesTab proposalId={proposal.id} />
+              </TabsContent>
+
+              <TabsContent value="proservices" className="p-6">
+                <ProServicesTab proposalId={proposal.id} />
               </TabsContent>
 
               <TabsContent value="release" className="p-6">
