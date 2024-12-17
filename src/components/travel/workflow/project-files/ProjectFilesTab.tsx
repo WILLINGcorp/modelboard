@@ -5,23 +5,23 @@ import { PicturesCard } from "./PicturesCard";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { FilesList } from "./FilesList";
 import { WorkflowStepWithAssets } from "./types";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ProjectFilesTabProps {
   proposalId: string;
 }
 
 export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
+  const { toast } = useToast();
+
   const { data: files, isLoading } = useQuery({
     queryKey: ["project-files", proposalId],
     queryFn: async () => {
-      console.log("Fetching files for proposal:", proposalId);
-      
-      // First get the workflow steps for this proposal that are completed
+      // Get all workflow steps for this proposal
       const { data: steps, error: stepsError } = await supabase
         .from("collab_workflow_steps")
         .select("*")
         .eq("proposal_id", proposalId)
-        .eq("status", "completed")
         .in("step_type", ["Share Footage", "Share Pictures"]);
 
       if (stepsError) {
@@ -29,14 +29,11 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
         throw stepsError;
       }
 
-      console.log("Found workflow steps:", steps);
-
       if (!steps?.length) {
-        console.log("No completed workflow steps found");
         return [];
       }
 
-      // Then fetch the associated assets for each step
+      // Fetch assets for each step
       const stepsWithAssets = await Promise.all(
         steps.map(async (step) => {
           const { data: assets, error: assetsError } = await supabase
@@ -49,8 +46,6 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
             throw assetsError;
           }
 
-          console.log("Found assets for step:", step.id, assets);
-
           return {
             ...step,
             assets: assets || [],
@@ -58,28 +53,37 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
         })
       );
 
-      // Filter out steps with no assets
-      const filteredSteps = stepsWithAssets.filter(step => step.assets?.length > 0);
-      console.log("Final filtered steps with assets:", filteredSteps);
-      
-      return filteredSteps as WorkflowStepWithAssets[];
+      return stepsWithAssets.filter(step => step.assets?.length > 0) as WorkflowStepWithAssets[];
     },
   });
 
   const handleDownload = async (url: string, filename: string) => {
     try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
+      const { data, error } = await supabase.storage
+        .from("collab-assets")
+        .createSignedUrl(url, 60); // URL valid for 60 seconds
+
+      if (error) throw error;
+
+      // Create a temporary anchor element to trigger the download
       const link = document.createElement("a");
-      link.href = downloadUrl;
+      link.href = data.signedUrl;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
+
+      toast({
+        title: "Success",
+        description: "File download started",
+      });
     } catch (error) {
       console.error("Error downloading file:", error);
+      toast({
+        title: "Error",
+        description: "Failed to download file",
+        variant: "destructive",
+      });
     }
   };
 
