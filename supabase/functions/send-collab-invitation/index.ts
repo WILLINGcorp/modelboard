@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const FRONTEND_URL = Deno.env.get("FRONTEND_URL");
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -8,8 +11,8 @@ const corsHeaders = {
 };
 
 interface InvitationRequest {
-  email: string;
-  message: string;
+  receiverEmail: string;
+  senderName: string;
   proposalId: string;
 }
 
@@ -19,60 +22,43 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, message, proposalId }: InvitationRequest = await req.json();
+    const { receiverEmail, senderName, proposalId } = await req.json() as InvitationRequest;
 
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    // Get proposal details
-    const { data: proposal, error: proposalError } = await supabaseClient
-      .from("collab_proposals")
-      .select("*, sender:profiles!sender_id(*)")
-      .eq("id", proposalId)
-      .single();
-
-    if (proposalError) throw proposalError;
-
-    // Send email using Resend
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
         from: "Modelboard <onboarding@resend.dev>",
-        to: [email],
-        subject: "Invitation to Join Collaboration Project on Modelboard",
+        to: [receiverEmail],
+        subject: `New Collaboration Invitation from ${senderName}`,
         html: `
-          <h2>You've been invited to join a collaboration project on Modelboard!</h2>
-          <p>${proposal.sender.display_name || "A user"} has invited you to collaborate on their project.</p>
-          ${message ? `<p>Message: ${message}</p>` : ""}
-          <p>Click the link below to join Modelboard and view the collaboration proposal:</p>
-          <a href="${Deno.env.get("FRONTEND_URL")}/auth?proposal=${proposalId}">Join Collaboration</a>
+          <h2>You have a new collaboration invitation!</h2>
+          <p>${senderName} has invited you to collaborate on Modelboard.</p>
+          <p>Click the link below to view the proposal:</p>
+          <a href="${FRONTEND_URL}/communications?proposal=${proposalId}">View Proposal</a>
         `,
       }),
     });
 
     if (!res.ok) {
-      throw new Error("Failed to send email");
+      const error = await res.text();
+      throw new Error(error);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
-    );
+  } catch (error: any) {
+    console.error("Error in send-collab-invitation function:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
   }
 };
 

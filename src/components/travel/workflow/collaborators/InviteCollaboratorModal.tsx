@@ -7,120 +7,88 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface InviteCollaboratorModalProps {
   isOpen: boolean;
   onClose: () => void;
   proposalId: string;
-  onSuccess: () => void;
 }
 
-export const InviteCollaboratorModal = ({
+const InviteCollaboratorModal = ({
   isOpen,
   onClose,
   proposalId,
-  onSuccess,
 }: InviteCollaboratorModalProps) => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleInviteExistingUser = async () => {
+  const handleInvite = async () => {
     if (!username.trim()) return;
-
+    
     setIsLoading(true);
     try {
-      const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username", username);
+      // Get current user's name
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
-      if (profileError) throw profileError;
-      
-      if (!profiles || profiles.length === 0) {
-        toast({
-          title: "Error",
-          description: "User not found",
-          variant: "destructive",
-        });
-        return;
+      const { data: senderProfile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", user.id)
+        .single();
+
+      // Find receiver by username
+      const { data: receiverProfiles, error: receiverError } = await supabase
+        .from("profiles")
+        .select("id, username")
+        .eq("username", username.trim());
+
+      if (receiverError) throw receiverError;
+      if (!receiverProfiles || receiverProfiles.length === 0) {
+        throw new Error("User not found");
       }
 
-      // Create workflow step for the invitation
-      const { error: stepError } = await supabase
-        .from("collab_workflow_steps")
+      const receiverProfile = receiverProfiles[0];
+
+      // Create collaboration proposal
+      const { error: proposalError } = await supabase
+        .from("collab_proposals")
         .insert({
-          proposal_id: proposalId,
-          step_type: "Add Collaborator",
-          data: { collaborator_id: profiles[0].id, message },
+          sender_id: user.id,
+          receiver_id: receiverProfile.id,
+          status: "pending",
+          message: `Collaboration invitation from ${senderProfile?.display_name || "a user"}`,
         });
 
-      if (stepError) throw stepError;
+      if (proposalError) throw proposalError;
+
+      // Send email invitation using Edge Function
+      const { error: inviteError } = await supabase.functions.invoke(
+        "send-collab-invitation",
+        {
+          body: {
+            receiverEmail: username,
+            senderName: senderProfile?.display_name || "A Modelboard User",
+            proposalId,
+          },
+        }
+      );
+
+      if (inviteError) throw inviteError;
 
       toast({
         title: "Success",
-        description: "Invitation sent successfully",
+        description: "Collaboration invitation sent successfully",
       });
-
-      onSuccess();
       onClose();
-    } catch (error) {
-      console.error('Invitation error:', error);
+    } catch (error: any) {
+      console.error("Error sending invitation:", error);
       toast({
         title: "Error",
-        description: "Failed to send invitation",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleInviteNewUser = async () => {
-    if (!email.trim()) return;
-
-    setIsLoading(true);
-    try {
-      // Create workflow step for the invitation
-      const { error: stepError } = await supabase
-        .from("collab_workflow_steps")
-        .insert({
-          proposal_id: proposalId,
-          step_type: "Add Collaborator",
-          data: { email, message, pending_registration: true },
-        });
-
-      if (stepError) throw stepError;
-
-      // Send invitation email using edge function
-      const { data, error } = await supabase.functions.invoke('send-collab-invitation', {
-        body: {
-          email,
-          message,
-          proposalId,
-        },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Invitation sent successfully",
-      });
-
-      onSuccess();
-      onClose();
-    } catch (error) {
-      console.error('Invitation error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send invitation",
+        description: error.message || "Failed to send invitation",
         variant: "destructive",
       });
     } finally {
@@ -130,56 +98,43 @@ export const InviteCollaboratorModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-modelboard-dark text-white">
+      <DialogContent className="bg-modelboard-dark text-white">
         <DialogHeader>
           <DialogTitle>Invite Collaborator</DialogTitle>
         </DialogHeader>
-        <Tabs defaultValue="existing" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="existing">Existing User</TabsTrigger>
-            <TabsTrigger value="new">New User</TabsTrigger>
-          </TabsList>
-          <TabsContent value="existing" className="space-y-4">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium mb-2">
+              Username
+            </label>
             <Input
-              placeholder="Enter username"
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              className="bg-modelboard-gray border-modelboard-gray"
             />
-            <Textarea
-              placeholder="Add a message (optional)"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+          </div>
+          <div className="flex justify-end space-x-2">
             <Button
-              onClick={handleInviteExistingUser}
+              variant="outline"
+              onClick={onClose}
+              className="bg-modelboard-gray hover:bg-modelboard-gray/90"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleInvite}
               disabled={isLoading || !username.trim()}
-              className="w-full"
+              className="bg-modelboard-red hover:bg-modelboard-red/90"
             >
-              Send Invitation
+              {isLoading ? "Sending..." : "Send Invitation"}
             </Button>
-          </TabsContent>
-          <TabsContent value="new" className="space-y-4">
-            <Input
-              type="email"
-              placeholder="Enter email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Textarea
-              placeholder="Add a message (optional)"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <Button
-              onClick={handleInviteNewUser}
-              disabled={isLoading || !email.trim()}
-              className="w-full"
-            >
-              Send Invitation
-            </Button>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
 };
+
+export default InviteCollaboratorModal;
