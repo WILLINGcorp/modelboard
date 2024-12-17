@@ -2,7 +2,11 @@ import { RawFootageCard } from "./RawFootageCard";
 import { PicturesCard } from "./PicturesCard";
 import { PostProductionCard } from "./PostProductionCard";
 
-export const ProjectFilesTab = ({ proposalId }: { proposalId: string }) => {
+interface ProjectFilesTabProps {
+  proposalId: string;
+}
+
+export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
   return (
     <div className="space-y-6">
       <RawFootageCard proposalId={proposalId} />
