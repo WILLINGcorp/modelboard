@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { RawFootageCard } from "./RawFootageCard";
 import { PicturesCard } from "./PicturesCard";
-import { FileDownload } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProjectFilesTabProps {
@@ -85,7 +85,7 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
                       `${step.step_type.toLowerCase().replace(" ", "-")}-${asset.id}`
                     )}
                   >
-                    <FileDownload className="mr-2 h-4 w-4" />
+                    <Download className="mr-2 h-4 w-4" />
                     Download
                   </Button>
                 </div>
