@@ -19,14 +19,22 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
   const { data: collaborators } = useQuery({
     queryKey: ['collaborators', proposal.id],
     queryFn: async () => {
+      const ids = [
+        proposal.sender?.id,
+        proposal.receiver?.id
+      ].filter(Boolean) as string[];
+
+      if (ids.length === 0) return [];
+
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*')
-        .in('id', [proposal.sender_id, proposal.receiver_id]);
+        .in('id', ids);
 
       if (error) throw error;
       return profiles;
-    }
+    },
+    enabled: Boolean(proposal.sender?.id || proposal.receiver?.id)
   });
 
   return (
@@ -65,7 +73,7 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
                     {profile.display_name || "Anonymous"}
                   </h3>
                   <p className="text-sm text-gray-400">
-                    {profile.id === proposal.sender_id ? "Project Owner" : "Collaborator"}
+                    {profile.id === proposal.sender?.id ? "Project Owner" : "Collaborator"}
                   </p>
                 </div>
               </div>
@@ -80,10 +88,10 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
           location={proposal.location}
           status={proposal.status}
           message={proposal.message}
-          senderName={collaborators?.find(p => p.id === proposal.sender_id)?.display_name || null}
-          senderUsername={collaborators?.find(p => p.id === proposal.sender_id)?.username || null}
-          receiverName={collaborators?.find(p => p.id === proposal.receiver_id)?.display_name || null}
-          receiverUsername={collaborators?.find(p => p.id === proposal.receiver_id)?.username || null}
+          senderName={collaborators?.find(p => p.id === proposal.sender?.id)?.display_name || null}
+          senderUsername={collaborators?.find(p => p.id === proposal.sender?.id)?.username || null}
+          receiverName={collaborators?.find(p => p.id === proposal.receiver?.id)?.display_name || null}
+          receiverUsername={collaborators?.find(p => p.id === proposal.receiver?.id)?.username || null}
         />
       </div>
     </div>
