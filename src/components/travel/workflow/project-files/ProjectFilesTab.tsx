@@ -14,23 +14,33 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
   const { data: files, isLoading } = useQuery({
     queryKey: ["project-files", proposalId],
     queryFn: async () => {
-      const { data: steps, error } = await supabase
+      // First get the workflow steps for this proposal
+      const { data: steps, error: stepsError } = await supabase
         .from("collab_workflow_steps")
-        .select(`
-          id,
-          step_type,
-          collab_assets (
-            id,
-            asset_type,
-            asset_url,
-            created_at
-          )
-        `)
+        .select("*")
         .eq("proposal_id", proposalId)
         .in("step_type", ["Share Footage", "Share Pictures"]);
 
-      if (error) throw error;
-      return steps;
+      if (stepsError) throw stepsError;
+
+      // Then fetch the associated assets for each step
+      const assetsPromises = steps.map(async (step) => {
+        const { data: assets, error: assetsError } = await supabase
+          .from("collab_assets")
+          .select("*")
+          .eq("step_id", step.id)
+          .order("created_at", { ascending: false });
+
+        if (assetsError) throw assetsError;
+
+        return {
+          ...step,
+          collab_assets: assets
+        };
+      });
+
+      const stepsWithAssets = await Promise.all(assetsPromises);
+      return stepsWithAssets;
     },
   });
 
@@ -49,6 +59,10 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
     } catch (error) {
       console.error("Error downloading file:", error);
     }
+  };
+
+  const getFileIcon = (assetType: string) => {
+    return <Download className="h-4 w-4" />;
   };
 
   return (
@@ -91,8 +105,8 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
                         `${step.step_type.toLowerCase().replace(" ", "-")}-${asset.id}`
                       )}
                     >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download
+                      {getFileIcon(asset.asset_type)}
+                      <span className="ml-2">Download</span>
                     </Button>
                   </div>
                 ))
