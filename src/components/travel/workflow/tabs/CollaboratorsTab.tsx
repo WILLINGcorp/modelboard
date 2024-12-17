@@ -7,6 +7,7 @@ import ProposalDetails from "../../ProposalDetails";
 import { Proposal } from "../../types/workflow";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { InviteCollaboratorModal } from "../collaborators/InviteCollaboratorModal";
 
 interface CollaboratorsTabProps {
   proposal: Proposal;
@@ -16,7 +17,7 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
   const [isAddingCollaborator, setIsAddingCollaborator] = useState(false);
 
   // Fetch collaborators profiles (sender and receiver)
-  const { data: collaborators } = useQuery({
+  const { data: collaborators, refetch: refetchCollaborators } = useQuery({
     queryKey: ['collaborators', proposal.id],
     queryFn: async () => {
       const ids = [
@@ -36,6 +37,10 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
     },
     enabled: Boolean(proposal.sender?.id || proposal.receiver?.id)
   });
+
+  const handleInviteSuccess = () => {
+    refetchCollaborators();
+  };
 
   return (
     <div className="space-y-8">
@@ -94,6 +99,13 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
           receiverUsername={collaborators?.find(p => p.id === proposal.receiver?.id)?.username || null}
         />
       </div>
+
+      <InviteCollaboratorModal
+        isOpen={isAddingCollaborator}
+        onClose={() => setIsAddingCollaborator(false)}
+        proposalId={proposal.id}
+        onSuccess={handleInviteSuccess}
+      />
     </div>
   );
 };
