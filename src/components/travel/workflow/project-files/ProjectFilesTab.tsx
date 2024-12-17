@@ -16,11 +16,12 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
     queryFn: async () => {
       console.log("Fetching files for proposal:", proposalId);
       
-      // First get the workflow steps for this proposal
+      // First get the workflow steps for this proposal that are completed
       const { data: steps, error: stepsError } = await supabase
         .from("collab_workflow_steps")
         .select("*")
         .eq("proposal_id", proposalId)
+        .eq("status", "completed")
         .in("step_type", ["Share Footage", "Share Pictures"]);
 
       if (stepsError) {
@@ -30,12 +31,17 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
 
       console.log("Found workflow steps:", steps);
 
+      if (!steps?.length) {
+        console.log("No completed workflow steps found");
+        return [];
+      }
+
       // Then fetch the associated assets for each step
       const stepsWithAssets = await Promise.all(
         steps.map(async (step) => {
           const { data: assets, error: assetsError } = await supabase
             .from("collab_assets")
-            .select("*")
+            .select("id, asset_type, asset_url, created_at")
             .eq("step_id", step.id);
 
           if (assetsError) {
@@ -52,8 +58,11 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
         })
       );
 
-      console.log("Final steps with assets:", stepsWithAssets);
-      return stepsWithAssets as WorkflowStepWithAssets[];
+      // Filter out steps with no assets
+      const filteredSteps = stepsWithAssets.filter(step => step.assets?.length > 0);
+      console.log("Final filtered steps with assets:", filteredSteps);
+      
+      return filteredSteps as WorkflowStepWithAssets[];
     },
   });
 
