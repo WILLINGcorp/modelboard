@@ -14,12 +14,14 @@ interface InviteCollaboratorModalProps {
   isOpen: boolean;
   onClose: () => void;
   proposalId: string;
+  onSuccess?: () => void;
 }
 
 const InviteCollaboratorModal = ({
   isOpen,
   onClose,
   proposalId,
+  onSuccess,
 }: InviteCollaboratorModalProps) => {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +63,7 @@ const InviteCollaboratorModal = ({
           receiver_id: receiverProfile.id,
           status: "pending",
           message: `Collaboration invitation from ${senderProfile?.display_name || "a user"}`,
+          location: "Remote", // Adding default location as required by the schema
         });
 
       if (proposalError) throw proposalError;
@@ -83,6 +86,7 @@ const InviteCollaboratorModal = ({
         title: "Success",
         description: "Collaboration invitation sent successfully",
       });
+      onSuccess?.();
       onClose();
     } catch (error: any) {
       console.error("Error sending invitation:", error);

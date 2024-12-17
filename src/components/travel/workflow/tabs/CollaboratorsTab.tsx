@@ -7,7 +7,7 @@ import ProposalDetails from "../../ProposalDetails";
 import { Proposal } from "../../types/workflow";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { InviteCollaboratorModal } from "../collaborators/InviteCollaboratorModal";
+import InviteCollaboratorModal from "../collaborators/InviteCollaboratorModal";
 
 interface CollaboratorsTabProps {
   proposal: Proposal;
