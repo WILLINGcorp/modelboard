@@ -11,9 +11,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Grid, Calendar, File, Package } from "lucide-react";
 import ProposalDetails from "./ProposalDetails";
-import WorkflowActions from "./WorkflowActions";
-import WorkflowStepItem from "./workflow/WorkflowStepItem";
-import { Proposal, WorkflowStep } from "./types/workflow";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Proposal } from "./types/workflow";
+import ApprovalsList from "./workflow/ApprovalsList";
 
 interface CollabWorkflowModalProps {
   isOpen: boolean;
@@ -27,31 +30,53 @@ const CollabWorkflowModal = ({
   proposal,
 }: CollabWorkflowModalProps) => {
   const { toast } = useToast();
-  const [steps, setSteps] = useState<WorkflowStep[]>([]);
+  const [shootDate, setShootDate] = useState<Date>();
+  const [shootTime, setShootTime] = useState("");
+  const [releaseDate, setReleaseDate] = useState<Date>();
+  const [releaseTime, setReleaseTime] = useState("");
 
-  useEffect(() => {
-    if (proposal.id) {
-      fetchWorkflowSteps();
-    }
-  }, [proposal.id]);
+  const handleScheduleSubmit = async (type: 'shoot' | 'release') => {
+    try {
+      const { data: stepData, error: stepError } = await supabase
+        .from("collab_workflow_steps")
+        .insert({
+          proposal_id: proposal.id,
+          step_type: type === 'shoot' ? 'Schedule Shoot' : 'Schedule Release',
+          data: {
+            date: type === 'shoot' ? shootDate?.toISOString() : releaseDate?.toISOString(),
+            time: type === 'shoot' ? shootTime : releaseTime,
+          },
+        })
+        .select()
+        .single();
 
-  const fetchWorkflowSteps = async () => {
-    const { data, error } = await supabase
-      .from("collab_workflow_steps")
-      .select("*")
-      .eq("proposal_id", proposal.id)
-      .order("created_at", { ascending: true });
+      if (stepError) throw stepError;
 
-    if (error) {
+      // Create approval records for both collaborators
+      await supabase.from("collab_approvals").insert([
+        {
+          step_id: stepData.id,
+          profile_id: proposal.sender?.id,
+          status: 'pending',
+        },
+        {
+          step_id: stepData.id,
+          profile_id: proposal.receiver?.id,
+          status: 'pending',
+        },
+      ]);
+
+      toast({
+        title: "Success",
+        description: `${type === 'shoot' ? 'Shoot' : 'Release'} schedule created successfully`,
+      });
+    } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to load workflow steps",
+        description: `Failed to schedule ${type}`,
         variant: "destructive",
       });
-      return;
     }
-
-    setSteps(data || []);
   };
 
   return (
@@ -100,39 +125,81 @@ const CollabWorkflowModal = ({
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="collaborators" className="p-6 space-y-6">
+              <TabsContent value="collaborators" className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <ProposalDetails
-                      location={proposal.location}
-                      status={proposal.status}
-                      message={proposal.message}
-                      senderName={proposal.sender?.display_name}
-                      senderUsername={proposal.sender?.username}
-                      receiverName={proposal.receiver?.display_name}
-                      receiverUsername={proposal.receiver?.username}
-                    />
-                  </div>
-                  
-                  <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
-                    <h3 className="text-lg font-bold text-gradient sticky top-0 bg-modelboard-dark py-2">
-                      Workflow Steps
-                    </h3>
-                    {steps.map((step) => (
-                      <WorkflowStepItem key={step.id} step={step} />
-                    ))}
-                  </div>
+                  <ProposalDetails
+                    location={proposal.location}
+                    status={proposal.status}
+                    message={proposal.message}
+                    senderName={proposal.sender?.display_name}
+                    senderUsername={proposal.sender?.username}
+                    receiverName={proposal.receiver?.display_name}
+                    receiverUsername={proposal.receiver?.username}
+                  />
                 </div>
-
-                <WorkflowActions
-                  proposalId={proposal.id}
-                  onSuccess={fetchWorkflowSteps}
-                />
               </TabsContent>
 
               <TabsContent value="schedule" className="p-6">
-                <div className="text-center text-gray-400">
-                  Schedule content will be implemented here
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Shoot Schedule Card */}
+                  <Card className="bg-modelboard-dark border border-modelboard-red/20">
+                    <CardHeader>
+                      <CardTitle className="text-white">Schedule Shoot</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <CalendarComponent
+                          mode="single"
+                          selected={shootDate}
+                          onSelect={setShootDate}
+                          className="rounded-md border"
+                        />
+                        <Input
+                          type="time"
+                          value={shootTime}
+                          onChange={(e) => setShootTime(e.target.value)}
+                          className="bg-modelboard-dark"
+                        />
+                        <Button 
+                          onClick={() => handleScheduleSubmit('shoot')}
+                          className="w-full bg-modelboard-red hover:bg-red-600"
+                        >
+                          Schedule Shoot
+                        </Button>
+                      </div>
+                      <ApprovalsList stepId={proposal.id} />
+                    </CardContent>
+                  </Card>
+
+                  {/* Release Schedule Card */}
+                  <Card className="bg-modelboard-dark border border-modelboard-red/20">
+                    <CardHeader>
+                      <CardTitle className="text-white">Schedule Release</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <CalendarComponent
+                          mode="single"
+                          selected={releaseDate}
+                          onSelect={setReleaseDate}
+                          className="rounded-md border"
+                        />
+                        <Input
+                          type="time"
+                          value={releaseTime}
+                          onChange={(e) => setReleaseTime(e.target.value)}
+                          className="bg-modelboard-dark"
+                        />
+                        <Button 
+                          onClick={() => handleScheduleSubmit('release')}
+                          className="w-full bg-modelboard-red hover:bg-red-600"
+                        >
+                          Schedule Release
+                        </Button>
+                      </div>
+                      <ApprovalsList stepId={proposal.id} />
+                    </CardContent>
+                  </Card>
                 </div>
               </TabsContent>
 
