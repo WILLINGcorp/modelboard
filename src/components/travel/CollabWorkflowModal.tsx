@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -11,10 +11,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Grid, Calendar, File, Package } from "lucide-react";
 import ProposalDetails from "./ProposalDetails";
+import { ProjectFilesTab } from "./workflow/project-files/ProjectFilesTab";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Proposal } from "./types/workflow";
 import ApprovalsList from "./workflow/ApprovalsList";
 
@@ -52,7 +53,6 @@ const CollabWorkflowModal = ({
 
       if (stepError) throw stepError;
 
-      // Create approval records for both collaborators
       await supabase.from("collab_approvals").insert([
         {
           step_id: stepData.id,
@@ -141,7 +141,6 @@ const CollabWorkflowModal = ({
 
               <TabsContent value="schedule" className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Shoot Schedule Card */}
                   <Card className="bg-modelboard-dark border border-modelboard-red/20">
                     <CardHeader>
                       <CardTitle className="text-white">Schedule Shoot</CardTitle>
@@ -171,7 +170,6 @@ const CollabWorkflowModal = ({
                     </CardContent>
                   </Card>
 
-                  {/* Release Schedule Card */}
                   <Card className="bg-modelboard-dark border border-modelboard-red/20">
                     <CardHeader>
                       <CardTitle className="text-white">Schedule Release</CardTitle>
@@ -204,9 +202,7 @@ const CollabWorkflowModal = ({
               </TabsContent>
 
               <TabsContent value="files" className="p-6">
-                <div className="text-center text-gray-400">
-                  Project files content will be implemented here
-                </div>
+                <ProjectFilesTab proposalId={proposal.id} />
               </TabsContent>
 
               <TabsContent value="release" className="p-6">
