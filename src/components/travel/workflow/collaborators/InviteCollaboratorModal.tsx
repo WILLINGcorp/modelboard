@@ -39,10 +39,11 @@ export const InviteCollaboratorModal = ({
       const { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("id")
-        .eq("username", username)
-        .single();
+        .eq("username", username);
 
-      if (profileError || !profiles) {
+      if (profileError) throw profileError;
+      
+      if (!profiles || profiles.length === 0) {
         toast({
           title: "Error",
           description: "User not found",
@@ -57,7 +58,7 @@ export const InviteCollaboratorModal = ({
         .insert({
           proposal_id: proposalId,
           step_type: "Add Collaborator",
-          data: { collaborator_id: profiles.id, message },
+          data: { collaborator_id: profiles[0].id, message },
         });
 
       if (stepError) throw stepError;
@@ -96,11 +97,7 @@ export const InviteCollaboratorModal = ({
       if (stepError) throw stepError;
 
       // Send invitation email using edge function
-      const response = await fetch("/api/send-collab-invitation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const { data, error } = await supabase.functions.invoke('send-collab-invitation', {
         body: JSON.stringify({
           email,
           message,
@@ -108,9 +105,7 @@ export const InviteCollaboratorModal = ({
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send invitation email");
-      }
+      if (error) throw error;
 
       toast({
         title: "Success",
@@ -120,6 +115,7 @@ export const InviteCollaboratorModal = ({
       onSuccess();
       onClose();
     } catch (error) {
+      console.error('Invitation error:', error);
       toast({
         title: "Error",
         description: "Failed to send invitation",
