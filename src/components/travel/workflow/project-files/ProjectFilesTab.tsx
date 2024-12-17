@@ -14,6 +14,8 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
   const { data: files, isLoading } = useQuery({
     queryKey: ["project-files", proposalId],
     queryFn: async () => {
+      console.log("Fetching files for proposal:", proposalId);
+      
       // First get the workflow steps for this proposal
       const { data: steps, error: stepsError } = await supabase
         .from("collab_workflow_steps")
@@ -21,7 +23,12 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
         .eq("proposal_id", proposalId)
         .in("step_type", ["Share Footage", "Share Pictures"]);
 
-      if (stepsError) throw stepsError;
+      if (stepsError) {
+        console.error("Error fetching steps:", stepsError);
+        throw stepsError;
+      }
+
+      console.log("Found workflow steps:", steps);
 
       // Then fetch the associated assets for each step
       const stepsWithAssets = await Promise.all(
@@ -29,10 +36,14 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
           const { data: assets, error: assetsError } = await supabase
             .from("collab_assets")
             .select("*")
-            .eq("step_id", step.id)
-            .order("created_at", { ascending: false });
+            .eq("step_id", step.id);
 
-          if (assetsError) throw assetsError;
+          if (assetsError) {
+            console.error("Error fetching assets for step:", step.id, assetsError);
+            throw assetsError;
+          }
+
+          console.log("Found assets for step:", step.id, assets);
 
           return {
             ...step,
@@ -41,6 +52,7 @@ export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
         })
       );
 
+      console.log("Final steps with assets:", stepsWithAssets);
       return stepsWithAssets as WorkflowStepWithAssets[];
     },
   });
