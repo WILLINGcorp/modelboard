@@ -1,16 +1,16 @@
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface InviteCollaboratorModalProps {
   isOpen: boolean;
@@ -31,11 +31,11 @@ export const InviteCollaboratorModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleInviteExisting = async () => {
+  const handleInviteExistingUser = async () => {
+    if (!username.trim()) return;
+
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // First, find the user by username
       const { data: profiles, error: profileError } = await supabase
         .from("profiles")
         .select("id")
@@ -52,7 +52,7 @@ export const InviteCollaboratorModal = ({
         return;
       }
 
-      // Create a workflow step for adding collaborator
+      // Create workflow step for the invitation
       const { error: stepError } = await supabase
         .from("collab_workflow_steps")
         .insert({
@@ -71,6 +71,7 @@ export const InviteCollaboratorModal = ({
       onSuccess();
       onClose();
     } catch (error) {
+      console.error('Invitation error:', error);
       toast({
         title: "Error",
         description: "Failed to send invitation",
@@ -81,28 +82,29 @@ export const InviteCollaboratorModal = ({
     }
   };
 
-  const handleInviteNew = async () => {
-    try {
-      setIsLoading(true);
+  const handleInviteNewUser = async () => {
+    if (!email.trim()) return;
 
-      // Create a workflow step for inviting new user
+    setIsLoading(true);
+    try {
+      // Create workflow step for the invitation
       const { error: stepError } = await supabase
         .from("collab_workflow_steps")
         .insert({
           proposal_id: proposalId,
-          step_type: "Invite New Collaborator",
-          data: { email, message },
+          step_type: "Add Collaborator",
+          data: { email, message, pending_registration: true },
         });
 
       if (stepError) throw stepError;
 
       // Send invitation email using edge function
       const { data, error } = await supabase.functions.invoke('send-collab-invitation', {
-        body: JSON.stringify({
+        body: {
           email,
           message,
           proposalId,
-        }),
+        },
       });
 
       if (error) throw error;
@@ -128,70 +130,53 @@ export const InviteCollaboratorModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-modelboard-gray">
+      <DialogContent className="sm:max-w-[425px] bg-modelboard-dark text-white">
         <DialogHeader>
-          <DialogTitle className="text-white">Invite Collaborator</DialogTitle>
+          <DialogTitle>Invite Collaborator</DialogTitle>
         </DialogHeader>
-        
         <Tabs defaultValue="existing" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-modelboard-dark">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="existing">Existing User</TabsTrigger>
             <TabsTrigger value="new">New User</TabsTrigger>
           </TabsList>
-
           <TabsContent value="existing" className="space-y-4">
             <Input
               placeholder="Enter username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-modelboard-dark"
             />
             <Textarea
               placeholder="Add a message (optional)"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="bg-modelboard-dark"
             />
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                onClick={handleInviteExisting}
-                disabled={!username || isLoading}
-                className="bg-modelboard-red hover:bg-red-600"
-              >
-                Send Invitation
-              </Button>
-            </div>
+            <Button
+              onClick={handleInviteExistingUser}
+              disabled={isLoading || !username.trim()}
+              className="w-full"
+            >
+              Send Invitation
+            </Button>
           </TabsContent>
-
           <TabsContent value="new" className="space-y-4">
             <Input
               type="email"
               placeholder="Enter email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-modelboard-dark"
             />
             <Textarea
               placeholder="Add a message (optional)"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="bg-modelboard-dark"
             />
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                onClick={handleInviteNew}
-                disabled={!email || isLoading}
-                className="bg-modelboard-red hover:bg-red-600"
-              >
-                Send Invitation
-              </Button>
-            </div>
+            <Button
+              onClick={handleInviteNewUser}
+              disabled={isLoading || !email.trim()}
+              className="w-full"
+            >
+              Send Invitation
+            </Button>
           </TabsContent>
         </Tabs>
       </DialogContent>
