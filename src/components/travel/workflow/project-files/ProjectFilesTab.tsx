@@ -9,8 +9,10 @@ interface ProjectFilesTabProps {
 export const ProjectFilesTab = ({ proposalId }: ProjectFilesTabProps) => {
   return (
     <div className="space-y-6">
-      <RawFootageCard proposalId={proposalId} />
-      <PicturesCard proposalId={proposalId} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RawFootageCard proposalId={proposalId} />
+        <PicturesCard proposalId={proposalId} />
+      </div>
       <PostProductionCard />
     </div>
   );
