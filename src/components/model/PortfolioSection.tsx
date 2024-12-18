@@ -27,10 +27,12 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
       if (!user) return;
 
       // Get like counts
-      const { data: likesData } = await supabase
+      const { data: likesData, error: countError } = await supabase
         .from("portfolio_likes")
         .select("portfolio_item_id")
         .in("portfolio_item_id", portfolio.map(item => item.id));
+
+      if (countError) throw countError;
 
       const counts: Record<string, number> = {};
       likesData?.forEach(like => {
@@ -39,11 +41,13 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
       setLikeCounts(counts);
 
       // Get user's likes
-      const { data: userLikes } = await supabase
+      const { data: userLikes, error: likesError } = await supabase
         .from("portfolio_likes")
         .select("portfolio_item_id")
         .eq("profile_id", user.id)
         .in("portfolio_item_id", portfolio.map(item => item.id));
+
+      if (likesError) throw likesError;
 
       const liked: Record<string, boolean> = {};
       userLikes?.forEach(like => {
@@ -72,13 +76,15 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
         const { error } = await supabase
           .from("portfolio_likes")
           .delete()
-          .eq("portfolio_item_id", itemId)
-          .eq("profile_id", user.id);
+          .match({ 
+            portfolio_item_id: itemId,
+            profile_id: user.id 
+          });
 
         if (error) throw error;
 
         setLikedItems(prev => ({ ...prev, [itemId]: false }));
-        setLikeCounts(prev => ({ ...prev, [itemId]: (prev[itemId] || 1) - 1 }));
+        setLikeCounts(prev => ({ ...prev, [itemId]: Math.max((prev[itemId] || 1) - 1, 0) }));
       } else {
         // Like
         const { error } = await supabase
@@ -94,6 +100,7 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
         setLikeCounts(prev => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
       }
     } catch (error) {
+      console.error("Like error:", error);
       toast({
         title: "Error",
         description: "Unable to process like",
