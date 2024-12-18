@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import type { Database } from "@/integrations/supabase/types";
@@ -10,9 +9,22 @@ interface ModelCardProps {
   isOnline: (id: string) => boolean;
 }
 
+const OnlineBadge = () => (
+  <span className="text-modelboard-red text-sm font-medium">
+    Online Now
+  </span>
+);
+
+const SponsorBadge = () => (
+  <img 
+    src="/lovable-uploads/12f3e2bf-eea4-420f-b448-27ebe594aaaf.png"
+    alt="Sponsor Badge"
+    className="w-6 h-6"
+  />
+);
+
 export const ModelCard = ({ profile, isOnline }: ModelCardProps) => {
   const navigate = useNavigate();
-
   const isSponsor = profile.subscription_status === 'sponsor' && 
     new Date(profile.subscription_end_date || '') > new Date();
 
@@ -27,18 +39,8 @@ export const ModelCard = ({ profile, isOnline }: ModelCardProps) => {
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
         <div className="absolute top-4 left-4 flex items-center gap-2">
-          {isOnline(profile.id) && (
-            <span className="text-modelboard-red text-sm font-medium">
-              Online Now
-            </span>
-          )}
-          {isSponsor && (
-            <img 
-              src="/lovable-uploads/12f3e2bf-eea4-420f-b448-27ebe594aaaf.png"
-              alt="Sponsor Badge"
-              className="w-6 h-6"
-            />
-          )}
+          {isOnline(profile.id) && <OnlineBadge />}
+          {isSponsor && <SponsorBadge />}
         </div>
 
         <div className="absolute bottom-4 left-4 right-4">
