@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
 import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
@@ -21,6 +21,17 @@ const ModelDirectory = () => {
   const [currentUserId, setCurrentUserId] = useState<string>();
   const { isOnline } = useOnlinePresence(currentUserId);
   const { toast } = useToast();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollToFeature) {
+      const purchaseButton = document.querySelector('.purchase-ad-button');
+      if (purchaseButton) {
+        purchaseButton.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     getCurrentUser();
@@ -118,7 +129,9 @@ const ModelDirectory = () => {
     <div className="min-h-screen bg-modelboard-dark p-4 pt-24">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-end mb-8">
-          <PurchaseAdSpot />
+          <div className="purchase-ad-button">
+            <PurchaseAdSpot />
+          </div>
         </div>
         
         <FeaturedProfiles />

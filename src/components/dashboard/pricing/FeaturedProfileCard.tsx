@@ -1,10 +1,19 @@
 import { DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PurchaseAdSpot } from "@/components/network/PurchaseAdSpot";
+import { useNavigate } from "react-router-dom";
 
 export const FeaturedProfileCard = () => {
+  const navigate = useNavigate();
+
+  const handleNavigateToNetwork = () => {
+    navigate("/network", { state: { scrollToFeature: true } });
+  };
+
   return (
-    <Card className="bg-modelboard-gray border-modelboard-red hover:border-2 transition-all duration-300 relative overflow-hidden group flex flex-col">
+    <Card 
+      className="bg-modelboard-gray border-modelboard-red hover:border-2 transition-all duration-300 relative overflow-hidden group flex flex-col cursor-pointer"
+      onClick={handleNavigateToNetwork}
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
@@ -36,9 +45,6 @@ export const FeaturedProfileCard = () => {
             Priority in collaboration matches
           </li>
         </ul>
-        <div className="mt-auto">
-          <PurchaseAdSpot />
-        </div>
       </CardContent>
     </Card>
   );
