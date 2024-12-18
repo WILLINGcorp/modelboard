@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
-import type { Database } from "@/integrations/supabase/types";
 
-type ProfileVisit = Database["public"]["Tables"]["profile_visits"]["Row"] & {
+type ProfileVisitor = {
+  id: string;
+  visitor_id: string;
+  visited_at: string;
+  visited_profile_id: string;
   profiles: {
     display_name: string | null;
     avatar_url: string | null;
@@ -17,7 +20,7 @@ type ProfileVisit = Database["public"]["Tables"]["profile_visits"]["Row"] & {
 export const ProfileVisitors = () => {
   const navigate = useNavigate();
 
-  const { data: visitors } = useQuery<ProfileVisit[]>({
+  const { data: visitors } = useQuery<ProfileVisitor[]>({
     queryKey: ["profile-visitors"],
     queryFn: async () => {
       const { data: session } = await supabase.auth.getSession();
@@ -28,6 +31,7 @@ export const ProfileVisitors = () => {
         .select(`
           id,
           visitor_id,
+          visited_profile_id,
           visited_at,
           profiles!profile_visits_visitor_id_fkey (
             display_name,
