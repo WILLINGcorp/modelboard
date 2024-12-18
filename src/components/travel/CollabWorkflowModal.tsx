@@ -30,8 +30,6 @@ const CollabWorkflowModal = ({
 }: CollabWorkflowModalProps) => {
   const session = useSession();
 
-  if (!session?.user) return null;
-
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="h-[95vh] bg-modelboard-dark border-t border-modelboard-red/50">
@@ -80,14 +78,16 @@ const CollabWorkflowModal = ({
                 </div>
 
                 {/* Persistent Chat Sidebar */}
-                <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0">
-                  <div className="h-full">
-                    <ProjectChat 
-                      proposalId={proposal.id} 
-                      currentUserId={session.user.id} 
-                    />
+                {session?.user && (
+                  <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0">
+                    <div className="h-full">
+                      <ProjectChat 
+                        proposalId={proposal.id} 
+                        currentUserId={session.user.id} 
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </Tabs>
           </div>
