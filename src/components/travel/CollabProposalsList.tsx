@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import ProposalsTable from "./ProposalsTable";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const CollabProposalsList = () => {
   const { toast } = useToast();
@@ -55,11 +57,42 @@ const CollabProposalsList = () => {
     }
   };
 
+  const filterProposalsByStatus = (status: string) => {
+    return proposals?.filter(proposal => proposal.status === status) || [];
+  };
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white">Collaboration Proposals</h2>
-      <ProposalsTable proposals={proposals || []} onUpdateStatus={handleUpdateStatus} />
-    </div>
+    <Card className="bg-modelboard-gray border-modelboard-red/20">
+      <Tabs defaultValue="all" className="w-full p-6">
+        <TabsList className="grid grid-cols-5 gap-4 bg-modelboard-dark">
+          <TabsTrigger value="all">All Proposals</TabsTrigger>
+          <TabsTrigger value="pending">Pending</TabsTrigger>
+          <TabsTrigger value="accepted">Accepted</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          <TabsTrigger value="completed">Completed</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="all" className="mt-6">
+          <ProposalsTable proposals={proposals || []} onUpdateStatus={handleUpdateStatus} />
+        </TabsContent>
+        
+        <TabsContent value="pending" className="mt-6">
+          <ProposalsTable proposals={filterProposalsByStatus('pending')} onUpdateStatus={handleUpdateStatus} />
+        </TabsContent>
+        
+        <TabsContent value="accepted" className="mt-6">
+          <ProposalsTable proposals={filterProposalsByStatus('accepted')} onUpdateStatus={handleUpdateStatus} />
+        </TabsContent>
+        
+        <TabsContent value="rejected" className="mt-6">
+          <ProposalsTable proposals={filterProposalsByStatus('rejected')} onUpdateStatus={handleUpdateStatus} />
+        </TabsContent>
+        
+        <TabsContent value="completed" className="mt-6">
+          <ProposalsTable proposals={filterProposalsByStatus('completed')} onUpdateStatus={handleUpdateStatus} />
+        </TabsContent>
+      </Tabs>
+    </Card>
   );
 };
 

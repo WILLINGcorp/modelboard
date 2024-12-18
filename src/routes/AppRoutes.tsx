@@ -9,6 +9,7 @@ import ModelProfile from "@/pages/ModelProfile";
 import MyLocation from "@/pages/Location";
 import Communications from "@/pages/Messages";
 import Dashboard from "@/pages/Dashboard";
+import Collabs from "@/pages/Collabs";
 
 export const AppRoutes = () => {
   return (
@@ -61,6 +62,14 @@ export const AppRoutes = () => {
         element={
           <PrivateRoute>
             <Communications />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/collabs"
+        element={
+          <PrivateRoute>
+            <Collabs />
           </PrivateRoute>
         }
       />

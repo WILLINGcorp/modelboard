@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Home, Users, MessageSquare } from "lucide-react";
+import { Home, Users, MessageSquare, Handshake } from "lucide-react";
 
 interface AuthenticatedNavProps {
   isActive: (path: string) => boolean;
@@ -39,6 +39,16 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
       >
         <MessageSquare className="w-4 h-4 mr-2" />
         <span>Communications</span>
+      </Button>
+      <Button
+        variant="ghost"
+        className={`flex items-center space-x-2 ${
+          isActive("/collabs") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
+        } transition-colors`}
+        onClick={() => onNavigate("/collabs")}
+      >
+        <Handshake className="w-4 h-4 mr-2" />
+        <span>Collabs</span>
       </Button>
     </>
   );
