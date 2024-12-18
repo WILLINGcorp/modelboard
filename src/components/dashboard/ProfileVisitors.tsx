@@ -26,9 +26,10 @@ export const ProfileVisitors = () => {
       const { data: visits, error } = await supabase
         .from("profile_visits")
         .select(`
+          id,
           visitor_id,
           visited_at,
-          profiles:visitor_id (
+          profiles!profile_visits_visitor_id_fkey (
             display_name,
             avatar_url,
             username
