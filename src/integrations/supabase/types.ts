@@ -347,6 +347,8 @@ export type Database = {
           sexual_orientation: string | null
           skills: Json | null
           social_media: Json | null
+          subscription_end_date: string | null
+          subscription_status: string | null
           updated_at: string
           username: string | null
           website: string | null
@@ -375,6 +377,8 @@ export type Database = {
           sexual_orientation?: string | null
           skills?: Json | null
           social_media?: Json | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
           updated_at?: string
           username?: string | null
           website?: string | null
@@ -403,6 +407,8 @@ export type Database = {
           sexual_orientation?: string | null
           skills?: Json | null
           social_media?: Json | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
           updated_at?: string
           username?: string | null
           website?: string | null
@@ -446,6 +452,44 @@ export type Database = {
           {
             foreignKeyName: "project_messages_sender_id_fkey"
             columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsor_features: {
+        Row: {
+          created_at: string
+          feature_type: string
+          id: string
+          last_used: string | null
+          profile_id: string
+          updated_at: string
+          usage_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          feature_type: string
+          id?: string
+          last_used?: string | null
+          profile_id: string
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          feature_type?: string
+          id?: string
+          last_used?: string | null
+          profile_id?: string
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_features_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

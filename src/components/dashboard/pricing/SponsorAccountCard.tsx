@@ -6,8 +6,42 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const SponsorAccountCard = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Please sign in to subscribe");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("create-sponsor-checkout", {
+        body: { user_id: user.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to initiate checkout");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="bg-modelboard-gray border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group flex flex-col">
       <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -23,7 +57,7 @@ export const SponsorAccountCard = () => {
                 <Info className="h-4 w-4 text-modelboard-red" />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Coming Soon</p>
+                <p>Premium features for your account</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -56,8 +90,12 @@ export const SponsorAccountCard = () => {
           </li>
         </ul>
         <div className="mt-auto">
-          <button className="w-full py-2.5 px-4 bg-gray-600/50 text-white rounded-lg opacity-50 cursor-not-allowed backdrop-blur-sm hover:bg-gray-600/60 transition-colors">
-            Coming Soon
+          <button 
+            onClick={handleSubscribe}
+            disabled={loading}
+            className="w-full py-2.5 px-4 bg-modelboard-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Processing..." : "Subscribe Now"}
           </button>
         </div>
       </CardContent>
