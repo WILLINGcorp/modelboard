@@ -90,6 +90,7 @@ export const CollaboratorsTab = ({ proposal }: CollaboratorsTabProps) => {
       <div className="pt-6 border-t border-modelboard-red/20">
         <h2 className="text-xl font-semibold text-white mb-4">Proposal Details</h2>
         <ProposalDetails
+          id={proposal.id}
           location={proposal.location}
           status={proposal.status}
           message={proposal.message}
