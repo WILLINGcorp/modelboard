@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Home, Users, Image, MapPin, User } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
 
 interface NavigationItemsProps {
   isAuthenticated: boolean;
