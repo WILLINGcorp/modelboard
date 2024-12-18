@@ -44,7 +44,8 @@ export const PostProductionCard = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mt-4">
+        <div className="flex items-center justify-center mt-4">
+          <span className="text-gray-400 mr-2">From the Editors Team behind</span>
           <img 
             src="/lovable-uploads/95610488-60a6-49df-a3a0-c7265fde37ad.png" 
             alt="Masqulin"
