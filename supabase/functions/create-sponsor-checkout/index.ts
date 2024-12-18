@@ -6,16 +6,31 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   apiVersion: '2023-10-16',
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const { user_id } = await req.json();
     
     if (!user_id) {
       return new Response(
         JSON.stringify({ error: 'User ID is required' }),
-        { status: 400 }
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
       );
     }
+
+    console.log('Creating checkout session for user:', user_id);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -24,18 +39,16 @@ serve(async (req) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'Sponsor Account Subscription',
-              description: 'Monthly subscription for Sponsor Account features',
+              name: 'Sponsor Account Access',
+              description: '30 days of premium features access',
             },
             unit_amount: 9900, // $99.00
-            recurring: {
-              interval: 'month',
-            },
+            recurring: null, // One-time payment
           },
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      mode: 'payment',
       success_url: `${Deno.env.get('FRONTEND_URL')}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${Deno.env.get('FRONTEND_URL')}/dashboard`,
       metadata: {
@@ -43,15 +56,22 @@ serve(async (req) => {
       },
     });
 
+    console.log('Checkout session created:', session.id);
+
     return new Response(
       JSON.stringify({ url: session.url }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
     );
   } catch (error) {
     console.error('Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 400 }
+      { 
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
     );
   }
 });

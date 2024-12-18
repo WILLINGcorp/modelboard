@@ -7,40 +7,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { SponsorFeaturesList } from "./SponsorFeaturesList";
+import { SponsorSubscribeButton } from "./SponsorSubscribeButton";
 
 export const SponsorAccountCard = () => {
   const [loading, setLoading] = useState(false);
-
-  const handleSubscribe = async () => {
-    try {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast.error("Please sign in to subscribe");
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke("create-sponsor-checkout", {
-        body: { user_id: user.id }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL received");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to initiate checkout");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Card className="bg-modelboard-gray border-modelboard-red/50 hover:border-2 transition-all duration-300 relative overflow-hidden group flex flex-col">
@@ -71,32 +42,9 @@ export const SponsorAccountCard = () => {
           <p className="text-3xl font-bold text-gradient">$99</p>
           <p className="text-sm text-gray-400 mt-1">30 days access</p>
         </div>
-        <ul className="space-y-3 text-sm mb-6">
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Sponsor account badge
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Advanced analytics
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Priority support
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Be featured in the Sponsor section and in premium placements across the platform
-          </li>
-        </ul>
+        <SponsorFeaturesList />
         <div className="mt-auto">
-          <button 
-            onClick={handleSubscribe}
-            disabled={loading}
-            className="w-full py-2.5 px-4 bg-modelboard-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Processing..." : "Subscribe Now"}
-          </button>
+          <SponsorSubscribeButton loading={loading} setLoading={setLoading} />
         </div>
       </CardContent>
     </Card>
