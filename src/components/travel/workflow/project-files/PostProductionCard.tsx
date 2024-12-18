@@ -47,13 +47,18 @@ export const PostProductionCard = () => {
         <div className="flex items-center justify-center mt-4">
           <span className="text-gray-400 mr-2">From the Editors Team behind</span>
           <img 
-            src="/lovable-uploads/95610488-60a6-49df-a3a0-c7265fde37ad.png" 
-            alt="Masqulin"
+            src="/lovable-uploads/42be08bd-e2ea-41d7-946c-038f05a0672a.png" 
+            alt="Logo 1"
             className="h-8 mx-2"
           />
           <img 
-            src="/lovable-uploads/614d6ffe-6a32-41be-8a8c-57d838cd28f3.png" 
-            alt="MenAtPlay"
+            src="/lovable-uploads/f6c67f35-b760-4a51-874d-374c1bb84701.png" 
+            alt="Logo 2"
+            className="h-8 mx-2"
+          />
+          <img 
+            src="/lovable-uploads/0054f49c-2483-4c4a-b7d5-b4d20ad8e748.png" 
+            alt="Logo 3"
             className="h-8 mx-2"
           />
         </div>
