@@ -93,12 +93,14 @@ export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => 
   };
 
   return (
-    <div className="flex flex-col h-[300px] border-t border-modelboard-dark mt-4">
+    <div className="flex flex-col h-full">
       <div className="p-2 border-b border-modelboard-dark">
         <h3 className="text-sm font-medium text-white">Project Chat</h3>
       </div>
-      <MessageList messages={messages} currentUserId={currentUserId} />
-      <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <MessageList messages={messages} currentUserId={currentUserId} />
+        <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
+      </div>
     </div>
   );
 };

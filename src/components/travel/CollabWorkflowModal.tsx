@@ -12,7 +12,7 @@ import { WorkflowTabs } from "./workflow/navigation/WorkflowTabs";
 import { ProjectChat } from "./workflow/chat/ProjectChat";
 import { CollaboratorsTab } from "./workflow/tabs/CollaboratorsTab";
 import { ScheduleTab } from "./workflow/tabs/ScheduleTab";
-import { ProjectFilesTab } from "./workflow/project-files/ProjectFilesTab";
+import { ProjectFilesTab } from "./workflow/tabs/ProjectFilesTab";
 import { ReleaseAssetsTab } from "./workflow/tabs/ReleaseAssetsTab";
 import { ProServicesTab } from "./workflow/tabs/ProServicesTab";
 import { ComplianceTab } from "./workflow/tabs/ComplianceTab";
@@ -45,42 +45,46 @@ const CollabWorkflowModal = ({
             </div>
           </DrawerHeader>
 
-          <div className="flex flex-col h-full">
-            <Tabs defaultValue="collaborators" className="flex-1">
+          <div className="flex flex-col h-[calc(95vh-120px)]">
+            <Tabs defaultValue="collaborators" className="flex-1 flex flex-col h-full">
               <WorkflowTabs />
               
-              <div className="flex-1 overflow-auto">
-                <TabsContent value="collaborators" className="p-6">
-                  <CollaboratorsTab proposal={proposal} />
-                </TabsContent>
+              <div className="flex flex-1 overflow-hidden">
+                <div className="flex-1 overflow-auto">
+                  <TabsContent value="collaborators" className="p-6 m-0 h-full">
+                    <CollaboratorsTab proposal={proposal} />
+                  </TabsContent>
 
-                <TabsContent value="schedule" className="p-6">
-                  <ScheduleTab proposal={proposal} />
-                </TabsContent>
+                  <TabsContent value="schedule" className="p-6 m-0 h-full">
+                    <ScheduleTab proposal={proposal} />
+                  </TabsContent>
 
-                <TabsContent value="proservices" className="p-6">
-                  <ProServicesTab proposalId={proposal.id} />
-                </TabsContent>
+                  <TabsContent value="proservices" className="p-6 m-0 h-full">
+                    <ProServicesTab proposalId={proposal.id} />
+                  </TabsContent>
 
-                <TabsContent value="compliance" className="p-6">
-                  <ComplianceTab proposalId={proposal.id} />
-                </TabsContent>
+                  <TabsContent value="compliance" className="p-6 m-0 h-full">
+                    <ComplianceTab proposalId={proposal.id} />
+                  </TabsContent>
 
-                <TabsContent value="files" className="p-6">
-                  <ProjectFilesTab proposalId={proposal.id} />
-                </TabsContent>
+                  <TabsContent value="files" className="p-6 m-0 h-full">
+                    <ProjectFilesTab proposalId={proposal.id} />
+                  </TabsContent>
 
-                <TabsContent value="release" className="p-6">
-                  <ReleaseAssetsTab proposalId={proposal.id} />
-                </TabsContent>
+                  <TabsContent value="release" className="p-6 m-0 h-full">
+                    <ReleaseAssetsTab proposalId={proposal.id} />
+                  </TabsContent>
+                </div>
+
+                {session?.user && (
+                  <div className="w-80 border-l border-modelboard-dark">
+                    <div className="h-full">
+                      <ProjectChat proposalId={proposal.id} currentUserId={session.user.id} />
+                    </div>
+                  </div>
+                )}
               </div>
             </Tabs>
-
-            {session?.user && (
-              <div className="px-6 pb-6">
-                <ProjectChat proposalId={proposal.id} currentUserId={session.user.id} />
-              </div>
-            )}
           </div>
         </div>
       </DrawerContent>
