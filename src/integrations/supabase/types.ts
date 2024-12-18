@@ -278,6 +278,42 @@ export type Database = {
           },
         ]
       }
+      portfolio_likes: {
+        Row: {
+          created_at: string
+          id: string
+          portfolio_item_id: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          portfolio_item_id: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          portfolio_item_id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_likes_portfolio_item_id_fkey"
+            columns: ["portfolio_item_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_likes_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       private_messages: {
         Row: {
           content: string
@@ -365,9 +401,12 @@ export type Database = {
           avatar_moderation_status: string
           avatar_url: string | null
           bio: string | null
+          brands_worked_with: Json | null
           business_model: Json | null
           created_at: string
           creator_platforms: Json | null
+          current_mood: string | null
+          current_mood_updated_at: string | null
           display_name: string | null
           endowment: string | null
           eye_color: string | null
@@ -395,9 +434,12 @@ export type Database = {
           avatar_moderation_status?: string
           avatar_url?: string | null
           bio?: string | null
+          brands_worked_with?: Json | null
           business_model?: Json | null
           created_at?: string
           creator_platforms?: Json | null
+          current_mood?: string | null
+          current_mood_updated_at?: string | null
           display_name?: string | null
           endowment?: string | null
           eye_color?: string | null
@@ -425,9 +467,12 @@ export type Database = {
           avatar_moderation_status?: string
           avatar_url?: string | null
           bio?: string | null
+          brands_worked_with?: Json | null
           business_model?: Json | null
           created_at?: string
           creator_platforms?: Json | null
+          current_mood?: string | null
+          current_mood_updated_at?: string | null
           display_name?: string | null
           endowment?: string | null
           eye_color?: string | null

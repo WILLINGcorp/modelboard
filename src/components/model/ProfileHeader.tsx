@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { User, MapPin, Globe, MessageSquare, Ruler, Scale, Eye, Palette, HandshakeIcon } from "lucide-react";
+import { User, MapPin, Globe, MessageSquare, Ruler, Scale, Eye, Palette, HandshakeIcon, Building2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import {
   Dialog,
@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import CollabProposalForm from "@/components/travel/CollabProposalForm";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -21,6 +24,8 @@ interface ProfileHeaderProps {
 
 const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentMood, setCurrentMood] = useState(profile.current_mood || "");
+  const { toast } = useToast();
   
   const platforms = Array.isArray(profile.creator_platforms) 
     ? profile.creator_platforms.filter(
@@ -33,6 +38,32 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
     : [];
 
   const socialMedia = profile.social_media as Record<string, string> || {};
+  const brandsWorkedWith = (profile.brands_worked_with as string[]) || [];
+
+  const handleMoodUpdate = async () => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ 
+          current_mood: currentMood,
+          current_mood_updated_at: new Date().toISOString()
+        })
+        .eq("id", profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Mood updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update mood",
+        variant: "destructive",
+      });
+    }
+  };
 
   const renderPhysicalAttributes = () => {
     const attributes = [];
@@ -87,18 +118,38 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
     );
   };
 
+  const renderBrandsWorkedWith = () => {
+    if (!brandsWorkedWith.length) return null;
+
+    return (
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
+          <Building2 className="h-5 w-5" />
+          Brands & Studios
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {brandsWorkedWith.map((brand, index) => (
+            <span key={index} className="bg-modelboard-dark px-3 py-1 rounded-full text-sm text-gray-300">
+              {brand}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-modelboard-gray rounded-lg p-8 mb-8 animate-fadeIn">
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <div className="relative group">
-          <Avatar className="h-32 w-32 ring-2 ring-modelboard-red ring-offset-2 ring-offset-modelboard-gray">
+          <Avatar className="h-48 w-48 ring-4 ring-modelboard-red ring-offset-4 ring-offset-modelboard-gray">
             <AvatarImage 
               src={profile.avatar_url || "/creator_default_profile.jpg"} 
               alt={profile.display_name || "Profile picture"}
               className="object-cover"
             />
             <AvatarFallback>
-              <User className="h-16 w-16" />
+              <User className="h-24 w-24" />
             </AvatarFallback>
           </Avatar>
           {profile.gender && (
@@ -134,12 +185,24 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
             )}
           </div>
 
+          {profile.current_mood && (
+            <div className="bg-modelboard-dark p-4 rounded-lg">
+              <p className="text-gray-300 italic">
+                "{profile.current_mood}"
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Last updated: {new Date(profile.current_mood_updated_at || "").toLocaleDateString()}
+              </p>
+            </div>
+          )}
+
           {profile.bio && (
             <p className="text-gray-300 whitespace-pre-wrap">{profile.bio}</p>
           )}
           
           {renderPhysicalAttributes()}
           {renderSexualPreferences()}
+          {renderBrandsWorkedWith()}
           
           {platforms.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -189,6 +252,23 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
               />
             </DialogContent>
           </Dialog>
+
+          {profile.id === (supabase.auth.getUser()?.data?.user?.id || null) && (
+            <div className="mt-4">
+              <Input
+                placeholder="How are you feeling? (52 chars max)"
+                value={currentMood}
+                onChange={(e) => setCurrentMood(e.target.value.slice(0, 52))}
+                className="mb-2"
+              />
+              <Button 
+                onClick={handleMoodUpdate}
+                className="w-full bg-modelboard-dark hover:bg-modelboard-gray text-white"
+              >
+                Update Mood
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
