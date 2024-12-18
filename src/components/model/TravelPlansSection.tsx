@@ -41,16 +41,6 @@ const TravelPlansSection = ({ travelPlans }: TravelPlansSectionProps) => {
                   setIsDialogOpen(open);
                   if (!open) setSelectedPlan(null);
                 }}>
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="text-white hover:text-modelboard-red"
-                      onClick={() => setSelectedPlan(plan)}
-                    >
-                      <Handshake className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
                   <DialogContent className="bg-modelboard-gray text-white">
                     <DialogHeader>
                       <DialogTitle>Propose Collaboration in {plan.destination}</DialogTitle>
