@@ -29,10 +29,15 @@ export const PurchaseAdSpot = () => {
         body: { hours },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error:', error);
+        throw error;
+      }
 
       if (data?.url) {
         window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -49,7 +54,10 @@ export const PurchaseAdSpot = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-modelboard-red hover:bg-red-600">
+        <Button 
+          variant="default"
+          className="w-full bg-modelboard-red hover:bg-red-600"
+        >
           Get Featured
         </Button>
       </DialogTrigger>
