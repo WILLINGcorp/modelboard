@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ConversationList from "@/components/messaging/ConversationList";
 import ChatArea from "@/components/messaging/ChatArea";
-import CollabProposalsList from "@/components/travel/CollabProposalsList";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 
 const Messages = () => {
@@ -43,10 +42,8 @@ const Messages = () => {
         </div>
 
         <div className="mt-12">
-          <CollabProposalsList />
+          <SponsorFeaturedMembers />
         </div>
-
-        <SponsorFeaturedMembers />
       </div>
     </div>
   );
