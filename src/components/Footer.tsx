@@ -1,38 +1,5 @@
 import { Heart } from "lucide-react";
 
-const footerLinks = {
-  product: [
-    { label: "Features", href: "#" },
-    { label: "Pricing", href: "#" },
-    { label: "Security", href: "#" },
-  ],
-  resources: [
-    { label: "Blog", href: "#" },
-    { label: "Help Center", href: "#" },
-    { label: "Guidelines", href: "#" },
-  ],
-  company: [
-    { label: "About", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Contact", href: "#" },
-  ],
-};
-
-const FooterLinkSection = ({ title, links }: { title: string; links: Array<{ label: string; href: string }> }) => (
-  <div>
-    <h4 className="font-semibold mb-4">{title}</h4>
-    <ul className="space-y-2 text-gray-400">
-      {links.map(({ label, href }) => (
-        <li key={label}>
-          <a href={href} className="hover:text-modelboard-red transition-colors">
-            {label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
 const Footer = () => {
   return (
     <footer className="border-t border-gray-800">
@@ -49,9 +16,32 @@ const Footer = () => {
             </p>
           </div>
           
-          <FooterLinkSection title="Product" links={footerLinks.product} />
-          <FooterLinkSection title="Resources" links={footerLinks.resources} />
-          <FooterLinkSection title="Company" links={footerLinks.company} />
+          <div>
+            <h4 className="font-semibold mb-4">Product</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Features</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Security</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Help Center</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Guidelines</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-4">Company</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">About</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Careers</a></li>
+              <li><a href="#" className="hover:text-modelboard-red transition-colors">Contact</a></li>
+            </ul>
+          </div>
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
