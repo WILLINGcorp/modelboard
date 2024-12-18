@@ -46,7 +46,7 @@ const CollabWorkflowModal = ({
           </DrawerHeader>
 
           <div className="flex flex-col h-[calc(95vh-120px)]">
-            <Tabs defaultValue="collaborators" className="flex-1 flex flex-col h-full">
+            <Tabs defaultValue="collaborators" className="flex-1 flex flex-col">
               <WorkflowTabs />
               
               <div className="flex flex-1 overflow-hidden mt-4">
@@ -78,16 +78,20 @@ const CollabWorkflowModal = ({
                 </div>
 
                 {/* Persistent Chat Sidebar */}
-                {session?.user && (
-                  <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0 overflow-hidden">
-                    <div className="h-full flex flex-col">
+                <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0 overflow-hidden">
+                  <div className="h-full flex flex-col">
+                    {session?.user ? (
                       <ProjectChat 
                         proposalId={proposal.id} 
                         currentUserId={session.user.id} 
                       />
-                    </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        Please sign in to use the chat
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </Tabs>
           </div>
