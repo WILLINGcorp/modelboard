@@ -12,7 +12,7 @@ import { WorkflowTabs } from "./workflow/navigation/WorkflowTabs";
 import { ProjectChat } from "./workflow/chat/ProjectChat";
 import { CollaboratorsTab } from "./workflow/tabs/CollaboratorsTab";
 import { ScheduleTab } from "./workflow/tabs/ScheduleTab";
-import { ProjectFilesTab } from "./workflow/tabs/ProjectFilesTab";
+import { ProjectFilesTab } from "./workflow/project-files/ProjectFilesTab";
 import { ReleaseAssetsTab } from "./workflow/tabs/ReleaseAssetsTab";
 import { ProServicesTab } from "./workflow/tabs/ProServicesTab";
 import { ComplianceTab } from "./workflow/tabs/ComplianceTab";
