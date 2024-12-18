@@ -6,6 +6,7 @@ import ProfileHeader from "@/components/model/ProfileHeader";
 import TravelPlansSection from "@/components/model/TravelPlansSection";
 import PortfolioSection from "@/components/model/PortfolioSection";
 import MessagingModal from "@/components/messaging/MessagingModal";
+import { useTrackProfileVisit } from "@/hooks/use-track-profile-visit";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
@@ -19,6 +20,9 @@ const ModelProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+
+  // Track profile visit
+  useTrackProfileVisit(id);
 
   useEffect(() => {
     const getProfileData = async () => {
@@ -98,8 +102,8 @@ const ModelProfile = () => {
         <MessagingModal
           isOpen={isMessageModalOpen}
           onClose={() => setIsMessageModalOpen(false)}
-          receiverId={profile.id}
-          receiverName={profile.display_name || "Anonymous User"}
+          receiverId={profile?.id || ""}
+          receiverName={profile?.display_name || "Anonymous User"}
         />
       </div>
     </div>

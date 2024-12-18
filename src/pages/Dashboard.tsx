@@ -6,6 +6,7 @@ import { MapPin, Image, User } from "lucide-react";
 import { NotificationCards } from "@/components/dashboard/NotificationCards";
 import { PricingTable } from "@/components/dashboard/PricingTable";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
+import { ProfileVisitors } from "@/components/dashboard/ProfileVisitors";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -86,7 +87,10 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        <NotificationCards />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <NotificationCards />
+          <ProfileVisitors />
+        </div>
         
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">Premium Features</h2>
