@@ -6,7 +6,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { TabsContent } from "@/components/ui/tabs";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 import { Proposal } from "./types/workflow";
 import { WorkflowTabs } from "./workflow/navigation/WorkflowTabs";
 import { ProjectChat } from "./workflow/chat/ProjectChat";
@@ -28,7 +28,7 @@ const CollabWorkflowModal = ({
   onClose,
   proposal,
 }: CollabWorkflowModalProps) => {
-  const { user } = useAuth();
+  const { session } = useSession();
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
@@ -74,9 +74,9 @@ const CollabWorkflowModal = ({
               </TabsContent>
             </div>
 
-            {user && (
+            {session?.user && (
               <div className="px-6 pb-6">
-                <ProjectChat proposalId={proposal.id} currentUserId={user.id} />
+                <ProjectChat proposalId={proposal.id} currentUserId={session.user.id} />
               </div>
             )}
           </div>

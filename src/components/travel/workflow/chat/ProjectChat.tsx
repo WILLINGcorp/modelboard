@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageList } from "@/components/messaging/MessageList";
-import { MessageInput } from "@/components/messaging/MessageInput";
+import MessageList from "@/components/messaging/MessageList";
+import MessageInput from "@/components/messaging/MessageInput";
 import type { Database } from "@/integrations/supabase/types";
 
 type Message = Database["public"]["Tables"]["private_messages"]["Row"];
