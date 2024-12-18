@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import MessageList from "@/components/messaging/MessageList";
 import MessageInput from "@/components/messaging/MessageInput";
+import ProjectMessageList from "./ProjectMessageList";
 import type { Database } from "@/integrations/supabase/types";
 
 type ProjectMessage = Database["public"]["Tables"]["project_messages"]["Row"];
@@ -82,14 +82,8 @@ export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => 
         </p>
       </div>
 
-      <MessageList
-        messages={messages.map((msg) => ({
-          id: msg.id,
-          content: msg.content,
-          sender_id: msg.sender_id,
-          created_at: msg.created_at,
-          receiver_id: proposalId, // Using proposalId as receiver_id for UI purposes
-        }))}
+      <ProjectMessageList
+        messages={messages}
         currentUserId={currentUserId}
       />
 
