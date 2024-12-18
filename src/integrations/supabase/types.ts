@@ -323,6 +323,42 @@ export type Database = {
           },
         ]
       }
+      profile_visits: {
+        Row: {
+          id: string
+          visited_at: string
+          visited_profile_id: string
+          visitor_id: string
+        }
+        Insert: {
+          id?: string
+          visited_at?: string
+          visited_profile_id: string
+          visitor_id: string
+        }
+        Update: {
+          id?: string
+          visited_at?: string
+          visited_profile_id?: string
+          visitor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_visits_visited_profile_id_fkey"
+            columns: ["visited_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_visits_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_moderation_comment: string | null

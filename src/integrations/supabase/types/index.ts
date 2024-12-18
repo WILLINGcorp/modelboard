@@ -7,6 +7,7 @@ export * from './profiles';
 export * from './portfolio';
 export * from './messages';
 export * from './travel';
+export * from './visits';
 
 // Re-export common types
 export type { Database, Json };

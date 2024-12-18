@@ -3,6 +3,7 @@ import type { PortfolioItemsTable } from './portfolio';
 import type { PrivateMessagesTable, ProjectMessagesTable } from './messages';
 import type { ProfilesTable } from './profiles';
 import type { TravelPlansTable } from './travel';
+import type { ProfileVisitsTable } from './visits';
 
 export type Json =
   | string
@@ -21,6 +22,7 @@ export interface Database {
       project_messages: ProjectMessagesTable;
       profiles: ProfilesTable;
       travel_plans: TravelPlansTable;
+      profile_visits: ProfileVisitsTable;
     };
     Views: {
       [_ in never]: never;

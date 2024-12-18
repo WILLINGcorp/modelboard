@@ -4,13 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
+import type { Database } from "@/integrations/supabase/types";
+
+type ProfileVisit = Database["public"]["Tables"]["profile_visits"]["Row"] & {
+  profiles: {
+    display_name: string | null;
+    avatar_url: string | null;
+    username: string | null;
+  };
+};
 
 export const ProfileVisitors = () => {
   const navigate = useNavigate();
 
-  const { data: visitors } = useQuery({
+  const { data: visitors } = useQuery<ProfileVisit[]>({
     queryKey: ["profile-visitors"],
     queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) throw new Error("No session");
+
       const { data: visits, error } = await supabase
         .from("profile_visits")
         .select(`
@@ -22,6 +34,7 @@ export const ProfileVisitors = () => {
             username
           )
         `)
+        .eq('visited_profile_id', session.session.user.id)
         .order("visited_at", { ascending: false })
         .limit(5);
 
