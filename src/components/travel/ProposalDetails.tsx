@@ -23,10 +23,6 @@ const ProposalDetails = ({
   location,
   status,
   message,
-  senderName,
-  senderUsername,
-  receiverName,
-  receiverUsername,
   onUpdate,
 }: ProposalDetailsProps) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -63,7 +59,7 @@ const ProposalDetails = ({
       <div className="absolute inset-0 bg-gradient-to-br from-modelboard-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="flex justify-between items-center mb-3 relative z-10">
         <h3 className="text-lg font-bold text-gradient">
-          Proposal Details
+          Project Details
         </h3>
         {!isEditing ? (
           <Button
@@ -98,20 +94,6 @@ const ProposalDetails = ({
         )}
       </div>
       <div className="space-y-3 text-white relative z-10">
-        <div className="flex items-center justify-between">
-          <span className="text-gray-400">From:</span>
-          <div className="text-right">
-            <p className="font-medium">{senderName || "Anonymous"}</p>
-            <p className="text-sm text-gray-400">@{senderUsername || "unknown"}</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-400">To:</span>
-          <div className="text-right">
-            <p className="font-medium">{receiverName || "Anonymous"}</p>
-            <p className="text-sm text-gray-400">@{receiverUsername || "unknown"}</p>
-          </div>
-        </div>
         <div className="space-y-1">
           <span className="text-gray-400">Location:</span>
           {isEditing ? (
@@ -134,7 +116,7 @@ const ProposalDetails = ({
           </span>
         </p>
         <div className="pt-2 border-t border-modelboard-red/10">
-          <p className="text-gray-400 mb-1">Message:</p>
+          <p className="text-gray-400 mb-1">Context / Concept / Description:</p>
           {isEditing ? (
             <Textarea
               value={editedMessage}
