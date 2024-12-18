@@ -28,7 +28,7 @@ const CollabWorkflowModal = ({
   onClose,
   proposal,
 }: CollabWorkflowModalProps) => {
-  const { session } = useSession();
+  const session = useSession();
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
