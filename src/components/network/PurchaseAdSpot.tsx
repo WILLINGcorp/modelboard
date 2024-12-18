@@ -64,13 +64,13 @@ export const PurchaseAdSpot = () => {
               id="hours"
               type="number"
               min="12"
-              step="12"
+              step="1"
               value={hours}
               onChange={(e) => setHours(Number(e.target.value))}
               className="bg-modelboard-dark text-white"
             />
             <p className="text-sm text-gray-400 mt-1">
-              Minimum 12 hours, in 12-hour increments
+              Minimum 12 hours, in 1-hour increments
             </p>
           </div>
           <div>
@@ -83,7 +83,7 @@ export const PurchaseAdSpot = () => {
           </div>
           <Button 
             onClick={handlePurchase}
-            disabled={loading}
+            disabled={loading || hours < 12}
             className="w-full bg-modelboard-red hover:bg-red-600"
           >
             {loading ? "Processing..." : "Purchase Now"}

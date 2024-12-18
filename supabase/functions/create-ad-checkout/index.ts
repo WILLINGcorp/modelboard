@@ -15,6 +15,11 @@ serve(async (req) => {
   try {
     const { hours = 12 } = await req.json();
     
+    // Validate hours (minimum 12, increment of 1)
+    if (hours < 12) {
+      throw new Error('Minimum duration is 12 hours');
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
