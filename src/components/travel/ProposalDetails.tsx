@@ -11,6 +11,10 @@ interface ProposalDetailsProps {
   location: string;
   status: string;
   message: string | null;
+  senderName: string | null;
+  senderUsername: string | null;
+  receiverName: string | null;
+  receiverUsername: string | null;
   onUpdate?: () => void;
 }
 
@@ -19,6 +23,10 @@ const ProposalDetails = ({
   location,
   status,
   message,
+  senderName,
+  senderUsername,
+  receiverName,
+  receiverUsername,
   onUpdate,
 }: ProposalDetailsProps) => {
   const [isEditing, setIsEditing] = useState(false);
