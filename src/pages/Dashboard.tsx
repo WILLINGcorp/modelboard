@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Image, User } from "lucide-react";
 import { NotificationCards } from "@/components/dashboard/NotificationCards";
 import { PricingTable } from "@/components/dashboard/PricingTable";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -91,6 +92,8 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold text-white">Premium Features</h2>
           <PricingTable />
         </div>
+
+        <SponsorFeaturedMembers />
       </div>
     </div>
   );

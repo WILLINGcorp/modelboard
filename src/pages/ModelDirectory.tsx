@@ -8,6 +8,7 @@ import { ModelGrid } from "@/components/network/ModelGrid";
 import { SponsorProfiles } from "@/components/network/SponsorProfiles";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
 import { useToast } from "@/components/ui/use-toast";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -149,6 +150,8 @@ const ModelDirectory = () => {
         <div className="mt-12">
           <SponsorProfiles />
         </div>
+
+        <SponsorFeaturedMembers />
       </div>
     </div>
   );
