@@ -68,8 +68,8 @@ export const SponsorAccountCard = () => {
       </CardHeader>
       <CardContent className="flex flex-col flex-grow">
         <div className="text-center mb-6">
-          <p className="text-3xl font-bold text-gradient">$99/month</p>
-          <p className="text-sm text-gray-400 mt-1">Billed monthly</p>
+          <p className="text-3xl font-bold text-gradient">$99</p>
+          <p className="text-sm text-gray-400 mt-1">30 days access</p>
         </div>
         <ul className="space-y-3 text-sm mb-6">
           <li className="flex items-center gap-2">
