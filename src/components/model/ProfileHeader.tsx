@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CollabProposalForm from "@/components/travel/CollabProposalForm";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -25,8 +25,17 @@ interface ProfileHeaderProps {
 const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentMood, setCurrentMood] = useState(profile.current_mood || "");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
   
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+    };
+    getCurrentUser();
+  }, []);
+
   const platforms = Array.isArray(profile.creator_platforms) 
     ? profile.creator_platforms.filter(
         (p): p is { platform: string; handle: string } => 
@@ -253,7 +262,7 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
             </DialogContent>
           </Dialog>
 
-          {profile.id === (supabase.auth.getUser()?.data?.user?.id || null) && (
+          {currentUserId === profile.id && (
             <div className="mt-4">
               <Input
                 placeholder="How are you feeling? (52 chars max)"
