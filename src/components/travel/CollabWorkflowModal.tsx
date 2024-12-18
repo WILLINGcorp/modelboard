@@ -79,8 +79,8 @@ const CollabWorkflowModal = ({
 
                 {/* Persistent Chat Sidebar */}
                 {session?.user && (
-                  <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0">
-                    <div className="h-full">
+                  <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0 overflow-hidden">
+                    <div className="h-full flex flex-col">
                       <ProjectChat 
                         proposalId={proposal.id} 
                         currentUserId={session.user.id} 
