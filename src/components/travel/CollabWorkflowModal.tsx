@@ -5,7 +5,7 @@ import {
   DrawerTitle,
   DrawerDescription,
 } from "@/components/ui/drawer";
-import { TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useSession } from "@supabase/auth-helpers-react";
 import { Proposal } from "./types/workflow";
 import { WorkflowTabs } from "./workflow/navigation/WorkflowTabs";
@@ -43,36 +43,38 @@ const CollabWorkflowModal = ({
                 Manage your collaboration process step by step
               </DrawerDescription>
             </div>
-            
-            <WorkflowTabs defaultValue="collaborators" />
           </DrawerHeader>
 
           <div className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto">
-              <TabsContent value="collaborators" className="p-6">
-                <CollaboratorsTab proposal={proposal} />
-              </TabsContent>
+            <Tabs defaultValue="collaborators" className="flex-1">
+              <WorkflowTabs />
+              
+              <div className="flex-1 overflow-auto">
+                <TabsContent value="collaborators" className="p-6">
+                  <CollaboratorsTab proposal={proposal} />
+                </TabsContent>
 
-              <TabsContent value="schedule" className="p-6">
-                <ScheduleTab proposal={proposal} />
-              </TabsContent>
+                <TabsContent value="schedule" className="p-6">
+                  <ScheduleTab proposal={proposal} />
+                </TabsContent>
 
-              <TabsContent value="proservices" className="p-6">
-                <ProServicesTab proposalId={proposal.id} />
-              </TabsContent>
+                <TabsContent value="proservices" className="p-6">
+                  <ProServicesTab proposalId={proposal.id} />
+                </TabsContent>
 
-              <TabsContent value="compliance" className="p-6">
-                <ComplianceTab proposalId={proposal.id} />
-              </TabsContent>
+                <TabsContent value="compliance" className="p-6">
+                  <ComplianceTab proposalId={proposal.id} />
+                </TabsContent>
 
-              <TabsContent value="files" className="p-6">
-                <ProjectFilesTab proposalId={proposal.id} />
-              </TabsContent>
+                <TabsContent value="files" className="p-6">
+                  <ProjectFilesTab proposalId={proposal.id} />
+                </TabsContent>
 
-              <TabsContent value="release" className="p-6">
-                <ReleaseAssetsTab proposalId={proposal.id} />
-              </TabsContent>
-            </div>
+                <TabsContent value="release" className="p-6">
+                  <ReleaseAssetsTab proposalId={proposal.id} />
+                </TabsContent>
+              </div>
+            </Tabs>
 
             {session?.user && (
               <div className="px-6 pb-6">
