@@ -38,12 +38,8 @@ serve(async (req) => {
         {
           price_data: {
             currency: 'usd',
-            product_data: {
-              name: 'Sponsor Account Access',
-              description: '30 days of premium features access',
-            },
+            product: 'prod_RQGnaDq23VKZLP', // Using the specific product ID
             unit_amount: 9900, // $99.00
-            recurring: null, // One-time payment
           },
           quantity: 1,
         },
