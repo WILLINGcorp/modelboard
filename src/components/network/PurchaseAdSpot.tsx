@@ -1,53 +1,45 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const PurchaseAdSpot = () => {
   const [hours, setHours] = useState(12);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePurchase = async () => {
     try {
-      setLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Error",
-          description: "Please sign in to purchase an ad spot",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-ad-checkout', {
+      setIsLoading(true);
+      const { data, error } = await supabase.functions.invoke("create-ad-checkout", {
         body: { hours },
       });
 
       if (error) {
         console.error('Error:', error);
+        toast.error("Failed to create checkout session");
         throw error;
       }
 
       if (data?.url) {
         window.location.href = data.url;
       } else {
+        toast.error("No checkout URL received");
         throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create checkout session",
-        variant: "destructive",
-      });
+      toast.error("Failed to initiate checkout");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -56,45 +48,36 @@ export const PurchaseAdSpot = () => {
       <DialogTrigger asChild>
         <Button 
           variant="default"
-          className="w-full bg-modelboard-red hover:bg-red-600"
+          className="w-full bg-modelboard-red hover:bg-red-600 text-white"
         >
           Get Featured
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-modelboard-gray text-white">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Purchase Featured Spot</DialogTitle>
+          <DialogTitle>Purchase Featured Profile Spot</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
             <Label htmlFor="hours">Duration (hours)</Label>
             <Input
               id="hours"
               type="number"
-              min="12"
-              step="1"
+              min={12}
+              step={1}
               value={hours}
-              onChange={(e) => setHours(Number(e.target.value))}
-              className="bg-modelboard-dark text-white"
+              onChange={(e) => setHours(parseInt(e.target.value))}
             />
-            <p className="text-sm text-gray-400 mt-1">
-              Minimum 12 hours, in 1-hour increments
+            <p className="text-sm text-gray-500">
+              Minimum duration: 12 hours. Total cost: ${hours}
             </p>
           </div>
-          <div>
-            <p className="text-lg font-semibold">
-              Total: ${hours.toFixed(2)}
-            </p>
-            <p className="text-sm text-gray-400">
-              ($1 per hour)
-            </p>
-          </div>
-          <Button 
+          <Button
+            className="w-full bg-modelboard-red hover:bg-red-600 text-white"
             onClick={handlePurchase}
-            disabled={loading || hours < 12}
-            className="w-full bg-modelboard-red hover:bg-red-600"
+            disabled={isLoading || hours < 12}
           >
-            {loading ? "Processing..." : "Purchase Now"}
+            {isLoading ? "Processing..." : "Purchase"}
           </Button>
         </div>
       </DialogContent>
