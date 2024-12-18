@@ -77,7 +77,7 @@ const CollabWorkflowModal = ({
                   </TabsContent>
                 </div>
 
-                {/* Persistent Chat Sidebar */}
+                {/* Project Chat Sidebar */}
                 <div className="w-[320px] border-l border-modelboard-gray flex-shrink-0 overflow-hidden">
                   <div className="h-full flex flex-col">
                     {session?.user ? (
@@ -87,7 +87,7 @@ const CollabWorkflowModal = ({
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full text-gray-400">
-                        Please sign in to use the chat
+                        Please sign in to use the project chat
                       </div>
                     )}
                   </div>

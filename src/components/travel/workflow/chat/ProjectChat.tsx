@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import MessageList from "@/components/messaging/MessageList";
 import MessageInput from "@/components/messaging/MessageInput";
 import type { Database } from "@/integrations/supabase/types";
 
-type Message = Database["public"]["Tables"]["private_messages"]["Row"];
+type ProjectMessage = Database["public"]["Tables"]["project_messages"]["Row"];
 
 interface ProjectChatProps {
   proposalId: string;
@@ -12,48 +12,41 @@ interface ProjectChatProps {
 }
 
 export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ProjectMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchMessages();
-    subscribeToMessages();
-  }, [proposalId]);
-
-  const fetchMessages = async () => {
-    try {
-      const { data: proposal } = await supabase
-        .from("collab_proposals")
-        .select("sender_id, receiver_id")
-        .eq("id", proposalId)
-        .single();
-
-      if (!proposal) return;
-
-      const { data } = await supabase
-        .from("private_messages")
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from("project_messages")
         .select("*")
-        .or(`and(sender_id.eq.${proposal.sender_id},receiver_id.eq.${proposal.receiver_id}),and(sender_id.eq.${proposal.receiver_id},receiver_id.eq.${proposal.sender_id})`)
+        .eq("proposal_id", proposalId)
         .order("created_at", { ascending: true });
 
-      if (data) setMessages(data);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
+      if (error) {
+        console.error("Error fetching messages:", error);
+        return;
+      }
 
-  const subscribeToMessages = () => {
+      setMessages(data || []);
+    };
+
+    fetchMessages();
+
+    // Subscribe to new messages
     const channel = supabase
-      .channel('project_chat')
+      .channel("project_messages")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'private_messages',
+          event: "INSERT",
+          schema: "public",
+          table: "project_messages",
+          filter: `proposal_id=eq.${proposalId}`,
         },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new as Message]);
+          const newMessage = payload.new as ProjectMessage;
+          setMessages((prev) => [...prev, newMessage]);
         }
       )
       .subscribe();
@@ -61,30 +54,18 @@ export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => 
     return () => {
       supabase.removeChannel(channel);
     };
-  };
+  }, [proposalId]);
 
-  const sendMessage = async (content: string) => {
-    if (!content.trim()) return;
-
+  const handleSendMessage = async (content: string) => {
     setIsLoading(true);
     try {
-      const { data: proposal } = await supabase
-        .from("collab_proposals")
-        .select("sender_id, receiver_id")
-        .eq("id", proposalId)
-        .single();
-
-      if (!proposal) return;
-
-      const receiverId = proposal.sender_id === currentUserId 
-        ? proposal.receiver_id 
-        : proposal.sender_id;
-
-      await supabase.from("private_messages").insert({
+      const { error } = await supabase.from("project_messages").insert({
+        proposal_id: proposalId,
         sender_id: currentUserId,
-        receiver_id: receiverId,
         content,
       });
+
+      if (error) throw error;
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
@@ -93,14 +74,26 @@ export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => 
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-2 border-b border-modelboard-dark">
-        <h3 className="text-sm font-medium text-white">Project Chat</h3>
+    <div className="flex flex-col h-full bg-modelboard-dark">
+      <div className="p-4 border-b border-modelboard-gray">
+        <h3 className="text-lg font-semibold text-white">Project Chat</h3>
+        <p className="text-sm text-gray-400">
+          Communicate with all project collaborators
+        </p>
       </div>
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <MessageList messages={messages} currentUserId={currentUserId} />
-        <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
-      </div>
+
+      <MessageList
+        messages={messages.map((msg) => ({
+          id: msg.id,
+          content: msg.content,
+          sender_id: msg.sender_id,
+          created_at: msg.created_at,
+          receiver_id: proposalId, // Using proposalId as receiver_id for UI purposes
+        }))}
+        currentUserId={currentUserId}
+      />
+
+      <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
     </div>
   );
 };
