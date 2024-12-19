@@ -13,18 +13,19 @@ export const useTrackProfileVisit = (profileId: string | undefined) => {
       if (visitorId === profileId) return; // Don't track self-visits
 
       try {
-        await supabase
+        const { error } = await supabase
           .from("profile_visits")
-          .upsert(
-            {
-              visitor_id: visitorId,
-              visited_profile_id: profileId,
-              visited_at: new Date().toISOString(),
-            },
-            {
-              onConflict: "visitor_id,visited_profile_id",
-            }
-          );
+          .insert({
+            visitor_id: visitorId,
+            visited_profile_id: profileId,
+            visited_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Error tracking profile visit:", error);
+        }
       } catch (error) {
         console.error("Error tracking profile visit:", error);
       }
