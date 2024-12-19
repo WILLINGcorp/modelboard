@@ -626,7 +626,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      handle_profile_visit: {
+        Args: {
+          visitor: string
+          visited: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

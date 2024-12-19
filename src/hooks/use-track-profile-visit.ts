@@ -13,12 +13,10 @@ export const useTrackProfileVisit = (profileId: string | undefined) => {
       if (visitorId === profileId) return; // Don't track self-visits
 
       try {
-        const { error } = await supabase
-          .from("profile_visits")
-          .insert({
-            visitor_id: visitorId,
-            visited_profile_id: profileId,
-          });
+        const { error } = await supabase.rpc('handle_profile_visit', {
+          visitor: visitorId,
+          visited: profileId
+        });
 
         if (error) {
           console.error("Error tracking profile visit:", error);
