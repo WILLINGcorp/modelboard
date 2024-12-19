@@ -18,10 +18,7 @@ export const useTrackProfileVisit = (profileId: string | undefined) => {
           .insert({
             visitor_id: visitorId,
             visited_profile_id: profileId,
-            visited_at: new Date().toISOString(),
-          })
-          .select()
-          .single();
+          });
 
         if (error) {
           console.error("Error tracking profile visit:", error);
