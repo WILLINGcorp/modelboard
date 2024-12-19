@@ -30,14 +30,21 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Show loading state
   if (loading) {
-    return null; // Or a loading spinner
+    return (
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
   }
 
+  // If not authenticated, redirect to auth page
   if (!session) {
-    // Redirect to auth page but save the intended destination
+    // Save the current location they were trying to go to
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
+  // If authenticated, render the protected route
   return children;
 };
