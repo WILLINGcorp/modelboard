@@ -4,7 +4,12 @@ import { LayoutDashboard, Users, MessageSquare, MapPin, Image, User, Shield } fr
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
-export const AuthenticatedNav = () => {
+interface AuthenticatedNavProps {
+  isActive?: (path: string) => boolean;
+  onNavigate?: (path: string) => void;
+}
+
+export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps) => {
   const { data: profile } = useQuery({
     queryKey: ["staffProfile"],
     queryFn: async () => {
@@ -21,16 +26,21 @@ export const AuthenticatedNav = () => {
     },
   });
 
+  const handleClick = (path: string) => {
+    onNavigate?.(path);
+  };
+
   return (
     <nav className="flex flex-col gap-1">
       <NavLink
         to="/dashboard"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/dashboard") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/dashboard")}
       >
         <LayoutDashboard className="h-4 w-4" />
         <span>Dashboard</span>
@@ -38,12 +48,13 @@ export const AuthenticatedNav = () => {
 
       <NavLink
         to="/network"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/network") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/network")}
       >
         <Users className="h-4 w-4" />
         <span>Network</span>
@@ -51,12 +62,13 @@ export const AuthenticatedNav = () => {
 
       <NavLink
         to="/messages"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/messages") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/messages")}
       >
         <MessageSquare className="h-4 w-4" />
         <span>DMs</span>
@@ -64,12 +76,13 @@ export const AuthenticatedNav = () => {
 
       <NavLink
         to="/my-location"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/my-location") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/my-location")}
       >
         <MapPin className="h-4 w-4" />
         <span>My Location</span>
@@ -77,12 +90,13 @@ export const AuthenticatedNav = () => {
 
       <NavLink
         to="/my-portfolio"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/my-portfolio") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/my-portfolio")}
       >
         <Image className="h-4 w-4" />
         <span>My Portfolio</span>
@@ -90,12 +104,13 @@ export const AuthenticatedNav = () => {
 
       <NavLink
         to="/my-profile"
-        className={({ isActive }) =>
+        className={({ isActive: linkActive }) =>
           cn(
             "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            isActive && "text-white bg-modelboard-gray"
+            (isActive ? isActive("/my-profile") : linkActive) && "text-white bg-modelboard-gray"
           )
         }
+        onClick={() => handleClick("/my-profile")}
       >
         <User className="h-4 w-4" />
         <span>My Profile</span>
@@ -104,12 +119,13 @@ export const AuthenticatedNav = () => {
       {profile?.staff_type && (
         <NavLink
           to="/moderation"
-          className={({ isActive }) =>
+          className={({ isActive: linkActive }) =>
             cn(
               "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-              isActive && "text-white bg-modelboard-gray"
+              (isActive ? isActive("/moderation") : linkActive) && "text-white bg-modelboard-gray"
             )
           }
+          onClick={() => handleClick("/moderation")}
         >
           <Shield className="h-4 w-4" />
           <span>Moderation</span>
