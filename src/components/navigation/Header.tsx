@@ -3,11 +3,15 @@ import { Menu, X } from "lucide-react";
 import { NavigationItems } from "./NavigationItems";
 import { UserMenu } from "./UserMenu";
 import { supabase } from "@/integrations/supabase/client";
+import { Session } from "@supabase/supabase-js";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,16 +22,25 @@ export const Header = () => {
   }, []);
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      
+      // If session is null (user logged out), redirect to auth
+      if (!session && location.pathname !== '/') {
+        navigate('/auth');
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate, location.pathname]);
 
   return (
     <header
@@ -39,7 +52,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <a href="/" className="hover-effect">
             <img 
-              src="/modelboard_logo_white.png" 
+              src="/modelboard-logo.png" 
               alt="ModelBoard" 
               className="h-8 md:h-10"
             />
