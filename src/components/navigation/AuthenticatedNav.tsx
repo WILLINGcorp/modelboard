@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Home, Users, MessageSquare, Handshake } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Handshake } from "lucide-react";
 
 interface AuthenticatedNavProps {
   isActive: (path: string) => boolean;
@@ -13,12 +13,12 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
       <Button
         variant="ghost"
         className={`flex items-center space-x-2 ${
-          isActive("/") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
+          isActive("/dashboard") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
         } transition-colors`}
-        onClick={() => onNavigate("/")}
+        onClick={() => onNavigate("/dashboard")}
       >
-        <Home className="w-4 h-4 mr-2" />
-        <span>Home</span>
+        <LayoutDashboard className="w-4 h-4 mr-2" />
+        <span>Dashboard</span>
       </Button>
       <Button
         variant="ghost"
@@ -38,7 +38,7 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
         onClick={() => onNavigate("/communications")}
       >
         <MessageSquare className="w-4 h-4 mr-2" />
-        <span>Communications</span>
+        <span>DMs</span>
       </Button>
       <Button
         variant="ghost"
