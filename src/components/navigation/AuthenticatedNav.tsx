@@ -1,15 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, MessageSquare, MapPin, Image, User, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { cn } from "@/lib/utils";
+import { DashboardLink } from "./nav-items/DashboardLink";
+import { NetworkLink } from "./nav-items/NetworkLink";
+import { MessagesLink } from "./nav-items/MessagesLink";
+import { LocationLink } from "./nav-items/LocationLink";
+import { PortfolioLink } from "./nav-items/PortfolioLink";
+import { ProfileLink } from "./nav-items/ProfileLink";
+import { ModerationLink } from "./nav-items/ModerationLink";
 
 interface AuthenticatedNavProps {
   isActive?: (path: string) => boolean;
   onNavigate?: (path: string) => void;
 }
 
-export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps) => {
+export const AuthenticatedNav = ({ isActive = () => false, onNavigate = () => {} }: AuthenticatedNavProps) => {
   const { data: profile } = useQuery({
     queryKey: ["staffProfile"],
     queryFn: async () => {
@@ -26,110 +30,16 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
     },
   });
 
-  const handleClick = (path: string) => {
-    onNavigate?.(path);
-  };
-
   return (
     <nav className="flex flex-col gap-1">
-      <NavLink
-        to="/dashboard"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/dashboard") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/dashboard")}
-      >
-        <LayoutDashboard className="h-4 w-4" />
-        <span>Dashboard</span>
-      </NavLink>
-
-      <NavLink
-        to="/network"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/network") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/network")}
-      >
-        <Users className="h-4 w-4" />
-        <span>Network</span>
-      </NavLink>
-
-      <NavLink
-        to="/messages"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/messages") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/messages")}
-      >
-        <MessageSquare className="h-4 w-4" />
-        <span>DMs</span>
-      </NavLink>
-
-      <NavLink
-        to="/my-location"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/my-location") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/my-location")}
-      >
-        <MapPin className="h-4 w-4" />
-        <span>My Location</span>
-      </NavLink>
-
-      <NavLink
-        to="/my-portfolio"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/my-portfolio") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/my-portfolio")}
-      >
-        <Image className="h-4 w-4" />
-        <span>My Portfolio</span>
-      </NavLink>
-
-      <NavLink
-        to="/my-profile"
-        className={({ isActive: linkActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-            (isActive ? isActive("/my-profile") : linkActive) && "text-white bg-modelboard-gray"
-          )
-        }
-        onClick={() => handleClick("/my-profile")}
-      >
-        <User className="h-4 w-4" />
-        <span>My Profile</span>
-      </NavLink>
-
+      <DashboardLink isActive={isActive} onNavigate={onNavigate} />
+      <NetworkLink isActive={isActive} onNavigate={onNavigate} />
+      <MessagesLink isActive={isActive} onNavigate={onNavigate} />
+      <LocationLink isActive={isActive} onNavigate={onNavigate} />
+      <PortfolioLink isActive={isActive} onNavigate={onNavigate} />
+      <ProfileLink isActive={isActive} onNavigate={onNavigate} />
       {profile?.staff_type && (
-        <NavLink
-          to="/moderation"
-          className={({ isActive: linkActive }) =>
-            cn(
-              "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
-              (isActive ? isActive("/moderation") : linkActive) && "text-white bg-modelboard-gray"
-            )
-          }
-          onClick={() => handleClick("/moderation")}
-        >
-          <Shield className="h-4 w-4" />
-          <span>Moderation</span>
-        </NavLink>
+        <ModerationLink isActive={isActive} onNavigate={onNavigate} />
       )}
     </nav>
   );
