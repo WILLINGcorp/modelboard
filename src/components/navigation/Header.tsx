@@ -64,6 +64,10 @@ export const Header = () => {
               isAuthenticated={!!session} 
               onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
             />
+            <UserMenu 
+              isAuthenticated={!!session} 
+              onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+            />
           </div>
         )}
       </div>

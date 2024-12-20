@@ -3,9 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { DashboardLink } from "./nav-items/DashboardLink";
 import { NetworkLink } from "./nav-items/NetworkLink";
 import { MessagesLink } from "./nav-items/MessagesLink";
-import { LocationLink } from "./nav-items/LocationLink";
-import { PortfolioLink } from "./nav-items/PortfolioLink";
-import { ProfileLink } from "./nav-items/ProfileLink";
+import { CollabsLink } from "./nav-items/CollabsLink";
 import { ModerationLink } from "./nav-items/ModerationLink";
 
 interface AuthenticatedNavProps {
@@ -35,9 +33,7 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
       <DashboardLink isActive={isActive} onNavigate={onNavigate} />
       <NetworkLink isActive={isActive} onNavigate={onNavigate} />
       <MessagesLink isActive={isActive} onNavigate={onNavigate} />
-      <LocationLink isActive={isActive} onNavigate={onNavigate} />
-      <PortfolioLink isActive={isActive} onNavigate={onNavigate} />
-      <ProfileLink isActive={isActive} onNavigate={onNavigate} />
+      <CollabsLink isActive={isActive} onNavigate={onNavigate} />
       {profile?.staff_type && (
         <ModerationLink isActive={isActive} onNavigate={onNavigate} />
       )}

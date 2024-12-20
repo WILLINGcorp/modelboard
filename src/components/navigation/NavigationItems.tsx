@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthenticatedNav } from "./AuthenticatedNav";
 import { PublicNav } from "./PublicNav";
+import { AccountDropdown } from "./AccountDropdown";
 
 interface NavigationItemsProps {
   isAuthenticated: boolean;
@@ -19,7 +20,12 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
   const isActive = (path: string) => location.pathname === path;
 
   if (isAuthenticated) {
-    return <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} />;
+    return (
+      <div className="flex items-center space-x-8">
+        <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} />
+        <AccountDropdown onMobileMenuClose={onMobileMenuClose} />
+      </div>
+    );
   }
 
   return <PublicNav />;
