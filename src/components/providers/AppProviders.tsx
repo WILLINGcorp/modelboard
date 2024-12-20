@@ -4,14 +4,23 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
-
-const queryClient = new QueryClient();
+import { useState } from "react";
 
 interface AppProvidersProps {
   children: React.ReactNode;
 }
 
 export const AppProviders = ({ children }: AppProvidersProps) => {
+  // Create a new QueryClient instance for each component instance
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        refetchOnWindowFocus: false,
+      },
+    },
+  }));
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
