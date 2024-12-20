@@ -9,11 +9,11 @@ import { ProfileLink } from "./nav-items/ProfileLink";
 import { ModerationLink } from "./nav-items/ModerationLink";
 
 interface AuthenticatedNavProps {
-  isActive?: (path: string) => boolean;
-  onNavigate?: (path: string) => void;
+  isActive: (path: string) => boolean;
+  onNavigate: (path: string) => void;
 }
 
-export const AuthenticatedNav = ({ isActive = () => false, onNavigate = () => {} }: AuthenticatedNavProps) => {
+export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps) => {
   const { data: profile } = useQuery({
     queryKey: ["staffProfile"],
     queryFn: async () => {
