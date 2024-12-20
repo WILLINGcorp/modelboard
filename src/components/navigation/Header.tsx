@@ -46,12 +46,8 @@ export const Header = () => {
           </a>
 
           <div className="hidden md:flex items-center space-x-8">
-            <nav className="flex items-center space-x-8">
-              <NavigationItems isAuthenticated={!!session} />
-            </nav>
-            <div className="flex items-center space-x-4">
-              <UserMenu isAuthenticated={!!session} />
-            </div>
+            <NavigationItems isAuthenticated={!!session} />
+            <UserMenu isAuthenticated={!!session} />
           </div>
 
           <button
@@ -64,16 +60,10 @@ export const Header = () => {
 
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 animate-fadeIn">
-            <nav className="flex flex-col space-y-4">
-              <NavigationItems 
-                isAuthenticated={!!session} 
-                onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-              />
-              <UserMenu 
-                isAuthenticated={!!session} 
-                onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-              />
-            </nav>
+            <NavigationItems 
+              isAuthenticated={!!session} 
+              onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+            />
           </div>
         )}
       </div>

@@ -31,7 +31,7 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
   });
 
   return (
-    <nav className="flex flex-col gap-1">
+    <nav className="flex items-center space-x-4">
       <DashboardLink isActive={isActive} onNavigate={onNavigate} />
       <NetworkLink isActive={isActive} onNavigate={onNavigate} />
       <MessagesLink isActive={isActive} onNavigate={onNavigate} />
