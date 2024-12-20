@@ -1,55 +1,120 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, MessageSquare, Handshake } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { NavLink } from "react-router-dom";
+import { LayoutDashboard, Users, MessageSquare, MapPin, Image, User, Shield } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
-interface AuthenticatedNavProps {
-  isActive: (path: string) => boolean;
-  onNavigate: (path: string) => void;
-}
+export const AuthenticatedNav = () => {
+  const { data: profile } = useQuery({
+    queryKey: ["staffProfile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
 
-export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("staff_type")
+        .eq("id", user.id)
+        .single();
+
+      return data;
+    },
+  });
+
   return (
-    <>
-      <Button
-        variant="ghost"
-        className={`flex items-center space-x-2 ${
-          isActive("/dashboard") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
-        } transition-colors`}
-        onClick={() => onNavigate("/dashboard")}
+    <nav className="flex flex-col gap-1">
+      <NavLink
+        to="/dashboard"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
       >
-        <LayoutDashboard className="w-4 h-4 mr-2" />
+        <LayoutDashboard className="h-4 w-4" />
         <span>Dashboard</span>
-      </Button>
-      <Button
-        variant="ghost"
-        className={`flex items-center space-x-2 ${
-          isActive("/network") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
-        } transition-colors`}
-        onClick={() => onNavigate("/network")}
+      </NavLink>
+
+      <NavLink
+        to="/network"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
       >
-        <Users className="w-4 h-4 mr-2" />
+        <Users className="h-4 w-4" />
         <span>Network</span>
-      </Button>
-      <Button
-        variant="ghost"
-        className={`flex items-center space-x-2 ${
-          isActive("/communications") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
-        } transition-colors`}
-        onClick={() => onNavigate("/communications")}
+      </NavLink>
+
+      <NavLink
+        to="/messages"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
       >
-        <MessageSquare className="w-4 h-4 mr-2" />
+        <MessageSquare className="h-4 w-4" />
         <span>DMs</span>
-      </Button>
-      <Button
-        variant="ghost"
-        className={`flex items-center space-x-2 ${
-          isActive("/collabs") ? "text-modelboard-red" : "hover:text-white hover:bg-modelboard-red"
-        } transition-colors`}
-        onClick={() => onNavigate("/collabs")}
+      </NavLink>
+
+      <NavLink
+        to="/my-location"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
       >
-        <Handshake className="w-4 h-4 mr-2" />
-        <span>Collabs</span>
-      </Button>
-    </>
+        <MapPin className="h-4 w-4" />
+        <span>My Location</span>
+      </NavLink>
+
+      <NavLink
+        to="/my-portfolio"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
+      >
+        <Image className="h-4 w-4" />
+        <span>My Portfolio</span>
+      </NavLink>
+
+      <NavLink
+        to="/my-profile"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+            isActive && "text-white bg-modelboard-gray"
+          )
+        }
+      >
+        <User className="h-4 w-4" />
+        <span>My Profile</span>
+      </NavLink>
+
+      {profile?.staff_type && (
+        <NavLink
+          to="/moderation"
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white rounded-lg hover:bg-modelboard-gray transition-colors",
+              isActive && "text-white bg-modelboard-gray"
+            )
+          }
+        >
+          <Shield className="h-4 w-4" />
+          <span>Moderation</span>
+        </NavLink>
+      )}
+    </nav>
   );
 };

@@ -1,17 +1,18 @@
 import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
-import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
-import MyProfile from "@/pages/Profile";
-import MyPortfolio from "@/pages/Portfolio";
-import Network from "@/pages/ModelDirectory";
-import ModelProfile from "@/pages/ModelProfile";
-import MyLocation from "@/pages/Location";
-import Communications from "@/pages/Messages";
+import Index from "@/pages/Index";
 import Dashboard from "@/pages/Dashboard";
+import ModelDirectory from "@/pages/ModelDirectory";
+import ModelProfile from "@/pages/ModelProfile";
+import Messages from "@/pages/Messages";
+import Location from "@/pages/Location";
+import Portfolio from "@/pages/Portfolio";
+import Profile from "@/pages/Profile";
 import Collabs from "@/pages/Collabs";
+import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 
-export const AppRoutes = () => {
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -25,10 +26,42 @@ export const AppRoutes = () => {
         }
       />
       <Route
-        path="/my-profile"
+        path="/moderation"
         element={
           <PrivateRoute>
-            <MyProfile />
+            <ModerationPanel />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/model-directory"
+        element={
+          <PrivateRoute>
+            <ModelDirectory />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/models/:id"
+        element={
+          <PrivateRoute>
+            <ModelProfile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/messages"
+        element={
+          <PrivateRoute>
+            <Messages />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/my-location"
+        element={
+          <PrivateRoute>
+            <Location />
           </PrivateRoute>
         }
       />
@@ -36,32 +69,15 @@ export const AppRoutes = () => {
         path="/my-portfolio"
         element={
           <PrivateRoute>
-            <MyPortfolio />
+            <Portfolio />
           </PrivateRoute>
         }
       />
       <Route
-        path="/network"
+        path="/my-profile"
         element={
           <PrivateRoute>
-            <Network />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/models/:id" element={<ModelProfile />} />
-      <Route
-        path="/my-location"
-        element={
-          <PrivateRoute>
-            <MyLocation />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/communications"
-        element={
-          <PrivateRoute>
-            <Communications />
+            <Profile />
           </PrivateRoute>
         }
       />
@@ -76,3 +92,5 @@ export const AppRoutes = () => {
     </Routes>
   );
 };
+
+export default AppRoutes;

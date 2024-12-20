@@ -175,6 +175,48 @@ export type Database = {
           },
         ]
       }
+      featured_profiles: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          end_time: string
+          id: string
+          profile_id: string | null
+          start_time: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          end_time: string
+          id?: string
+          profile_id?: string | null
+          start_time?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          end_time?: string
+          id?: string
+          profile_id?: string | null
+          start_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_profiles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "featured_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       moderators: {
         Row: {
           created_at: string
@@ -422,6 +464,7 @@ export type Database = {
           sexual_orientation: string | null
           skills: Json | null
           social_media: Json | null
+          staff_type: string | null
           subscription_end_date: string | null
           subscription_status: string | null
           updated_at: string
@@ -455,6 +498,7 @@ export type Database = {
           sexual_orientation?: string | null
           skills?: Json | null
           social_media?: Json | null
+          staff_type?: string | null
           subscription_end_date?: string | null
           subscription_status?: string | null
           updated_at?: string
@@ -488,6 +532,7 @@ export type Database = {
           sexual_orientation?: string | null
           skills?: Json | null
           social_media?: Json | null
+          staff_type?: string | null
           subscription_end_date?: string | null
           subscription_status?: string | null
           updated_at?: string
