@@ -1,68 +1,71 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Grid, Calendar, File, Package, Sparkles, ShieldCheck } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Grid, Calendar, File, Package, Sparkles, ShieldCheck, MessageSquare } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useState } from "react";
 
 export const WorkflowTabs = () => {
+  const isMobile = useIsMobile();
+  const [selectedTab, setSelectedTab] = useState("collaborators");
+
+  const tabs = [
+    { value: "collaborators", label: "Collaborators", icon: <Grid className="h-4 w-4" /> },
+    { value: "schedule", label: "Schedule", icon: <Calendar className="h-4 w-4" /> },
+    { value: "proservices", label: "Pro Services", icon: <Sparkles className="h-4 w-4" /> },
+    { value: "compliance", label: "Compliance", icon: <ShieldCheck className="h-4 w-4" /> },
+    { value: "files", label: "Files", icon: <File className="h-4 w-4" /> },
+    { value: "release", label: "Release", icon: <Package className="h-4 w-4" /> },
+    { value: "chat", label: "Project Chat", icon: <MessageSquare className="h-4 w-4" /> },
+  ];
+
+  if (isMobile) {
+    return (
+      <div className="px-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full justify-between">
+              {tabs.find(tab => tab.value === selectedTab)?.label}
+              <ChevronDown className="h-4 w-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-full min-w-[200px]">
+            {tabs.map((tab) => (
+              <DropdownMenuItem
+                key={tab.value}
+                onClick={() => setSelectedTab(tab.value)}
+                className="flex items-center gap-2"
+              >
+                {tab.icon}
+                {tab.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+
   return (
     <ScrollArea className="w-full">
       <TabsList className="bg-modelboard-dark border border-modelboard-red/20 flex flex-nowrap gap-2 p-1 h-auto w-max min-w-full">
-        {/* Core Tabs - Left */}
-        <div className="flex gap-2 border-r border-modelboard-red/20 pr-2">
-          <TabsTrigger 
-            value="collaborators"
-            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base"
+        {tabs.map((tab) => (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base flex items-center gap-2"
+            onClick={() => setSelectedTab(tab.value)}
           >
-            <Grid className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Collaborators</span>
-            <span className="sm:hidden">Collab</span>
+            {tab.icon}
+            {tab.label}
           </TabsTrigger>
-          <TabsTrigger 
-            value="schedule"
-            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base"
-          >
-            <Calendar className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            Schedule
-          </TabsTrigger>
-        </div>
-
-        {/* Pro Services - Center */}
-        <div className="px-2">
-          <TabsTrigger 
-            value="proservices"
-            className="data-[state=active]:bg-modelboard-red/10 bg-gradient-to-r from-modelboard-red/20 to-transparent whitespace-nowrap text-sm sm:text-base"
-          >
-            <Sparkles className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Pro Services</span>
-            <span className="sm:hidden">Pro</span>
-          </TabsTrigger>
-        </div>
-
-        {/* Premium Tabs - Right */}
-        <div className="flex gap-2 border-l border-modelboard-red/20 pl-2">
-          <TabsTrigger 
-            value="compliance"
-            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base"
-          >
-            <ShieldCheck className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Compliance</span>
-            <span className="sm:hidden">Comp</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="files"
-            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base"
-          >
-            <File className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            Files
-          </TabsTrigger>
-          <TabsTrigger 
-            value="release"
-            className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base"
-          >
-            <Package className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Release Assets</span>
-            <span className="sm:hidden">Release</span>
-          </TabsTrigger>
-        </div>
+        ))}
       </TabsList>
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
