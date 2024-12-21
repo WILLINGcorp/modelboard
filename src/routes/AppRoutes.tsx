@@ -34,7 +34,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/model-directory"
+        path="/network"
         element={
           <PrivateRoute>
             <ModelDirectory />
