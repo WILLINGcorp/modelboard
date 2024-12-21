@@ -7,35 +7,29 @@ interface UserSuggestionsListProps {
 }
 
 const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSuggestionsListProps) => {
-  if (!suggestions?.length) {
-    return (
-      <Command>
-        <CommandGroup heading="Results">
-          <CommandItem disabled>No results found</CommandItem>
-        </CommandGroup>
-      </Command>
-    );
-  }
-
   return (
-    <Command>
-      <CommandGroup heading="Results">
-        {suggestions.map((suggestion) => (
-          <CommandItem
-            key={suggestion.id}
-            onSelect={() => onSelectSuggestion(suggestion)}
-            className="cursor-pointer hover:bg-modelboard-gray/50"
-          >
-            <div className="flex flex-col">
-              <span className="font-medium">
+    <Command className="rounded-lg border border-modelboard-red/20">
+      <CommandGroup heading="Results" className="p-2">
+        {!suggestions?.length ? (
+          <CommandItem disabled className="text-gray-400">
+            No results found
+          </CommandItem>
+        ) : (
+          suggestions.map((suggestion) => (
+            <CommandItem
+              key={suggestion.id}
+              onSelect={() => onSelectSuggestion(suggestion)}
+              className="cursor-pointer hover:bg-modelboard-gray/50 flex flex-col items-start"
+            >
+              <span className="font-medium text-white">
                 {suggestion.display_name || suggestion.username}
               </span>
               {suggestion.username && suggestion.display_name && (
                 <span className="text-sm text-gray-400">@{suggestion.username}</span>
               )}
-            </div>
-          </CommandItem>
-        ))}
+            </CommandItem>
+          ))
+        )}
       </CommandGroup>
     </Command>
   );
