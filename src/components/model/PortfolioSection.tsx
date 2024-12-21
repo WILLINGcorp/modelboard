@@ -113,40 +113,51 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
     <>
       <h2 className="text-2xl font-bold text-white mb-6">Portfolio</h2>
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-        {portfolio.map((item) => (
-          <Card
-            key={item.id}
-            className="bg-modelboard-gray overflow-hidden break-inside-avoid mb-6"
-          >
-            <img
-              src={item.media_url}
-              alt={item.title}
-              className="w-full object-cover"
-              loading="lazy"
-            />
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white">{item.title}</h3>
-                  {item.description && (
-                    <p className="text-gray-300">{item.description}</p>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`flex items-center gap-1 ${
-                    likedItems[item.id] ? "text-red-500" : "text-gray-400"
-                  }`}
-                  onClick={() => handleLike(item.id)}
-                >
-                  <Heart className={`h-4 w-4 ${likedItems[item.id] ? "fill-current" : ""}`} />
-                  <span>{likeCounts[item.id] || 0}</span>
-                </Button>
+        {portfolio.map((item) => {
+          const isPending = item.moderation_status === 'pending';
+          
+          return (
+            <Card
+              key={item.id}
+              className="bg-modelboard-gray overflow-hidden break-inside-avoid mb-6"
+            >
+              <div className="relative">
+                <img
+                  src={item.media_url}
+                  alt={item.title}
+                  className={`w-full object-cover ${isPending ? 'blur-md' : ''}`}
+                  loading="lazy"
+                />
+                {isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">
+                    Pending Moderation
+                  </div>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                    {item.description && (
+                      <p className="text-gray-300">{item.description}</p>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`flex items-center gap-1 ${
+                      likedItems[item.id] ? "text-red-500" : "text-gray-400"
+                    }`}
+                    onClick={() => handleLike(item.id)}
+                  >
+                    <Heart className={`h-4 w-4 ${likedItems[item.id] ? "fill-current" : ""}`} />
+                    <span>{likeCounts[item.id] || 0}</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </>
   );
