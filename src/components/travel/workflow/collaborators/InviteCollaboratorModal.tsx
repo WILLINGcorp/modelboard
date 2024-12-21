@@ -22,7 +22,6 @@ interface InviteCollaboratorModalProps {
 
 interface UserSuggestion {
   id: string;
-  email: string;
   display_name: string | null;
   username: string | null;
 }
@@ -49,8 +48,8 @@ const InviteCollaboratorModal = ({
     try {
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("id, email, display_name, username")
-        .or(`username.ilike.%${query}%,display_name.ilike.%${query}%,email.ilike.%${query}%`)
+        .select("id, display_name, username")
+        .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
         .limit(5);
 
       if (error) throw error;
@@ -67,8 +66,8 @@ const InviteCollaboratorModal = ({
     searchUsers(value);
   };
 
-  const handleInvite = async (email: string) => {
-    if (!email.trim()) return;
+  const handleInvite = async (username: string) => {
+    if (!username.trim()) return;
     
     setIsLoading(true);
     try {
@@ -82,15 +81,15 @@ const InviteCollaboratorModal = ({
         .eq("id", user.id)
         .single();
 
-      // Find receiver by email
+      // Find receiver by username
       const { data: receiverProfiles, error: receiverError } = await supabase
         .from("profiles")
         .select("id")
-        .eq("email", email.trim());
+        .or(`username.eq.${username.trim()},display_name.eq.${username.trim()}`);
 
       if (receiverError) throw receiverError;
       if (!receiverProfiles || receiverProfiles.length === 0) {
-        throw new Error("User not found with this email");
+        throw new Error("User not found with this username");
       }
 
       const receiverProfile = receiverProfiles[0];
@@ -107,20 +106,6 @@ const InviteCollaboratorModal = ({
         });
 
       if (proposalError) throw proposalError;
-
-      // Send email invitation using Edge Function
-      const { error: inviteError } = await supabase.functions.invoke(
-        "send-collab-invitation",
-        {
-          body: {
-            receiverEmail: email.trim(),
-            senderName: senderProfile?.display_name || "A Modelboard User",
-            proposalId,
-          },
-        }
-      );
-
-      if (inviteError) throw inviteError;
 
       toast({
         title: "Success",
@@ -141,7 +126,7 @@ const InviteCollaboratorModal = ({
   };
 
   const handleSelectSuggestion = (suggestion: UserSuggestion) => {
-    setSearchTerm(suggestion.email);
+    setSearchTerm(suggestion.username || suggestion.display_name || "");
     setSuggestions([]);
   };
 
@@ -151,20 +136,20 @@ const InviteCollaboratorModal = ({
         <DialogHeader>
           <DialogTitle>Invite Collaborator</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Enter an email address or search by username/display name
+            Search by username or display name
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="relative">
             <label htmlFor="search" className="block text-sm font-medium mb-2">
-              Search User or Enter Email
+              Search User
             </label>
             <Input
               id="search"
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="Search by username, display name, or enter email"
+              placeholder="Search by username or display name"
               className="bg-modelboard-gray border-modelboard-gray"
             />
             {isSearching && (
@@ -185,7 +170,9 @@ const InviteCollaboratorModal = ({
                         <span className="font-medium">
                           {suggestion.display_name || suggestion.username}
                         </span>
-                        <span className="text-sm text-gray-400">{suggestion.email}</span>
+                        {suggestion.username && suggestion.display_name && (
+                          <span className="text-sm text-gray-400">@{suggestion.username}</span>
+                        )}
                       </div>
                     </CommandItem>
                   ))}
