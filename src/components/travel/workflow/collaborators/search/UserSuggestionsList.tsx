@@ -1,4 +1,4 @@
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
 import { UserSuggestion } from "../types";
 
 interface UserSuggestionsListProps {
@@ -6,30 +6,27 @@ interface UserSuggestionsListProps {
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
-const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSuggestionsListProps) => {
+const UserSuggestionsList = ({ suggestions, onSelectSuggestion }: UserSuggestionsListProps) => {
   return (
     <Command className="rounded-lg border border-modelboard-red/20">
-      <CommandGroup heading="Results" className="p-2">
-        {!suggestions?.length ? (
-          <CommandItem disabled className="text-gray-400">
-            No results found
+      <CommandEmpty className="p-2 text-sm text-gray-400">
+        No results found
+      </CommandEmpty>
+      <CommandGroup>
+        {suggestions?.map((suggestion) => (
+          <CommandItem
+            key={suggestion.id}
+            onSelect={() => onSelectSuggestion(suggestion)}
+            className="cursor-pointer hover:bg-modelboard-gray/50 flex flex-col items-start p-2"
+          >
+            <span className="font-medium text-white">
+              {suggestion.display_name || suggestion.username}
+            </span>
+            {suggestion.username && suggestion.display_name && (
+              <span className="text-sm text-gray-400">@{suggestion.username}</span>
+            )}
           </CommandItem>
-        ) : (
-          suggestions.map((suggestion) => (
-            <CommandItem
-              key={suggestion.id}
-              onSelect={() => onSelectSuggestion(suggestion)}
-              className="cursor-pointer hover:bg-modelboard-gray/50 flex flex-col items-start"
-            >
-              <span className="font-medium text-white">
-                {suggestion.display_name || suggestion.username}
-              </span>
-              {suggestion.username && suggestion.display_name && (
-                <span className="text-sm text-gray-400">@{suggestion.username}</span>
-              )}
-            </CommandItem>
-          ))
-        )}
+        ))}
       </CommandGroup>
     </Command>
   );
