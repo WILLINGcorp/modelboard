@@ -82,11 +82,7 @@ export const ProjectChat = ({ proposalId, currentUserId }: ProjectChatProps) => 
         </p>
       </div>
 
-      <ProjectMessageList
-        messages={messages}
-        currentUserId={currentUserId}
-      />
-
+      <ProjectMessageList proposalId={proposalId} currentUserId={currentUserId} />
       <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
     </div>
   );
