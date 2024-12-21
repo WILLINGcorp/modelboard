@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Ribbon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -33,17 +32,19 @@ export const ModelCard = ({ profile, isOnline }: ModelCardProps) => {
               Online Now
             </span>
           )}
-          {isSponsor && (
-            <div className="relative">
-              <Ribbon className="h-6 w-6 text-modelboard-red animate-pulse" />
-            </div>
-          )}
         </div>
 
         <div className="absolute bottom-4 left-4 right-4">
-          <h3 className="text-xl font-semibold text-white mb-1">
-            {profile.display_name || "Anonymous Model"}
-          </h3>
+          <div className="relative">
+            {isSponsor && (
+              <div className="absolute -top-6 left-0 bg-modelboard-red px-2 py-0.5 text-white text-xs font-medium rounded">
+                Sponsor
+              </div>
+            )}
+            <h3 className="text-xl font-semibold text-white mb-1">
+              {profile.display_name || "Anonymous Model"}
+            </h3>
+          </div>
           {profile.location && (
             <p className="text-gray-300 text-sm">
               {profile.location}
