@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Grid, Calendar, File, Package, Sparkles, ShieldCheck, MessageSquare } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export const WorkflowTabs = () => {
   const isMobile = useIsMobile();
-  const [selectedTab, setSelectedTab] = useState("collaborators");
 
   const tabs = [
     { value: "collaborators", label: "Collaborators", icon: <Grid className="h-4 w-4" /> },
@@ -31,7 +30,7 @@ export const WorkflowTabs = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full justify-between">
-              {tabs.find(tab => tab.value === selectedTab)?.label}
+              {tabs.find(tab => document.querySelector(`[data-state="active"][data-value="${tab.value}"]`))?.label || tabs[0].label}
               <ChevronDown className="h-4 w-4 ml-2" />
             </Button>
           </DropdownMenuTrigger>
@@ -39,7 +38,10 @@ export const WorkflowTabs = () => {
             {tabs.map((tab) => (
               <DropdownMenuItem
                 key={tab.value}
-                onClick={() => setSelectedTab(tab.value)}
+                onClick={() => {
+                  const trigger = document.querySelector(`[data-value="${tab.value}"]`) as HTMLElement;
+                  trigger?.click();
+                }}
                 className="flex items-center gap-2"
               >
                 {tab.icon}
@@ -60,7 +62,6 @@ export const WorkflowTabs = () => {
             key={tab.value}
             value={tab.value}
             className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base flex items-center gap-2"
-            onClick={() => setSelectedTab(tab.value)}
           >
             {tab.icon}
             {tab.label}
