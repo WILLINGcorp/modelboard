@@ -16,13 +16,21 @@ export const ProfileAnalytics = () => {
       const { data: session } = await supabase.auth.getSession();
       if (!session.session) throw new Error("No session");
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("profile_analytics")
         .select("views_count, unique_visitors_count, last_viewed_at")
         .eq("profile_id", session.session.user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      // If no analytics exist yet, return default values
+      if (!data) {
+        return {
+          views_count: 0,
+          unique_visitors_count: 0,
+          last_viewed_at: null,
+        };
+      }
+
       return data;
     },
   });
