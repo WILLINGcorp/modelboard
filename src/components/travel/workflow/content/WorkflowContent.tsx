@@ -13,7 +13,7 @@ interface WorkflowContentProps {
 
 export const WorkflowContent = ({ proposal }: WorkflowContentProps) => {
   return (
-    <div className="flex-1 overflow-auto pr-4">
+    <div className="h-full overflow-y-auto">
       <TabsContent value="collaborators" className="m-0 h-full">
         <CollaboratorsTab proposal={proposal} />
       </TabsContent>

@@ -29,11 +29,15 @@ const CollabWorkflowModal = ({
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="h-[95vh] bg-modelboard-dark border-t border-modelboard-red/50">
         <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 h-full flex flex-col">
-          <WorkflowHeader />
+          <div className="flex-shrink-0">
+            <WorkflowHeader />
+          </div>
 
-          <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              <WorkflowTabs defaultValue={activeTab} onValueChange={setActiveTab} />
+          <div className="flex-1 min-h-0 flex flex-col">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+              <div className="flex-shrink-0">
+                <WorkflowTabs defaultValue={activeTab} onValueChange={setActiveTab} />
+              </div>
               
               <div className="flex-1 overflow-hidden mt-4">
                 <div className="h-full flex flex-col lg:flex-row gap-4">
@@ -42,7 +46,7 @@ const CollabWorkflowModal = ({
                   </div>
                   
                   {!isMobile && (
-                    <div className="w-full lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l border-modelboard-red/20 pt-4 lg:pt-0 lg:pl-4">
+                    <div className="w-full lg:w-80 flex-shrink-0 border-t lg:border-t-0 lg:border-l border-modelboard-red/20 pt-4 lg:pt-0 lg:pl-4 overflow-y-auto">
                       <WorkflowChatSidebar proposalId={proposal.id} />
                     </div>
                   )}
