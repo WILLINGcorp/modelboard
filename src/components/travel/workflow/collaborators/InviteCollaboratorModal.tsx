@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,24 +10,21 @@ import UserSearchInput from "./search/UserSearchInput";
 import UserSuggestionsList from "./search/UserSuggestionsList";
 import { useUserSearch } from "./hooks/useUserSearch";
 import { useCollabInvite } from "./hooks/useCollabInvite";
-import { UserSuggestion } from "./types";
 
 interface InviteCollaboratorModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  proposalId: string;
 }
 
 const InviteCollaboratorModal = ({
   isOpen,
   onClose,
   onSuccess = () => {},
-  proposalId,
 }: InviteCollaboratorModalProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { suggestions, isSearching, searchUsers, setSuggestions } = useUserSearch();
-  const { isLoading, sendInvite } = useCollabInvite(proposalId, onSuccess);
+  const { isLoading, sendInvite } = useCollabInvite(onSuccess);
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);

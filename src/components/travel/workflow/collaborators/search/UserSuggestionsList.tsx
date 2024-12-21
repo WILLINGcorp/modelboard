@@ -6,10 +6,8 @@ interface UserSuggestionsListProps {
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
-const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSuggestionsListProps) => {
-  if (!suggestions || suggestions.length === 0) {
-    return null;
-  }
+const UserSuggestionsList = ({ suggestions, onSelectSuggestion }: UserSuggestionsListProps) => {
+  if (suggestions.length === 0) return null;
 
   return (
     <Command className="absolute w-full z-50 mt-1 bg-modelboard-gray rounded-md border border-modelboard-gray/50">

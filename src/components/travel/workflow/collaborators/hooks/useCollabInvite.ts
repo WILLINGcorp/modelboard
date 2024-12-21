@@ -1,48 +1,68 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 
-export const useCollabInvite = (proposalId: string, onSuccess: () => void) => {
+export const useCollabInvite = (onSuccess: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const sendInvite = async (username: string) => {
+    if (!username.trim()) return;
+    
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // First get the user's profile ID from their username
-      const { data: profiles, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('username', username)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: senderProfile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", user.id)
         .single();
 
-      if (profileError || !profiles) {
-        toast.error("User not found");
-        return;
+      const { data: receiverProfiles, error: receiverError } = await supabase
+        .from("profiles")
+        .select("id")
+        .or(`username.eq.${username.trim()},display_name.eq.${username.trim()}`);
+
+      if (receiverError) throw receiverError;
+      if (!receiverProfiles || receiverProfiles.length === 0) {
+        throw new Error("User not found with this username");
       }
 
-      // Add the user as a collaborator
-      const { error: inviteError } = await supabase
-        .from('collab_workflow_steps')
+      const receiverProfile = receiverProfiles[0];
+
+      const { error: proposalError } = await supabase
+        .from("collab_proposals")
         .insert({
-          proposal_id: proposalId,
-          step_type: 'Add Collaborator',
-          data: { collaborator_id: profiles.id }
+          sender_id: user.id,
+          receiver_id: receiverProfile.id,
+          status: "pending",
+          message: `Collaboration invitation from ${senderProfile?.display_name || "a user"}`,
+          location: "Remote",
         });
 
-      if (inviteError) {
-        toast.error("Failed to send invitation");
-        return;
-      }
+      if (proposalError) throw proposalError;
 
-      toast.success("Invitation sent successfully");
+      toast({
+        title: "Success",
+        description: "Collaboration invitation sent successfully",
+      });
       onSuccess();
-    } catch (error) {
-      toast.error("An error occurred while sending the invitation");
+    } catch (error: any) {
+      console.error("Error sending invitation:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send invitation",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { isLoading, sendInvite };
+  return {
+    isLoading,
+    sendInvite
+  };
 };
