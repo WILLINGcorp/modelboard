@@ -10,11 +10,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-interface AccountDropdownProps {
+export interface AccountDropdownProps {
   onMobileMenuClose?: () => void;
+  isMobile?: boolean;
 }
 
-export const AccountDropdown = ({ onMobileMenuClose }: AccountDropdownProps) => {
+export const AccountDropdown = ({ onMobileMenuClose, isMobile }: AccountDropdownProps) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
@@ -28,10 +29,17 @@ export const AccountDropdown = ({ onMobileMenuClose }: AccountDropdownProps) => 
     onMobileMenuClose?.();
   };
 
+  const buttonClasses = isMobile 
+    ? "w-full justify-start" 
+    : "";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="hover:text-white hover:bg-modelboard-red transition-colors">
+        <Button 
+          variant="ghost" 
+          className={`hover:text-white hover:bg-modelboard-red transition-colors ${buttonClasses}`}
+        >
           Account <ChevronDown className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
