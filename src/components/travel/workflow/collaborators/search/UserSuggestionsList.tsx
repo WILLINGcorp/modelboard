@@ -6,15 +6,11 @@ interface UserSuggestionsListProps {
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
-const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSuggestionsListProps) => {
+const UserSuggestionsList = ({ suggestions, onSelectSuggestion }: UserSuggestionsListProps) => {
   return (
     <Command className="rounded-lg border border-modelboard-red/20">
       <CommandGroup>
-        {!suggestions?.length ? (
-          <CommandEmpty className="p-2 text-sm text-gray-400">
-            No results found
-          </CommandEmpty>
-        ) : (
+        {Array.isArray(suggestions) && suggestions.length > 0 ? (
           suggestions.map((suggestion) => (
             <CommandItem
               key={suggestion.id}
@@ -29,6 +25,10 @@ const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSugge
               )}
             </CommandItem>
           ))
+        ) : (
+          <CommandEmpty className="p-2 text-sm text-gray-400">
+            No results found
+          </CommandEmpty>
         )}
       </CommandGroup>
     </Command>
