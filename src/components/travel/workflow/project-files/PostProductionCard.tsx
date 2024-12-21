@@ -11,7 +11,7 @@ export const PostProductionCard = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="text-sm text-gray-400">
-          Get your footage edited by the professional team behind MenAtPlay & Masqulin
+          Get your footage professionally edited by our friends at Pinstripe
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
