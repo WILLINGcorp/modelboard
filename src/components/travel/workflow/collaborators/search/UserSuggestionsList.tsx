@@ -6,8 +6,18 @@ interface UserSuggestionsListProps {
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
-const UserSuggestionsList = ({ suggestions, onSelectSuggestion }: UserSuggestionsListProps) => {
-  if (suggestions.length === 0) return null;
+const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSuggestionsListProps) => {
+  if (!suggestions || suggestions.length === 0) {
+    return (
+      <Command className="absolute w-full z-50 mt-1 bg-modelboard-gray rounded-md border border-modelboard-gray/50">
+        <CommandGroup>
+          <CommandItem disabled className="cursor-default text-gray-400">
+            No results found
+          </CommandItem>
+        </CommandGroup>
+      </Command>
+    );
+  }
 
   return (
     <Command className="absolute w-full z-50 mt-1 bg-modelboard-gray rounded-md border border-modelboard-gray/50">

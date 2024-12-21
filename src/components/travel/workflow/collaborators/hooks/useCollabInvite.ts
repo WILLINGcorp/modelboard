@@ -6,6 +6,11 @@ export const useCollabInvite = (proposalId: string, onSuccess?: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const sendInvite = async (username: string) => {
+    if (!username.trim()) {
+      toast.error("Please enter a valid username");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data: profiles, error: searchError } = await supabase
@@ -18,8 +23,19 @@ export const useCollabInvite = (proposalId: string, onSuccess?: () => void) => {
         throw new Error("User not found");
       }
 
-      // Here you would typically call your invite collaborator endpoint
-      // For now, we'll just show a success message
+      const { error: inviteError } = await supabase
+        .from("collab_workflow_steps")
+        .insert({
+          proposal_id: proposalId,
+          step_type: "Add Collaborator",
+          status: "pending",
+          data: {
+            collaborator_id: profiles.id
+          }
+        });
+
+      if (inviteError) throw inviteError;
+
       toast.success("Invitation sent successfully!");
       onSuccess?.();
     } catch (error) {
