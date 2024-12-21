@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,12 +24,12 @@ const InviteCollaboratorModal = ({
   proposalId,
   onSuccess,
 }: InviteCollaboratorModalProps) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleInvite = async () => {
-    if (!username.trim()) return;
+    if (!email.trim()) return;
     
     setIsLoading(true);
     try {
@@ -42,15 +43,15 @@ const InviteCollaboratorModal = ({
         .eq("id", user.id)
         .single();
 
-      // Find receiver by username
+      // Find receiver by email
       const { data: receiverProfiles, error: receiverError } = await supabase
         .from("profiles")
-        .select("id, username")
-        .eq("username", username.trim());
+        .select("id")
+        .eq("email", email.trim());
 
       if (receiverError) throw receiverError;
       if (!receiverProfiles || receiverProfiles.length === 0) {
-        throw new Error("User not found");
+        throw new Error("User not found with this email");
       }
 
       const receiverProfile = receiverProfiles[0];
@@ -73,7 +74,7 @@ const InviteCollaboratorModal = ({
         "send-collab-invitation",
         {
           body: {
-            receiverEmail: username,
+            receiverEmail: email.trim(),
             senderName: senderProfile?.display_name || "A Modelboard User",
             proposalId,
           },
@@ -105,17 +106,21 @@ const InviteCollaboratorModal = ({
       <DialogContent className="bg-modelboard-dark text-white">
         <DialogHeader>
           <DialogTitle>Invite Collaborator</DialogTitle>
+          <DialogDescription className="text-gray-400">
+            Enter the email address of the person you want to collaborate with.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium mb-2">
-              Username
+            <label htmlFor="email" className="block text-sm font-medium mb-2">
+              Email Address
             </label>
             <Input
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email address"
               className="bg-modelboard-gray border-modelboard-gray"
             />
           </div>
@@ -129,7 +134,7 @@ const InviteCollaboratorModal = ({
             </Button>
             <Button
               onClick={handleInvite}
-              disabled={isLoading || !username.trim()}
+              disabled={isLoading || !email.trim()}
               className="bg-modelboard-red hover:bg-modelboard-red/90"
             >
               {isLoading ? "Sending..." : "Send Invitation"}

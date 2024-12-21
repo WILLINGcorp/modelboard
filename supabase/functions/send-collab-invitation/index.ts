@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FRONTEND_URL = Deno.env.get("FRONTEND_URL");
@@ -16,6 +15,11 @@ interface InvitationRequest {
   proposalId: string;
 }
 
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,6 +27,10 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { receiverEmail, senderName, proposalId } = await req.json() as InvitationRequest;
+
+    if (!isValidEmail(receiverEmail)) {
+      throw new Error("Invalid email format");
+    }
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
