@@ -10,7 +10,7 @@ const UserSuggestionsList = ({ suggestions = [], onSelectSuggestion }: UserSugge
   return (
     <Command className="rounded-lg border border-modelboard-red/20">
       <CommandGroup>
-        {suggestions?.length > 0 ? (
+        {suggestions && suggestions.length > 0 ? (
           suggestions.map((suggestion) => (
             <CommandItem
               key={suggestion.id}
