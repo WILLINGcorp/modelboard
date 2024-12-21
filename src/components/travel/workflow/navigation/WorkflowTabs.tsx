@@ -11,9 +11,14 @@ import { ChevronDown, Grid, Calendar, File, Package, Sparkles, ShieldCheck, Mess
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 
-export const WorkflowTabs = () => {
+interface WorkflowTabsProps {
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+}
+
+export const WorkflowTabs = ({ defaultValue = "collaborators", onValueChange }: WorkflowTabsProps) => {
   const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = useState("collaborators");
+  const [activeTab, setActiveTab] = useState(defaultValue);
 
   const tabs = [
     { value: "collaborators", label: "Collaborators", icon: <Grid className="h-4 w-4" /> },
@@ -27,6 +32,7 @@ export const WorkflowTabs = () => {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    onValueChange?.(value);
   };
 
   if (isMobile) {

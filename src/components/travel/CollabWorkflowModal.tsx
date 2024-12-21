@@ -9,6 +9,7 @@ import { WorkflowContent } from "./workflow/content/WorkflowContent";
 import { WorkflowChatSidebar } from "./workflow/chat/WorkflowChatSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { Proposal } from "./types/workflow";
+import { useState } from "react";
 
 interface CollabWorkflowModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const CollabWorkflowModal = ({
   proposal,
 }: CollabWorkflowModalProps) => {
   const isMobile = useIsMobile();
+  const [activeTab, setActiveTab] = useState("collaborators");
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
@@ -30,8 +32,8 @@ const CollabWorkflowModal = ({
           <WorkflowHeader />
 
           <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-            <Tabs defaultValue="collaborators" className="flex-1 flex flex-col">
-              <WorkflowTabs />
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+              <WorkflowTabs defaultValue={activeTab} onValueChange={setActiveTab} />
               
               <div className="flex-1 overflow-hidden mt-4">
                 <div className="h-full flex flex-col lg:flex-row gap-4">
