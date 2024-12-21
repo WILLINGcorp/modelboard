@@ -4,11 +4,13 @@ import { NavigationItems } from "./NavigationItems";
 import { UserMenu } from "./UserMenu";
 import { MobileMenuButton } from "./MobileMenuButton";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,15 +54,19 @@ export const Header = () => {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 animate-fadeIn">
+          <div className="md:hidden mt-4 animate-fadeIn bg-modelboard-dark rounded-lg p-4">
             <NavigationItems 
               isAuthenticated={!!session} 
-              onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+              onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+              isMobile={true}
             />
-            <UserMenu 
-              isAuthenticated={!!session} 
-              onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-            />
+            <div className="mt-4 pt-4 border-t border-modelboard-gray">
+              <UserMenu 
+                isAuthenticated={!!session} 
+                onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+                isMobile={true}
+              />
+            </div>
           </div>
         )}
       </div>

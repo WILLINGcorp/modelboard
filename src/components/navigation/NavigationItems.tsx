@@ -6,9 +6,10 @@ import { AccountDropdown } from "./AccountDropdown";
 interface NavigationItemsProps {
   isAuthenticated: boolean;
   onMobileMenuClose?: () => void;
+  isMobile?: boolean;
 }
 
-export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: NavigationItemsProps) => {
+export const NavigationItems = ({ isAuthenticated, onMobileMenuClose, isMobile = false }: NavigationItemsProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,14 +20,18 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose }: Navigati
 
   const isActive = (path: string) => location.pathname === path;
 
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-4 w-full" 
+    : "flex items-center space-x-8";
+
   if (isAuthenticated) {
     return (
-      <div className="flex items-center space-x-8">
-        <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} />
-        <AccountDropdown onMobileMenuClose={onMobileMenuClose} />
+      <div className={containerClasses}>
+        <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} isMobile={isMobile} />
+        <AccountDropdown onMobileMenuClose={onMobileMenuClose} isMobile={isMobile} />
       </div>
     );
   }
 
-  return <PublicNav />;
+  return <PublicNav isMobile={isMobile} />;
 };

@@ -9,9 +9,10 @@ import { ModerationLink } from "./nav-items/ModerationLink";
 interface AuthenticatedNavProps {
   isActive: (path: string) => boolean;
   onNavigate: (path: string) => void;
+  isMobile?: boolean;
 }
 
-export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps) => {
+export const AuthenticatedNav = ({ isActive, onNavigate, isMobile = false }: AuthenticatedNavProps) => {
   const { data: profile } = useQuery({
     queryKey: ["staffProfile"],
     queryFn: async () => {
@@ -28,14 +29,18 @@ export const AuthenticatedNav = ({ isActive, onNavigate }: AuthenticatedNavProps
     },
   });
 
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-2 w-full" 
+    : "flex items-center space-x-4";
+
   return (
-    <nav className="flex items-center space-x-4">
-      <DashboardLink isActive={isActive} onNavigate={onNavigate} />
-      <NetworkLink isActive={isActive} onNavigate={onNavigate} />
-      <MessagesLink isActive={isActive} onNavigate={onNavigate} />
-      <CollabsLink isActive={isActive} onNavigate={onNavigate} />
+    <nav className={containerClasses}>
+      <DashboardLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <NetworkLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <MessagesLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <CollabsLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       {profile?.staff_type && (
-        <ModerationLink isActive={isActive} onNavigate={onNavigate} />
+        <ModerationLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       )}
     </nav>
   );

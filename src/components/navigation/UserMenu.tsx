@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 interface UserMenuProps {
   isAuthenticated: boolean;
   onMobileMenuClose?: () => void;
+  isMobile?: boolean;
 }
 
-export const UserMenu = ({ isAuthenticated, onMobileMenuClose }: UserMenuProps) => {
+export const UserMenu = ({ isAuthenticated, onMobileMenuClose, isMobile = false }: UserMenuProps) => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -21,22 +22,42 @@ export const UserMenu = ({ isAuthenticated, onMobileMenuClose }: UserMenuProps) 
     onMobileMenuClose?.();
   };
 
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-4 w-full" 
+    : "flex items-center space-x-4";
+
+  const buttonClasses = isMobile 
+    ? "w-full justify-start" 
+    : "";
+
   if (isAuthenticated) {
     return (
-      <Button onClick={handleSignOut} className="bg-modelboard-red hover:bg-red-600 text-white">
-        Sign out
-      </Button>
+      <div className={containerClasses}>
+        <Button 
+          onClick={handleSignOut} 
+          className={`bg-modelboard-red hover:bg-red-600 text-white ${buttonClasses}`}
+        >
+          Sign out
+        </Button>
+      </div>
     );
   }
 
   return (
-    <>
-      <Button variant="ghost" onClick={handleAuthClick} className="hover:text-modelboard-red">
+    <div className={containerClasses}>
+      <Button 
+        variant="ghost" 
+        onClick={handleAuthClick} 
+        className={`hover:text-modelboard-red ${buttonClasses}`}
+      >
         Sign in
       </Button>
-      <Button onClick={handleAuthClick} className="bg-modelboard-red hover:bg-red-600 text-white">
+      <Button 
+        onClick={handleAuthClick} 
+        className={`bg-modelboard-red hover:bg-red-600 text-white ${buttonClasses}`}
+      >
         Join now
       </Button>
-    </>
+    </div>
   );
 };
