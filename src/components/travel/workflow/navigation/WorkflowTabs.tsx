@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Grid, Calendar, File, Package, Sparkles, ShieldCheck, MessageSquare } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export const WorkflowTabs = () => {
   const isMobile = useIsMobile();
@@ -25,37 +25,8 @@ export const WorkflowTabs = () => {
     { value: "chat", label: "Project Chat", icon: <MessageSquare className="h-4 w-4" /> },
   ];
 
-  // Update activeTab when tab changes
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.target instanceof HTMLElement) {
-          const activeTabElement = document.querySelector('[data-state="active"][role="tab"]');
-          if (activeTabElement) {
-            const value = activeTabElement.getAttribute('data-value');
-            if (value) setActiveTab(value);
-          }
-        }
-      });
-    });
-
-    const tabsList = document.querySelector('[role="tablist"]');
-    if (tabsList) {
-      observer.observe(tabsList, {
-        attributes: true,
-        subtree: true,
-      });
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   const handleTabChange = (value: string) => {
-    const tabElement = document.querySelector(`[role="tab"][data-value="${value}"]`) as HTMLElement;
-    if (tabElement) {
-      tabElement.click();
-      setActiveTab(value);
-    }
+    setActiveTab(value);
   };
 
   if (isMobile) {
@@ -92,7 +63,7 @@ export const WorkflowTabs = () => {
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            onClick={() => setActiveTab(tab.value)}
+            onClick={() => handleTabChange(tab.value)}
             className="data-[state=active]:bg-modelboard-red/10 whitespace-nowrap text-sm sm:text-base flex items-center gap-2"
           >
             {tab.icon}
