@@ -14,27 +14,27 @@ interface WorkflowContentProps {
 export const WorkflowContent = ({ proposal }: WorkflowContentProps) => {
   return (
     <div className="h-full overflow-y-auto">
-      <TabsContent value="collaborators" className="m-0 h-full">
+      <TabsContent value="collaborators" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <CollaboratorsTab proposal={proposal} />
       </TabsContent>
 
-      <TabsContent value="schedule" className="m-0 h-full">
+      <TabsContent value="schedule" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <ScheduleTab proposal={proposal} />
       </TabsContent>
 
-      <TabsContent value="proservices" className="m-0 h-full">
+      <TabsContent value="proservices" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <ProServicesTab proposalId={proposal.id} />
       </TabsContent>
 
-      <TabsContent value="compliance" className="m-0 h-full">
+      <TabsContent value="compliance" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <ComplianceTab proposalId={proposal.id} />
       </TabsContent>
 
-      <TabsContent value="files" className="m-0 h-full">
+      <TabsContent value="files" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <ProjectFilesTab proposalId={proposal.id} />
       </TabsContent>
 
-      <TabsContent value="release" className="m-0 h-full">
+      <TabsContent value="release" className="m-0 h-full data-[state=active]:flex data-[state=active]:flex-col">
         <ReleaseAssetsTab proposalId={proposal.id} />
       </TabsContent>
     </div>

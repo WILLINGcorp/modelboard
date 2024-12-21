@@ -28,20 +28,20 @@ const CollabWorkflowModal = ({
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="h-[95vh] bg-modelboard-dark border-t border-modelboard-red/50">
-        <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 h-full flex flex-col">
-          <div className="flex-shrink-0">
+        <div className="mx-auto w-full max-w-7xl h-full flex flex-col">
+          <div className="flex-shrink-0 px-4 pt-4">
             <WorkflowHeader />
           </div>
 
-          <div className="flex-1 min-h-0 flex flex-col">
+          <div className="flex-1 min-h-0 flex flex-col px-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 -mx-4 px-4 bg-modelboard-dark sticky top-0 z-10 py-2">
                 <WorkflowTabs defaultValue={activeTab} onValueChange={setActiveTab} />
               </div>
               
-              <div className="flex-1 overflow-hidden mt-4">
+              <div className="flex-1 min-h-0 mt-4">
                 <div className="h-full flex flex-col lg:flex-row gap-4">
-                  <div className="flex-1 overflow-y-auto">
+                  <div className="flex-1 min-h-0 overflow-hidden">
                     <WorkflowContent proposal={proposal} />
                   </div>
                   
