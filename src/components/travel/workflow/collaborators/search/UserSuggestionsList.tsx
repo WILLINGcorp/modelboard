@@ -2,7 +2,7 @@ import { Command, CommandEmpty, CommandGroup, CommandItem } from "@/components/u
 import { UserSuggestion } from "../types";
 
 interface UserSuggestionsListProps {
-  suggestions: UserSuggestion[];
+  suggestions?: UserSuggestion[];
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
@@ -13,7 +13,7 @@ const UserSuggestionsList = ({
   return (
     <Command className="rounded-lg border border-modelboard-red/20">
       <CommandGroup>
-        {Array.isArray(suggestions) && suggestions.length > 0 ? (
+        {suggestions && suggestions.length > 0 ? (
           suggestions.map((suggestion) => (
             <CommandItem
               key={suggestion.id}
