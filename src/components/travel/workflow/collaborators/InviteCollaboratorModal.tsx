@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,9 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import UserSearchInput from "./search/UserSearchInput";
-import UserSuggestionsList from "./search/UserSuggestionsList";
-import { useUserSearch } from "./hooks/useUserSearch";
+import { Input } from "@/components/ui/input";
 import { useCollabInvite } from "./hooks/useCollabInvite";
 
 interface InviteCollaboratorModalProps {
@@ -22,19 +21,8 @@ const InviteCollaboratorModal = ({
   onClose,
   onSuccess = () => {},
 }: InviteCollaboratorModalProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { suggestions, isSearching, searchUsers, setSuggestions } = useUserSearch();
+  const [displayName, setDisplayName] = useState("");
   const { isLoading, sendInvite } = useCollabInvite(onSuccess);
-
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    searchUsers(value);
-  };
-
-  const handleSelectSuggestion = (suggestion: UserSuggestion) => {
-    setSearchTerm(suggestion.username || suggestion.display_name || "");
-    setSuggestions([]);
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -42,19 +30,23 @@ const InviteCollaboratorModal = ({
         <DialogHeader>
           <DialogTitle>Invite Collaborator</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Search by username or display name
+            Enter the display name of the user you want to invite
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <UserSearchInput
-            searchTerm={searchTerm}
-            isSearching={isSearching}
-            onSearchChange={handleSearchChange}
-          />
-          <UserSuggestionsList
-            suggestions={suggestions}
-            onSelectSuggestion={handleSelectSuggestion}
-          />
+          <div className="space-y-2">
+            <label htmlFor="displayName" className="text-sm font-medium">
+              Display Name
+            </label>
+            <Input
+              id="displayName"
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Enter display name"
+              className="bg-modelboard-gray border-modelboard-gray"
+            />
+          </div>
           <div className="flex justify-end space-x-2">
             <Button
               variant="outline"
@@ -64,8 +56,8 @@ const InviteCollaboratorModal = ({
               Cancel
             </Button>
             <Button
-              onClick={() => sendInvite(searchTerm)}
-              disabled={isLoading || !searchTerm.trim()}
+              onClick={() => sendInvite(displayName)}
+              disabled={isLoading || !displayName.trim()}
               className="bg-modelboard-red hover:bg-modelboard-red/90"
             >
               {isLoading ? "Sending..." : "Send Invitation"}

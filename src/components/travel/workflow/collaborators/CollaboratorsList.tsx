@@ -46,7 +46,6 @@ export const CollaboratorsList = ({
       <InviteCollaboratorModal
         isOpen={isAddingCollaborator}
         onClose={() => setIsAddingCollaborator(false)}
-        proposalId={proposalId}
         onSuccess={onInviteSuccess}
       />
     </div>
