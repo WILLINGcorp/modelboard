@@ -15,11 +15,11 @@ export const WorkflowContent = ({ proposal }: WorkflowContentProps) => {
   return (
     <div className="flex-1 overflow-y-auto px-2 md:px-6">
       <TabsContent value="collaborators" className="mt-0">
-        <CollaboratorsTab proposalId={proposal.id} />
+        <CollaboratorsTab proposal={proposal} />
       </TabsContent>
       
       <TabsContent value="schedule" className="mt-0">
-        <ScheduleTab proposalId={proposal.id} />
+        <ScheduleTab proposal={proposal} />
       </TabsContent>
       
       <TabsContent value="compliance" className="mt-0">

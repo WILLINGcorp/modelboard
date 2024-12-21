@@ -5,8 +5,9 @@ import type { Database } from "@/integrations/supabase/types";
 type ProjectMessage = Database["public"]["Tables"]["project_messages"]["Row"];
 
 interface ProjectMessageListProps {
-  messages: ProjectMessage[];
+  proposalId: string;
   currentUserId: string;
+  messages: ProjectMessage[];
 }
 
 const ProjectMessageList = ({ messages, currentUserId }: ProjectMessageListProps) => {
