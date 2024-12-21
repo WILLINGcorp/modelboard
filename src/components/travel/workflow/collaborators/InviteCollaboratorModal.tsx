@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Loader2 } from "lucide-react";
 
 interface InviteCollaboratorModalProps {
   isOpen: boolean;
@@ -18,17 +20,54 @@ interface InviteCollaboratorModalProps {
   onSuccess?: () => void;
 }
 
+interface UserSuggestion {
+  id: string;
+  email: string;
+  display_name: string | null;
+  username: string | null;
+}
+
 const InviteCollaboratorModal = ({
   isOpen,
   onClose,
   proposalId,
   onSuccess,
 }: InviteCollaboratorModalProps) => {
-  const [email, setEmail] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState<UserSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const { toast } = useToast();
 
-  const handleInvite = async () => {
+  const searchUsers = async (query: string) => {
+    if (!query.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const { data: profiles, error } = await supabase
+        .from("profiles")
+        .select("id, email, display_name, username")
+        .or(`username.ilike.%${query}%,display_name.ilike.%${query}%,email.ilike.%${query}%`)
+        .limit(5);
+
+      if (error) throw error;
+      setSuggestions(profiles || []);
+    } catch (error) {
+      console.error("Error searching users:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    searchUsers(value);
+  };
+
+  const handleInvite = async (email: string) => {
     if (!email.trim()) return;
     
     setIsLoading(true);
@@ -64,7 +103,7 @@ const InviteCollaboratorModal = ({
           receiver_id: receiverProfile.id,
           status: "pending",
           message: `Collaboration invitation from ${senderProfile?.display_name || "a user"}`,
-          location: "Remote", // Adding default location as required by the schema
+          location: "Remote",
         });
 
       if (proposalError) throw proposalError;
@@ -101,28 +140,58 @@ const InviteCollaboratorModal = ({
     }
   };
 
+  const handleSelectSuggestion = (suggestion: UserSuggestion) => {
+    setSearchTerm(suggestion.email);
+    setSuggestions([]);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-modelboard-dark text-white">
         <DialogHeader>
           <DialogTitle>Invite Collaborator</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Enter the email address of the person you want to collaborate with.
+            Enter an email address or search by username/display name
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2">
-              Email Address
+          <div className="relative">
+            <label htmlFor="search" className="block text-sm font-medium mb-2">
+              Search User or Enter Email
             </label>
             <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email address"
+              id="search"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              placeholder="Search by username, display name, or enter email"
               className="bg-modelboard-gray border-modelboard-gray"
             />
+            {isSearching && (
+              <div className="absolute right-3 top-10">
+                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+              </div>
+            )}
+            {suggestions.length > 0 && (
+              <Command className="absolute w-full z-50 mt-1 bg-modelboard-gray rounded-md border border-modelboard-gray/50">
+                <CommandGroup>
+                  {suggestions.map((suggestion) => (
+                    <CommandItem
+                      key={suggestion.id}
+                      onSelect={() => handleSelectSuggestion(suggestion)}
+                      className="cursor-pointer hover:bg-modelboard-gray/50"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {suggestion.display_name || suggestion.username}
+                        </span>
+                        <span className="text-sm text-gray-400">{suggestion.email}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            )}
           </div>
           <div className="flex justify-end space-x-2">
             <Button
@@ -133,8 +202,8 @@ const InviteCollaboratorModal = ({
               Cancel
             </Button>
             <Button
-              onClick={handleInvite}
-              disabled={isLoading || !email.trim()}
+              onClick={() => handleInvite(searchTerm)}
+              disabled={isLoading || !searchTerm.trim()}
               className="bg-modelboard-red hover:bg-modelboard-red/90"
             >
               {isLoading ? "Sending..." : "Send Invitation"}
