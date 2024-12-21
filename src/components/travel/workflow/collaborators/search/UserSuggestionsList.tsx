@@ -1,38 +1,33 @@
-import { Command, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { UserSuggestion } from "../types";
 
 interface UserSuggestionsListProps {
-  suggestions?: UserSuggestion[];
+  suggestions: UserSuggestion[];
   onSelectSuggestion: (suggestion: UserSuggestion) => void;
 }
 
-const UserSuggestionsList = ({ 
-  suggestions = [], 
-  onSelectSuggestion 
-}: UserSuggestionsListProps) => {
+const UserSuggestionsList = ({ suggestions, onSelectSuggestion }: UserSuggestionsListProps) => {
+  if (suggestions.length === 0) return null;
+
   return (
-    <Command className="rounded-lg border border-modelboard-red/20">
+    <Command className="absolute w-full z-50 mt-1 bg-modelboard-gray rounded-md border border-modelboard-gray/50">
       <CommandGroup>
-        {suggestions && suggestions.length > 0 ? (
-          suggestions.map((suggestion) => (
-            <CommandItem
-              key={suggestion.id}
-              onSelect={() => onSelectSuggestion(suggestion)}
-              className="cursor-pointer hover:bg-modelboard-gray/50 flex flex-col items-start p-2"
-            >
-              <span className="font-medium text-white">
+        {suggestions.map((suggestion) => (
+          <CommandItem
+            key={suggestion.id}
+            onSelect={() => onSelectSuggestion(suggestion)}
+            className="cursor-pointer hover:bg-modelboard-gray/50"
+          >
+            <div className="flex flex-col">
+              <span className="font-medium">
                 {suggestion.display_name || suggestion.username}
               </span>
               {suggestion.username && suggestion.display_name && (
                 <span className="text-sm text-gray-400">@{suggestion.username}</span>
               )}
-            </CommandItem>
-          ))
-        ) : (
-          <CommandEmpty className="p-2 text-sm text-gray-400">
-            No results found
-          </CommandEmpty>
-        )}
+            </div>
+          </CommandItem>
+        ))}
       </CommandGroup>
     </Command>
   );

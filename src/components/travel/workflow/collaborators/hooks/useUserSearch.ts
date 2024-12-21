@@ -24,7 +24,6 @@ export const useUserSearch = () => {
       setSuggestions(profiles || []);
     } catch (error) {
       console.error("Error searching users:", error);
-      setSuggestions([]);
     } finally {
       setIsSearching(false);
     }
