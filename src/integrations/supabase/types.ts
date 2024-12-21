@@ -401,6 +401,44 @@ export type Database = {
           },
         ]
       }
+      profile_analytics: {
+        Row: {
+          created_at: string
+          id: string
+          last_viewed_at: string | null
+          profile_id: string
+          unique_visitors_count: number | null
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_viewed_at?: string | null
+          profile_id: string
+          unique_visitors_count?: number | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_viewed_at?: string | null
+          profile_id?: string
+          unique_visitors_count?: number | null
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_analytics_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_visits: {
         Row: {
           id: string
