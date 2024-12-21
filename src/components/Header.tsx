@@ -91,7 +91,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <a href="/" className="hover-effect">
             <img 
-              src="/modelboard-logo.png" 
+              src="/modelboard_logo_white.png" 
               alt="ModelBoard" 
               className="h-8 md:h-10"
             />
