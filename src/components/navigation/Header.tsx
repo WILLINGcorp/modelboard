@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Logo } from "./Logo";
 import { NavigationItems } from "./NavigationItems";
 import { UserMenu } from "./UserMenu";
+import { MobileMenuButton } from "./MobileMenuButton";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Header = () => {
@@ -37,25 +38,17 @@ export const Header = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="hover-effect">
-            <img 
-              src="/modelboard-logo.png" 
-              alt="ModelBoard" 
-              className="h-8 md:h-10"
-            />
-          </a>
+          <Logo />
 
           <div className="hidden md:flex items-center space-x-8">
             <NavigationItems isAuthenticated={!!session} />
             <UserMenu isAuthenticated={!!session} />
           </div>
 
-          <button
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <MobileMenuButton 
+            isOpen={isMobileMenuOpen} 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+          />
         </div>
 
         {isMobileMenuOpen && (
