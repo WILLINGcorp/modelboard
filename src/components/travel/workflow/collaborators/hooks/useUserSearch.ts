@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface SearchResult {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+}
+
 export const useUserSearch = () => {
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const searchUsers = async (query: string) => {

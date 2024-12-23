@@ -237,30 +237,42 @@ export type Database = {
       }
       paid_ads: {
         Row: {
+          ad_type: string
           created_at: string
+          description: string | null
           end_time: string
           id: string
+          location: string
           profile_id: string
           start_time: string
           status: string
+          title: string
           updated_at: string
         }
         Insert: {
+          ad_type: string
           created_at?: string
+          description?: string | null
           end_time: string
           id?: string
+          location: string
           profile_id: string
           start_time?: string
           status?: string
+          title: string
           updated_at?: string
         }
         Update: {
+          ad_type?: string
           created_at?: string
+          description?: string | null
           end_time?: string
           id?: string
+          location?: string
           profile_id?: string
           start_time?: string
           status?: string
+          title?: string
           updated_at?: string
         }
         Relationships: [

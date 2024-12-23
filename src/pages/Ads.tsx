@@ -40,8 +40,13 @@ const Ads = () => {
       const query = supabase
         .from("paid_ads")
         .select(`
-          *,
-          profiles:profile_id (
+          id,
+          title,
+          description,
+          location,
+          ad_type,
+          created_at,
+          profiles (
             display_name,
             avatar_url
           )
