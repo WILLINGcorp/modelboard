@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Image, Home, Users, MapPin } from "lucide-react";
+import { Menu, X, User, Image, Home, Users, MapPin, MessageSquareMore } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
@@ -74,6 +74,7 @@ const Header = () => {
     { label: "Models", path: "/models", icon: Users },
     { label: "Portfolio", path: "/portfolio", icon: Image },
     { label: "Location", path: "/location", icon: MapPin },
+    { label: "Ads", path: "/ads", icon: MessageSquareMore },
     { label: "Profile", path: "/profile", icon: User },
   ] : [
     { label: "Features", path: "#features" },
