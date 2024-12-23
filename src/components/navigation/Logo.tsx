@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
+import React from "react";
 
 export const Logo = () => {
   return (
-    <Link to="/" className="hover-effect">
+    <a href="/" className="hover-effect">
       <img 
         src="/modelboard_logo_white.png" 
         alt="ModelBoard" 
         className="h-8 md:h-10"
       />
-    </Link>
+    </a>
   );
 };
