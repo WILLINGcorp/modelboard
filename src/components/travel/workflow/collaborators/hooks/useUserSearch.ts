@@ -1,38 +1,36 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { UserSuggestion } from "../types";
 
 export const useUserSearch = () => {
-  const [suggestions, setSuggestions] = useState<UserSuggestion[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const searchUsers = async (query: string) => {
-    if (!query.trim()) {
-      setSuggestions([]);
+    if (!query) {
+      setSearchResults([]);
       return;
     }
 
     setIsSearching(true);
     try {
-      const { data: profiles, error } = await supabase
+      const { data } = await supabase
         .from("profiles")
-        .select("id, display_name, username")
-        .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
+        .select("id, display_name, avatar_url")
+        .ilike("display_name", `%${query}%`)
         .limit(5);
 
-      if (error) throw error;
-      setSuggestions(profiles || []);
+      setSearchResults(data || []);
     } catch (error) {
       console.error("Error searching users:", error);
+      setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
   };
 
   return {
-    suggestions,
+    searchResults,
     isSearching,
     searchUsers,
-    setSuggestions
   };
 };
