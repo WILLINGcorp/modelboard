@@ -10,6 +10,7 @@ import Location from "@/pages/Location";
 import Portfolio from "@/pages/Portfolio";
 import Profile from "@/pages/Profile";
 import Collabs from "@/pages/Collabs";
+import Ads from "@/pages/Ads";
 import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 
 const AppRoutes = () => {
@@ -86,6 +87,14 @@ const AppRoutes = () => {
         element={
           <PrivateRoute>
             <Collabs />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/ads"
+        element={
+          <PrivateRoute>
+            <Ads />
           </PrivateRoute>
         }
       />
