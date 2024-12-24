@@ -5,6 +5,7 @@ import { NetworkLink } from "./nav-items/NetworkLink";
 import { MessagesLink } from "./nav-items/MessagesLink";
 import { CollabsLink } from "./nav-items/CollabsLink";
 import { ModerationLink } from "./nav-items/ModerationLink";
+import { AdsLink } from "./nav-items/AdsLink";
 
 interface AuthenticatedNavProps {
   isActive: (path: string) => boolean;
@@ -39,6 +40,7 @@ export const AuthenticatedNav = ({ isActive, onNavigate, isMobile = false }: Aut
       <NetworkLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       <MessagesLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       <CollabsLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <AdsLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       {profile?.staff_type && (
         <ModerationLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
       )}
