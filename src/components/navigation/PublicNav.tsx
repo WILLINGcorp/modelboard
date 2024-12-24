@@ -5,26 +5,37 @@ interface PublicNavProps {
 }
 
 export const PublicNav = ({ isMobile = false }: PublicNavProps) => {
-  const navigationItems = [
-    { label: "Features", path: "#features" },
-    { label: "How it works", path: "#how-it-works" },
-    { label: "Pricing", path: "#pricing" },
-  ];
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-4 w-full" 
+    : "flex items-center space-x-4";
+
+  const buttonClasses = isMobile 
+    ? "w-full justify-start" 
+    : "";
 
   return (
-    <>
-      {navigationItems.map((item) => (
-        <Button
-          key={item.path}
-          variant="ghost"
-          className={`hover:text-modelboard-red transition-colors ${
-            isMobile ? "w-full justify-start" : ""
-          }`}
-          asChild
-        >
-          <a href={item.path}>{item.label}</a>
-        </Button>
-      ))}
-    </>
+    <nav className={containerClasses}>
+      <Button 
+        variant="ghost" 
+        className={`hover:text-modelboard-red transition-colors ${buttonClasses}`}
+        asChild
+      >
+        <a href="#features">Features</a>
+      </Button>
+      <Button 
+        variant="ghost"
+        className={`hover:text-modelboard-red transition-colors ${buttonClasses}`}
+        asChild
+      >
+        <a href="#how-it-works">How it works</a>
+      </Button>
+      <Button 
+        variant="ghost"
+        className={`hover:text-modelboard-red transition-colors ${buttonClasses}`}
+        asChild
+      >
+        <a href="#pricing">Pricing</a>
+      </Button>
+    </nav>
   );
 };

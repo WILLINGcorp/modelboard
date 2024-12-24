@@ -28,6 +28,7 @@ export const NavigationItems = ({ isAuthenticated, onMobileMenuClose, isMobile =
     return (
       <div className={containerClasses}>
         <AuthenticatedNav isActive={isActive} onNavigate={handleNavigation} isMobile={isMobile} />
+        <AccountDropdown onMobileMenuClose={onMobileMenuClose} isMobile={isMobile} />
       </div>
     );
   }

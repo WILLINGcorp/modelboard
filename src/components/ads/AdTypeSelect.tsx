@@ -8,8 +8,8 @@ import {
 import { AdType } from "@/pages/Ads";
 
 interface AdTypeSelectProps {
-  value: AdType | "all";
-  onChange: (value: AdType | "all") => void;
+  value: AdType | "";
+  onChange: (value: AdType | "") => void;
 }
 
 export const AdTypeSelect = ({ value, onChange }: AdTypeSelectProps) => {
@@ -21,7 +21,7 @@ export const AdTypeSelect = ({ value, onChange }: AdTypeSelectProps) => {
           <SelectValue placeholder="Select ad type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
+          <SelectItem value="">All Types</SelectItem>
           <SelectItem value="filming_location">Finding a Filming Location</SelectItem>
           <SelectItem value="collaborator_replacement">Finding a Collaborator Replacement</SelectItem>
           <SelectItem value="videographer">Finding a Videographer</SelectItem>

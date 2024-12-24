@@ -1,5 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Home, Users, Image, MapPin, MessageSquareMore, User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { DashboardLink } from "./nav-items/DashboardLink";
+import { NetworkLink } from "./nav-items/NetworkLink";
+import { MessagesLink } from "./nav-items/MessagesLink";
+import { CollabsLink } from "./nav-items/CollabsLink";
+import { ModerationLink } from "./nav-items/ModerationLink";
 
 interface AuthenticatedNavProps {
   isActive: (path: string) => boolean;
@@ -8,30 +13,35 @@ interface AuthenticatedNavProps {
 }
 
 export const AuthenticatedNav = ({ isActive, onNavigate, isMobile = false }: AuthenticatedNavProps) => {
-  const navigationItems = [
-    { label: "Home", path: "/", icon: Home },
-    { label: "Models", path: "/models", icon: Users },
-    { label: "Portfolio", path: "/portfolio", icon: Image },
-    { label: "Location", path: "/location", icon: MapPin },
-    { label: "Ads", path: "/ads", icon: MessageSquareMore },
-    { label: "Profile", path: "/profile", icon: User },
-  ];
+  const { data: profile } = useQuery({
+    queryKey: ["staffProfile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("staff_type")
+        .eq("id", user.id)
+        .single();
+
+      return data;
+    },
+  });
+
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-2 w-full" 
+    : "flex items-center space-x-4";
 
   return (
-    <>
-      {navigationItems.map((item) => (
-        <Button
-          key={item.path}
-          variant="ghost"
-          className={`flex items-center space-x-2 ${
-            isActive(item.path) ? "text-modelboard-red" : "hover:text-modelboard-red"
-          } transition-colors ${isMobile ? "justify-start w-full" : ""}`}
-          onClick={() => onNavigate(item.path)}
-        >
-          <item.icon className="w-4 h-4 mr-2" />
-          {item.label}
-        </Button>
-      ))}
-    </>
+    <nav className={containerClasses}>
+      <DashboardLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <NetworkLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <MessagesLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      <CollabsLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      {profile?.staff_type && (
+        <ModerationLink isActive={isActive} onNavigate={onNavigate} isMobile={isMobile} />
+      )}
+    </nav>
   );
 };

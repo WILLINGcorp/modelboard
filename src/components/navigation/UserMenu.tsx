@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
 
 interface UserMenuProps {
   isAuthenticated: boolean;
@@ -11,24 +10,11 @@ interface UserMenuProps {
 
 export const UserMenu = ({ isAuthenticated, onMobileMenuClose, isMobile = false }: UserMenuProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      navigate("/");
-      toast({
-        title: "Signed out successfully",
-        description: "You have been logged out of your account",
-      });
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast({
-        title: "Error signing out",
-        description: "There was a problem signing out. Please try again.",
-        variant: "destructive",
-      });
-    }
+    await supabase.auth.signOut();
+    navigate("/");
+    onMobileMenuClose?.();
   };
 
   const handleAuthClick = () => {
@@ -36,38 +22,42 @@ export const UserMenu = ({ isAuthenticated, onMobileMenuClose, isMobile = false 
     onMobileMenuClose?.();
   };
 
+  const containerClasses = isMobile 
+    ? "flex flex-col space-y-4 w-full" 
+    : "flex items-center space-x-4";
+
+  const buttonClasses = isMobile 
+    ? "w-full justify-start" 
+    : "";
+
   if (isAuthenticated) {
     return (
-      <Button 
-        onClick={handleSignOut} 
-        className={`bg-modelboard-red hover:bg-red-600 text-white ${
-          isMobile ? "w-full" : ""
-        }`}
-      >
-        Sign out
-      </Button>
+      <div className={containerClasses}>
+        <Button 
+          onClick={handleSignOut} 
+          className={`bg-modelboard-red hover:bg-red-600 text-white ${buttonClasses}`}
+        >
+          Sign out
+        </Button>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className={containerClasses}>
       <Button 
         variant="ghost" 
         onClick={handleAuthClick} 
-        className={`hover:text-modelboard-red ${
-          isMobile ? "w-full" : ""
-        }`}
+        className={`hover:text-modelboard-red ${buttonClasses}`}
       >
         Sign in
       </Button>
       <Button 
         onClick={handleAuthClick} 
-        className={`bg-modelboard-red hover:bg-red-600 text-white ${
-          isMobile ? "w-full" : ""
-        }`}
+        className={`bg-modelboard-red hover:bg-red-600 text-white ${buttonClasses}`}
       >
         Join now
       </Button>
-    </>
+    </div>
   );
 };
