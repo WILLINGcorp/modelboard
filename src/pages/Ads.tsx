@@ -12,11 +12,12 @@ export type AdType =
   | "videographer"
   | "accommodation"
   | "fixer"
-  | "special_props";
+  | "special_props"
+  | "all";
 
 const Ads = () => {
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
-  const [selectedType, setSelectedType] = useState<AdType | "">("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("all");
+  const [selectedType, setSelectedType] = useState<AdType>("all");
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
@@ -37,7 +38,7 @@ const Ads = () => {
   const { data: ads, isLoading } = useQuery({
     queryKey: ["ads", selectedLocation, selectedType],
     queryFn: async () => {
-      const query = supabase
+      let query = supabase
         .from("paid_ads")
         .select(`
           id,
@@ -54,11 +55,11 @@ const Ads = () => {
         .eq("status", "active")
         .gt("end_time", new Date().toISOString());
 
-      if (selectedLocation) {
-        query.eq("location", selectedLocation);
+      if (selectedLocation !== "all") {
+        query = query.eq("location", selectedLocation);
       }
-      if (selectedType) {
-        query.eq("ad_type", selectedType);
+      if (selectedType !== "all") {
+        query = query.eq("ad_type", selectedType);
       }
 
       const { data } = await query;
