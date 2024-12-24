@@ -21,7 +21,7 @@ export const LocationSelect = ({ value, onChange, defaultLocation }: LocationSel
           <SelectValue placeholder={defaultLocation || "Select location"} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Locations</SelectItem>
+          <SelectItem value="all">All Locations</SelectItem>
           <SelectItem value="los_angeles">Los Angeles</SelectItem>
           <SelectItem value="new_york">New York</SelectItem>
           <SelectItem value="miami">Miami</SelectItem>
