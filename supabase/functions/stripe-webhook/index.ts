@@ -41,7 +41,8 @@ serve(async (req) => {
             .eq('id', user_id);
         } else {
           // Handle paid ad checkout
-          const { user_id, hours } = session.metadata;
+          const { user_id, hours, ad_data } = session.metadata;
+          const adData = JSON.parse(ad_data);
           const endTime = new Date();
           endTime.setHours(endTime.getHours() + parseInt(hours));
 
@@ -49,7 +50,12 @@ serve(async (req) => {
             .from('paid_ads')
             .insert({
               profile_id: user_id,
+              title: adData.title,
+              description: adData.description,
+              location: adData.location,
+              ad_type: adData.ad_type,
               end_time: endTime.toISOString(),
+              start_time: new Date().toISOString(),
             });
         }
         break;
