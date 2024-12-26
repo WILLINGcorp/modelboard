@@ -23,10 +23,10 @@ export const useOnlinePresence = (userId: string | undefined) => {
         setOnlineUsers(online);
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-        console.log('User joined:', key, newPresences);
+        console.log('join', key, newPresences);
       })
       .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-        console.log('User left:', key, leftPresences);
+        console.log('leave', key, leftPresences);
       });
 
     // Track user's presence
@@ -44,7 +44,11 @@ export const useOnlinePresence = (userId: string | undefined) => {
     };
   }, [userId]);
 
-  const isOnline = (id: string) => onlineUsers.has(id);
+  // Ensure isOnline is always a function, even if userId is undefined
+  const isOnline = (id: string): boolean => {
+    if (!userId) return false;
+    return onlineUsers.has(id);
+  };
 
   return { isOnline, onlineUsers };
 };
