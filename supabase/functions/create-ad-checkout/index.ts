@@ -13,11 +13,10 @@ serve(async (req) => {
   }
 
   try {
-    const { hours = 12 } = await req.json();
+    const { hours, price, adData } = await req.json();
     
-    // Validate hours (minimum 12, increment of 1)
-    if (hours < 12) {
-      throw new Error('Minimum duration is 12 hours');
+    if (hours < 24) {
+      throw new Error('Minimum duration is 24 hours');
     }
 
     const supabaseClient = createClient(
@@ -29,7 +28,7 @@ serve(async (req) => {
     const token = authHeader.replace('Bearer ', '');
     const { data: { user } } = await supabaseClient.auth.getUser(token);
 
-    if (!user?.email) {
+    if (!user) {
       throw new Error('User not authenticated');
     }
 
@@ -44,20 +43,21 @@ serve(async (req) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${hours}h Featured Profile Spot`,
-              description: 'Get featured in the "Ready to Collab Now" section',
+              name: `${hours}h Advertisement Spot`,
+              description: adData.title,
             },
-            unit_amount: 100 * hours, // $1 per hour
+            unit_amount: Math.round(price * 100), // Convert to cents
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/network?success=true`,
-      cancel_url: `${req.headers.get('origin')}/network?canceled=true`,
+      success_url: `${req.headers.get('origin')}/ads?success=true`,
+      cancel_url: `${req.headers.get('origin')}/ads?canceled=true`,
       metadata: {
         user_id: user.id,
         hours: hours.toString(),
+        ad_data: JSON.stringify(adData),
       },
     });
 
