@@ -9,6 +9,7 @@ export type Profile = Database['public']['Tables']['profiles']['Row'];
 export const FeaturedProfiles = () => {
   const [featuredProfiles, setFeaturedProfiles] = useState<Profile[]>([]);
   const [paidAdProfiles, setPaidAdProfiles] = useState<Profile[]>([]);
+  const [randomProfiles, setRandomProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,6 +53,20 @@ export const FeaturedProfiles = () => {
           
         setPaidAdProfiles(paidProfiles || []);
       }
+
+      // If we don't have enough featured profiles, get random ones to fill the row
+      const totalFeaturedCount = (featuredProfileIds.length + paidAdProfileIds.length);
+      if (totalFeaturedCount < 4) {
+        const excludeIds = [...featuredProfileIds, ...paidAdProfileIds];
+        const { data: randomProfilesData } = await supabase
+          .from('profiles')
+          .select('*')
+          .not('id', 'in', `(${excludeIds.join(',')})`)
+          .limit(4 - totalFeaturedCount)
+          .order('created_at', { ascending: false });
+
+        setRandomProfiles(randomProfilesData || []);
+      }
     } catch (error) {
       console.error('Error fetching featured profiles:', error);
     } finally {
@@ -72,6 +87,7 @@ export const FeaturedProfiles = () => {
       <FeaturedProfilesGrid 
         profiles={featuredProfiles}
         paidAdProfiles={paidAdProfiles}
+        randomProfiles={randomProfiles}
       />
     </div>
   );

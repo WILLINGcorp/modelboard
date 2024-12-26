@@ -5,9 +5,10 @@ import type { Profile } from "@/components/network/FeaturedProfiles";
 interface FeaturedProfileCardProps {
   profile: Profile;
   isPaidAd?: boolean;
+  isRandomFill?: boolean;
 }
 
-export const FeaturedProfileCard = ({ profile, isPaidAd = false }: FeaturedProfileCardProps) => {
+export const FeaturedProfileCard = ({ profile, isPaidAd = false, isRandomFill = false }: FeaturedProfileCardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +23,7 @@ export const FeaturedProfileCard = ({ profile, isPaidAd = false }: FeaturedProfi
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
         <div className="absolute top-4 left-4">
           <span className="text-modelboard-red text-sm font-medium">
-            {isPaidAd ? 'Featured Ad' : 'Featured'}
+            {isPaidAd ? 'Featured Ad' : isRandomFill ? 'Profile' : 'Featured'}
           </span>
         </div>
 
