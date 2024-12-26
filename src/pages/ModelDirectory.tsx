@@ -3,7 +3,7 @@ import { useSearchParams, useLocation } from "react-router-dom";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
 import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
 import { ModelGrid } from "@/components/network/ModelGrid";
-import { SponsorProfiles } from "@/components/network/SponsorProfiles";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 import { supabase } from "@/integrations/supabase/client";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
 import { useAuth } from "@/hooks/use-auth";
@@ -83,16 +83,15 @@ const ModelDirectory = () => {
       {loading ? (
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
-        <>
-          <ModelGrid 
-            profiles={profiles} 
-            isOnline={isOnline} 
-          />
-          <div className="mt-12">
-            <SponsorProfiles />
-          </div>
-        </>
+        <ModelGrid 
+          profiles={profiles} 
+          isOnline={isOnline} 
+        />
       )}
+
+      <div className="mt-24">
+        <SponsorFeaturedMembers />
+      </div>
     </div>
   );
 };
