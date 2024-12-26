@@ -6,9 +6,9 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen">
       <Header />
-      <main className="flex-1 pt-24 safe-padding scroll-touch">
+      <main className="pt-24">
         {children}
       </main>
     </div>

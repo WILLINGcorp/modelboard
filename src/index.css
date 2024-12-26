@@ -33,47 +33,10 @@
   * {
     @apply border-border;
   }
-  
-  html {
-    -webkit-tap-highlight-color: transparent;
-  }
-  
   body {
-    @apply bg-background text-foreground font-['Inter'] antialiased;
+    @apply bg-background text-foreground font-['Inter'];
     font-feature-settings: "rlig" 1, "calt" 1;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
-}
-
-/* Mobile touch targets */
-.mobile-touch-target {
-  @apply min-h-[44px] min-w-[44px];
-}
-
-/* Mobile text size */
-.mobile-text-base {
-  @apply text-base;
-}
-
-@media (max-width: 640px) {
-  button, a {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  input, select, textarea {
-    font-size: 16px; /* Prevent zoom on focus on iOS */
-  }
-}
-
-/* Safe area padding */
-.safe-padding {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
 }
 
 .glass {
@@ -84,43 +47,6 @@
   @apply transition-all duration-300 ease-in-out hover:scale-105;
 }
 
-.hover-effect-mobile {
-  @apply hover:scale-100 active:scale-95;
-}
-
-@media (max-width: 640px) {
-  .hover-effect {
-    min-height: 44px;
-    min-width: 44px;
-    transform: scale(1);
-  }
-  
-  .hover-effect:active {
-    transform: scale(0.95);
-  }
-}
-
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-modelboard-red to-red-400;
-}
-
-/* Mobile grid optimizations */
-.grid-responsive {
-  @apply grid gap-4 sm:gap-6;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-}
-
-/* Mobile-first spacing */
-.section-spacing {
-  @apply py-4 sm:py-6 md:py-8 lg:py-12;
-}
-
-.content-spacing {
-  @apply space-y-4 sm:space-y-6 md:space-y-8;
-}
-
-/* Touch-friendly scrolling */
-.scroll-touch {
-  -webkit-overflow-scrolling: touch;
-  @apply overflow-auto;
 }
