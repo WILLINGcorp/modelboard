@@ -37,7 +37,6 @@ const ModelDirectory = () => {
       setLoading(true);
       let query = supabase.from("profiles").select("*");
 
-      // Apply filters based on profile type
       if (filter === "creators") {
         query = query.eq("profile_type", "content_creator");
       } else if (filter === "producers") {
@@ -46,7 +45,6 @@ const ModelDirectory = () => {
         query = query.eq("profile_type", "studio_executive");
       }
 
-      // Apply location filter if provided
       const locationParam = searchParams.get("location");
       if (locationParam) {
         query = query.ilike("location", `%${locationParam}%`);
@@ -71,6 +69,11 @@ const ModelDirectory = () => {
     setSearchParams({ location });
   };
 
+  // Provide a default isOnline function if the hook hasn't initialized yet
+  const checkOnlineStatus = (id: string) => {
+    return typeof isOnline === 'function' ? isOnline(id) : false;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div id="featured-section" className="mb-12">
@@ -86,7 +89,7 @@ const ModelDirectory = () => {
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
         <>
-          <ModelGrid profiles={profiles} isOnline={isOnline} />
+          <ModelGrid profiles={profiles} isOnline={checkOnlineStatus} />
           <div className="mt-12">
             <SponsorProfiles />
           </div>
