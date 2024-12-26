@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Badge } from "lucide-react";
+import { Badge, Crown, Star } from "lucide-react";
 import type { Profile } from "@/components/network/FeaturedProfiles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,31 +29,36 @@ export const FeaturedProfileCard = ({ profile, isPaidAd = false }: FeaturedProfi
 
   return (
     <Card 
-      className="group relative overflow-hidden cursor-pointer bg-modelboard-gray hover:bg-modelboard-gray/80 transition-all duration-300"
+      className="group relative overflow-hidden cursor-pointer bg-gradient-to-r from-modelboard-dark to-modelboard-gray hover:from-modelboard-gray hover:to-modelboard-dark transition-all duration-500"
       onClick={() => navigate(`/models/${profile.id}`)}
     >
-      <div className="flex flex-col md:flex-row gap-6 p-6">
+      <div className="flex flex-col md:flex-row gap-8 p-8">
         {/* Profile Info Section */}
         <div className="w-full md:w-1/3">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
+          <div className="relative aspect-[3/4] overflow-hidden rounded-xl">
             <img 
               src={profile.avatar_url || "/creator_default_profile.jpg"}
               alt={profile.display_name || "Featured Profile"}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
-              <div className="absolute top-4 left-4 flex items-center gap-2">
-                <Badge className="h-5 w-5 text-modelboard-red" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+              <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-4 py-2">
+                {isPaidAd ? (
+                  <Crown className="h-5 w-5 text-modelboard-red" />
+                ) : (
+                  <Star className="h-5 w-5 text-modelboard-red" />
+                )}
                 <span className="text-modelboard-red text-sm font-medium">
                   {isPaidAd ? 'Featured Ad' : 'Featured'}
                 </span>
               </div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="text-xl font-semibold text-white mb-1">
+              <div className="absolute bottom-6 left-6 right-6">
+                <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
                   {profile.display_name || "Anonymous Model"}
                 </h3>
                 {profile.location && (
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <Badge className="h-4 w-4" />
                     {profile.location}
                   </p>
                 )}
@@ -64,25 +69,28 @@ export const FeaturedProfileCard = ({ profile, isPaidAd = false }: FeaturedProfi
 
         {/* Portfolio Preview Section */}
         <div className="w-full md:w-2/3">
-          <h4 className="text-white text-lg mb-4">Latest Work</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <h4 className="text-white text-xl font-semibold mb-6">Latest Work</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {portfolioItems.map((item) => (
-              <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden">
+              <div key={item.id} className="relative aspect-square rounded-xl overflow-hidden glass">
                 <img 
                   src={item.media_url} 
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-2 left-2 right-2">
-                    <p className="text-white text-sm font-medium truncate">{item.title}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="text-white text-sm font-medium">{item.title}</p>
+                    {item.description && (
+                      <p className="text-gray-300 text-xs mt-1 line-clamp-2">{item.description}</p>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
             {portfolioItems.length === 0 && (
-              <div className="col-span-3 text-center text-gray-400 py-8">
-                No portfolio items yet
+              <div className="col-span-3 text-center py-12 glass rounded-xl">
+                <p className="text-gray-400">No portfolio items yet</p>
               </div>
             )}
           </div>

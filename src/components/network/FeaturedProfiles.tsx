@@ -9,7 +9,7 @@ export type Profile = Database['public']['Tables']['profiles']['Row'];
 export const FeaturedProfiles = () => {
   const [featuredProfiles, setFeaturedProfiles] = useState<Profile[]>([]);
   const [paidAdProfiles, setPaidAdProfiles] = useState<Profile[]>([]);
-  const [randomProfiles, setRandomProfiles] = useState<Profile[]>([]);
+  const [randomProfile, setRandomProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,18 +54,20 @@ export const FeaturedProfiles = () => {
         setPaidAdProfiles(paidProfiles || []);
       }
 
-      // If we don't have enough featured profiles, get random ones to fill the row
+      // If we don't have any featured profiles, get one random profile
       const totalFeaturedCount = (featuredProfileIds.length + paidAdProfileIds.length);
-      if (totalFeaturedCount < 4) {
+      if (totalFeaturedCount === 0) {
         const excludeIds = [...featuredProfileIds, ...paidAdProfileIds];
-        const { data: randomProfilesData } = await supabase
+        const { data: randomProfileData } = await supabase
           .from('profiles')
           .select('*')
           .not('id', 'in', `(${excludeIds.join(',')})`)
-          .limit(4 - totalFeaturedCount)
+          .limit(1)
           .order('created_at', { ascending: false });
 
-        setRandomProfiles(randomProfilesData || []);
+        setRandomProfile(randomProfileData?.[0] || null);
+      } else {
+        setRandomProfile(null);
       }
     } catch (error) {
       console.error('Error fetching featured profiles:', error);
@@ -79,15 +81,15 @@ export const FeaturedProfiles = () => {
   }
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-white">Featured Profiles</h2>
+    <div className="mb-12">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-white">Featured Profiles</h2>
         <PurchaseFeaturedSpot />
       </div>
       <FeaturedProfilesGrid 
         profiles={featuredProfiles}
         paidAdProfiles={paidAdProfiles}
-        randomProfiles={randomProfiles}
+        randomProfile={randomProfile}
       />
     </div>
   );
