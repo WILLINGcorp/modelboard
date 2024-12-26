@@ -61,11 +61,11 @@ export const PurchaseFeaturedSpot = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-modelboard-dark text-white">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Get Featured</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Purchase a Featured Ad-Spot</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
           <div className="space-y-2">
-            <Label htmlFor="hours">Hours (minimum 12)</Label>
+            <Label htmlFor="hours">Get Featured for $1 per Hour (Minimum 12h)</Label>
             <Input
               id="hours"
               type="number"
