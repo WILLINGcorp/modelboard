@@ -69,6 +69,9 @@ const ModelDirectory = () => {
     setSearchParams({ location });
   };
 
+  // Add console.log to debug isOnline
+  console.log("ModelDirectory isOnline:", isOnline);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div id="featured-section" className="mb-12">
@@ -84,7 +87,10 @@ const ModelDirectory = () => {
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
         <>
-          <ModelGrid profiles={profiles} isOnline={isOnline} />
+          <ModelGrid 
+            profiles={profiles} 
+            isOnline={isOnline} 
+          />
           <div className="mt-12">
             <SponsorProfiles />
           </div>

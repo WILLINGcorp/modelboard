@@ -15,7 +15,9 @@ export const ModelCard = ({ profile, isOnline }: ModelCardProps) => {
   const isSponsor = profile.subscription_status === 'sponsor' && 
     new Date(profile.subscription_end_date || '') > new Date();
 
-  // Ensure we have both a profile.id and a valid isOnline function
+  // Add console.log to debug isOnline and profile.id
+  console.log("ModelCard isOnline:", isOnline, "profile.id:", profile.id);
+  
   const isProfileOnline = profile.id && typeof isOnline === 'function' ? isOnline(profile.id) : false;
 
   return (
