@@ -25,7 +25,21 @@ serve(async (req) => {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        if (session.mode === 'subscription') {
+        
+        if (session.metadata?.type === 'featured_profile') {
+          const { user_id, hours } = session.metadata;
+          const endTime = new Date();
+          endTime.setHours(endTime.getHours() + parseInt(hours));
+
+          await supabase
+            .from('featured_profiles')
+            .insert({
+              profile_id: user_id,
+              end_time: endTime.toISOString(),
+              hours_purchased: parseInt(hours),
+              price_paid: session.amount_total ? session.amount_total / 100 : null,
+            });
+        } else if (session.mode === 'subscription') {
           const { user_id } = session.metadata;
           const subscriptionId = session.subscription;
           
@@ -40,7 +54,6 @@ serve(async (req) => {
             })
             .eq('id', user_id);
         } else {
-          // Handle paid ad checkout
           const { user_id, hours, ad_data } = session.metadata;
           const adData = JSON.parse(ad_data);
           const endTime = new Date();
