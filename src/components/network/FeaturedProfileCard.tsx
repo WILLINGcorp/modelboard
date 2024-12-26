@@ -23,7 +23,7 @@ export const FeaturedProfileCard = ({ profile, isPaidAd = false, isRandomFill = 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
         <div className="absolute top-4 left-4">
           <span className="text-modelboard-red text-sm font-medium">
-            {isPaidAd ? 'Featured Ad' : isRandomFill ? 'Profile' : 'Featured'}
+            {isPaidAd ? 'Featured Ad' : 'Featured'}
           </span>
         </div>
 
