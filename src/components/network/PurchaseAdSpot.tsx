@@ -14,6 +14,7 @@ import { AdTypeSelect } from "@/components/ads/AdTypeSelect";
 import { LocationSelect } from "@/components/ads/LocationSelect";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AdType } from "@/pages/Ads";
 
 interface DurationOption {
   hours: number;
@@ -29,7 +30,7 @@ const DURATION_OPTIONS: DurationOption[] = [
 
 export const PurchaseAdSpot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [adType, setAdType] = useState<string>("all");
+  const [adType, setAdType] = useState<AdType | "all">("all");
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");

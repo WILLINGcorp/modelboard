@@ -16,7 +16,7 @@ export const AdTypeSelect = ({ value, onChange }: AdTypeSelectProps) => {
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-white">Ad Type</label>
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value} onValueChange={(val: AdType | "all") => onChange(val)}>
         <SelectTrigger className="bg-modelboard-gray border-modelboard-gray text-white">
           <SelectValue placeholder="Select ad type" />
         </SelectTrigger>
