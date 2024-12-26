@@ -5,6 +5,8 @@ import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
 import { ModelGrid } from "@/components/network/ModelGrid";
 import { SponsorProfiles } from "@/components/network/SponsorProfiles";
 import { supabase } from "@/integrations/supabase/client";
+import { useOnlinePresence } from "@/hooks/use-online-presence";
+import { useAuth } from "@/hooks/use-auth";
 import type { Profile } from "@/components/network/FeaturedProfiles";
 
 const ModelDirectory = () => {
@@ -13,6 +15,8 @@ const ModelDirectory = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const [filter, setFilter] = useState("location");
+  const { user } = useAuth();
+  const { isOnline } = useOnlinePresence(user?.id);
 
   useEffect(() => {
     const scrollToFeature = location.state?.scrollToFeature;
@@ -82,7 +86,7 @@ const ModelDirectory = () => {
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
         <>
-          <ModelGrid profiles={profiles} />
+          <ModelGrid profiles={profiles} isOnline={isOnline} />
           <div className="mt-12">
             <SponsorProfiles />
           </div>
