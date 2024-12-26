@@ -44,11 +44,11 @@ export const useOnlinePresence = (userId: string | undefined) => {
     };
   }, [userId]);
 
-  // Ensure isOnline is always a function, even if userId is undefined
+  // Always return a valid function, even if userId is undefined
   const isOnline = (id: string): boolean => {
     if (!userId) return false;
     return onlineUsers.has(id);
   };
 
-  return { isOnline, onlineUsers };
+  return { isOnline };
 };

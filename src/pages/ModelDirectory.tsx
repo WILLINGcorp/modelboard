@@ -69,9 +69,6 @@ const ModelDirectory = () => {
     setSearchParams({ location });
   };
 
-  // Add console.log to debug isOnline
-  console.log("ModelDirectory isOnline:", isOnline);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div id="featured-section" className="mb-12">
