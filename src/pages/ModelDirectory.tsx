@@ -70,8 +70,8 @@ const ModelDirectory = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div id="featured-section" className="mb-12">
+    <div className="container mx-auto px-4 py-8 space-y-12">
+      <div id="featured-section">
         <FeaturedProfiles />
       </div>
       

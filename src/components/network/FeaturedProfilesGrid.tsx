@@ -9,7 +9,7 @@ interface FeaturedProfilesGridProps {
 
 export const FeaturedProfilesGrid = ({ profiles, paidAdProfiles, randomProfiles }: FeaturedProfilesGridProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="space-y-6">
       {paidAdProfiles.map((profile) => (
         <FeaturedProfileCard key={profile.id} profile={profile} isPaidAd={true} />
       ))}
@@ -17,7 +17,7 @@ export const FeaturedProfilesGrid = ({ profiles, paidAdProfiles, randomProfiles 
         <FeaturedProfileCard key={profile.id} profile={profile} />
       ))}
       {randomProfiles.map((profile) => (
-        <FeaturedProfileCard key={profile.id} profile={profile} isRandomFill={true} />
+        <FeaturedProfileCard key={profile.id} profile={profile} />
       ))}
     </div>
   );
