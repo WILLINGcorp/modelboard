@@ -83,16 +83,16 @@ const ModelDirectory = () => {
       {loading ? (
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
-        <>
-          <ModelGrid 
-            profiles={profiles} 
-            isOnline={isOnline} 
-          />
-          <div className="mt-12">
-            <SponsorProfiles />
-          </div>
-        </>
+        <ModelGrid 
+          profiles={profiles} 
+          isOnline={isOnline} 
+        />
       )}
+
+      <div className="mt-24">
+        <h2 className="text-2xl font-bold text-white mb-8">Sponsor Profiles</h2>
+        <SponsorProfiles />
+      </div>
     </div>
   );
 };
