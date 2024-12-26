@@ -16,7 +16,7 @@ const ModelDirectory = () => {
   const location = useLocation();
   const [filter, setFilter] = useState("location");
   const { user } = useAuth();
-  const { isOnline } = useOnlinePresence(user?.id);
+  const onlinePresence = useOnlinePresence(user?.id);
 
   useEffect(() => {
     const scrollToFeature = location.state?.scrollToFeature;
@@ -69,11 +69,6 @@ const ModelDirectory = () => {
     setSearchParams({ location });
   };
 
-  // Provide a default isOnline function if the hook hasn't initialized yet
-  const checkOnlineStatus = (id: string) => {
-    return typeof isOnline === 'function' ? isOnline(id) : false;
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div id="featured-section" className="mb-12">
@@ -89,7 +84,7 @@ const ModelDirectory = () => {
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
         <>
-          <ModelGrid profiles={profiles} isOnline={checkOnlineStatus} />
+          <ModelGrid profiles={profiles} isOnline={onlinePresence.isOnline} />
           <div className="mt-12">
             <SponsorProfiles />
           </div>
