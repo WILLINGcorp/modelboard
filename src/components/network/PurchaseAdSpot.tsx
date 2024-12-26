@@ -7,20 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { AdTypeSelect } from "@/components/ads/AdTypeSelect";
-import { LocationSelect } from "@/components/ads/LocationSelect";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdType } from "@/pages/Ads";
-
-interface DurationOption {
-  hours: number;
-  price: number;
-  label: string;
-}
+import { AdFormFields } from "../ads/purchase/AdFormFields";
+import { DurationOptions, DurationOption } from "../ads/purchase/DurationOptions";
 
 const DURATION_OPTIONS: DurationOption[] = [
   { hours: 24, price: 4.95, label: "24 Hours" },
@@ -47,7 +38,6 @@ export const PurchaseAdSpot = () => {
     try {
       setIsLoading(true);
       
-      // First upload the image if one is selected
       let imageUrl = "";
       if (selectedFile) {
         const fileExt = selectedFile.name.split('.').pop();
@@ -100,81 +90,34 @@ export const PurchaseAdSpot = () => {
       <DialogTrigger asChild>
         <Button 
           variant="default"
-          className="w-full bg-modelboard-red hover:bg-red-600 text-white"
+          className="w-full bg-modelboard-red hover:bg-red-600 text-white font-semibold"
         >
           Place an Ad
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] bg-modelboard-dark text-white">
+      <DialogContent className="sm:max-w-[600px] bg-modelboard-dark text-white">
         <DialogHeader>
-          <DialogTitle>Place an Ad</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Place an Ad</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <AdTypeSelect
-              value={adType}
-              onChange={setAdType}
-            />
-          </div>
+        <div className="space-y-8 py-6">
+          <AdFormFields
+            adType={adType}
+            setAdType={setAdType}
+            title={title}
+            setTitle={setTitle}
+            location={location}
+            setLocation={setLocation}
+            description={description}
+            setDescription={setDescription}
+            selectedFile={selectedFile}
+            onFileChange={handleFileChange}
+          />
           
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="bg-modelboard-gray border-modelboard-gray"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <LocationSelect
-              value={location}
-              onChange={setLocation}
-              defaultLocation=""
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="bg-modelboard-gray border-modelboard-gray"
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="image">Ad Image</Label>
-            <Input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="bg-modelboard-gray border-modelboard-gray"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Select Duration</Label>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {DURATION_OPTIONS.map((option) => (
-                <Button
-                  key={option.hours}
-                  onClick={() => handlePurchase(option)}
-                  disabled={isLoading}
-                  className="bg-modelboard-gray hover:bg-modelboard-gray/90"
-                >
-                  <div className="text-center">
-                    <div>{option.label}</div>
-                    <div className="text-sm text-gray-400">${option.price}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </div>
+          <DurationOptions
+            options={DURATION_OPTIONS}
+            onSelect={handlePurchase}
+            isLoading={isLoading}
+          />
         </div>
       </DialogContent>
     </Dialog>
