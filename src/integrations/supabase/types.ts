@@ -180,7 +180,9 @@ export type Database = {
           created_at: string | null
           created_by: string | null
           end_time: string
+          hours_purchased: number | null
           id: string
+          price_paid: number | null
           profile_id: string | null
           start_time: string | null
         }
@@ -188,7 +190,9 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           end_time: string
+          hours_purchased?: number | null
           id?: string
+          price_paid?: number | null
           profile_id?: string | null
           start_time?: string | null
         }
@@ -196,7 +200,9 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           end_time?: string
+          hours_purchased?: number | null
           id?: string
+          price_paid?: number | null
           profile_id?: string | null
           start_time?: string | null
         }
