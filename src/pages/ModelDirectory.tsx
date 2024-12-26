@@ -16,7 +16,7 @@ const ModelDirectory = () => {
   const location = useLocation();
   const [filter, setFilter] = useState("location");
   const { user } = useAuth();
-  const onlinePresence = useOnlinePresence(user?.id);
+  const { isOnline } = useOnlinePresence(user?.id);
 
   useEffect(() => {
     const scrollToFeature = location.state?.scrollToFeature;
@@ -84,7 +84,7 @@ const ModelDirectory = () => {
         <div className="text-center text-white">Loading profiles...</div>
       ) : (
         <>
-          <ModelGrid profiles={profiles} isOnline={onlinePresence.isOnline} />
+          <ModelGrid profiles={profiles} isOnline={isOnline} />
           <div className="mt-12">
             <SponsorProfiles />
           </div>
