@@ -19,18 +19,20 @@ interface AppProvidersProps {
   children: React.ReactNode;
 }
 
-export default function AppProviders({ children }: AppProvidersProps) {
+const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
+      <TooltipProvider>
+        <BrowserRouter>
           <AppLayout>
             {children}
             <Toaster />
             <Sonner />
           </AppLayout>
-        </TooltipProvider>
-      </BrowserRouter>
+        </BrowserRouter>
+      </TooltipProvider>
     </QueryClientProvider>
   );
-}
+};
+
+export default AppProviders;
