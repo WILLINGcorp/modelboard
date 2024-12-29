@@ -21,18 +21,16 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   }));
 
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TooltipProvider>
-            <AppLayout>
-              {children}
-            </AppLayout>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <AppLayout>
+            {children}
+          </AppLayout>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
