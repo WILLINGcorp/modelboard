@@ -1,3 +1,14 @@
+import { 
+  Twitter, 
+  Facebook, 
+  Instagram, 
+  AtSign, 
+  BrandTiktok,
+  Ghost,
+  MessageCircle,
+  Send,
+  Shield
+} from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -6,6 +17,18 @@ interface SocialPlatformsProps {
   platforms: { platform: string; handle: string }[];
   socialMedia: Record<string, string>;
 }
+
+const PLATFORM_ICONS: Record<string, any> = {
+  twitter: Twitter,
+  facebook: Facebook,
+  instagram: Instagram,
+  bluesky: AtSign,
+  tiktok: BrandTiktok,
+  snapchat: Ghost,
+  whatsapp: MessageCircle,
+  telegram: Send,
+  signal: Shield
+};
 
 export const SocialPlatforms = ({ platforms, socialMedia }: SocialPlatformsProps) => {
   if (!platforms.length && !Object.keys(socialMedia).length) return null;
@@ -28,12 +51,16 @@ export const SocialPlatforms = ({ platforms, socialMedia }: SocialPlatformsProps
 
       {Object.keys(socialMedia).length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {Object.entries(socialMedia).map(([platform, handle]) => (
-            <div key={platform} className="bg-modelboard-dark rounded-full px-3 py-1">
-              <span className="text-white capitalize">{platform}</span>
-              <span className="text-gray-400 ml-1">@{handle}</span>
-            </div>
-          ))}
+          {Object.entries(socialMedia).map(([platform, handle]) => {
+            const Icon = PLATFORM_ICONS[platform] || AtSign;
+            return (
+              <div key={platform} className="flex items-center gap-2 bg-modelboard-dark rounded-full px-3 py-1">
+                <Icon className="h-4 w-4 text-gray-400" />
+                <span className="text-white capitalize">{platform}</span>
+                <span className="text-gray-400">@{handle}</span>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
