@@ -19,7 +19,7 @@ interface AppProvidersProps {
   children: React.ReactNode;
 }
 
-export const AppProviders = ({ children }: AppProvidersProps) => {
+const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
