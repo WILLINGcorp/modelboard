@@ -7,6 +7,7 @@ import Collabs from "@/pages/Collabs";
 import Ads from "@/pages/Ads";
 import Profile from "@/pages/Profile";
 import Portfolio from "@/pages/Portfolio";
+import MyPortfolio from "@/pages/MyPortfolio";
 import Location from "@/pages/Location";
 import Pricing from "@/pages/Pricing";
 import ModelProfile from "@/pages/ModelProfile";
@@ -29,7 +30,8 @@ const AppRoutes = () => {
           <Route path="/collabs" element={<Collabs />} />
           <Route path="/ads" element={<Ads />} />
           <Route path="/my-profile" element={<Profile />} />
-          <Route path="/my-portfolio" element={<Portfolio />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/my-portfolio" element={<MyPortfolio />} />
           <Route path="/my-location" element={<Location />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/network" element={<ModelDirectory />} />
