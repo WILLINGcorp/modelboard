@@ -1,54 +1,41 @@
 import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
-import Auth from "@/pages/Auth";
+import { ProfileSetupGuard } from "@/components/auth/ProfileSetupGuard";
 import Index from "@/pages/Index";
+import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import ModelDirectory from "@/pages/ModelDirectory";
-import ModelProfile from "@/pages/ModelProfile";
 import Messages from "@/pages/Messages";
-import Location from "@/pages/Location";
-import Portfolio from "@/pages/Portfolio";
-import Profile from "@/pages/Profile";
 import Collabs from "@/pages/Collabs";
 import Ads from "@/pages/Ads";
+import Profile from "@/pages/Profile";
+import Portfolio from "@/pages/Portfolio";
+import Location from "@/pages/Location";
+import ModelProfile from "@/pages/ModelProfile";
 import Pricing from "@/pages/Pricing";
-import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 
-const AppRoutes = () => {
+export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/pricing" element={<Pricing />} />
       <Route
         path="/dashboard"
         element={
           <PrivateRoute>
-            <Dashboard />
+            <ProfileSetupGuard>
+              <Dashboard />
+            </ProfileSetupGuard>
           </PrivateRoute>
         }
       />
       <Route
-        path="/moderation"
+        path="/models"
         element={
           <PrivateRoute>
-            <ModerationPanel />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/network"
-        element={
-          <PrivateRoute>
-            <ModelDirectory />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/models/:id"
-        element={
-          <PrivateRoute>
-            <ModelProfile />
+            <ProfileSetupGuard>
+              <ModelDirectory />
+            </ProfileSetupGuard>
           </PrivateRoute>
         }
       />
@@ -56,31 +43,9 @@ const AppRoutes = () => {
         path="/messages"
         element={
           <PrivateRoute>
-            <Messages />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/my-location"
-        element={
-          <PrivateRoute>
-            <Location />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/my-portfolio"
-        element={
-          <PrivateRoute>
-            <Portfolio />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/my-profile"
-        element={
-          <PrivateRoute>
-            <Profile />
+            <ProfileSetupGuard>
+              <Messages />
+            </ProfileSetupGuard>
           </PrivateRoute>
         }
       />
@@ -88,7 +53,9 @@ const AppRoutes = () => {
         path="/collabs"
         element={
           <PrivateRoute>
-            <Collabs />
+            <ProfileSetupGuard>
+              <Collabs />
+            </ProfileSetupGuard>
           </PrivateRoute>
         }
       />
@@ -96,12 +63,35 @@ const AppRoutes = () => {
         path="/ads"
         element={
           <PrivateRoute>
-            <Ads />
+            <ProfileSetupGuard>
+              <Ads />
+            </ProfileSetupGuard>
           </PrivateRoute>
         }
       />
+      <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route
+        path="/portfolio"
+        element={
+          <PrivateRoute>
+            <ProfileSetupGuard>
+              <Portfolio />
+            </ProfileSetupGuard>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/location"
+        element={
+          <PrivateRoute>
+            <ProfileSetupGuard>
+              <Location />
+            </ProfileSetupGuard>
+          </PrivateRoute>
+        }
+      />
+      <Route path="/models/:id" element={<ModelProfile />} />
+      <Route path="/pricing" element={<Pricing />} />
     </Routes>
   );
 };
-
-export default AppRoutes;

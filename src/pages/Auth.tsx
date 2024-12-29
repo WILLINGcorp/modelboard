@@ -8,9 +8,21 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        navigate("/dashboard");
+        // Check if profile is complete
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("profile_type, username")
+          .eq("id", session.user.id)
+          .single();
+
+        // If profile is incomplete, redirect to profile setup
+        if (!profile?.profile_type || !profile?.username) {
+          navigate("/profile");
+        } else {
+          navigate("/dashboard");
+        }
       }
     });
 
