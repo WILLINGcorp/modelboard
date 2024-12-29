@@ -1,11 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Heart, Edit } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
+import { PortfolioHeader } from "./portfolio/PortfolioHeader";
+import { PortfolioGrid } from "./portfolio/PortfolioGrid";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 
@@ -18,7 +16,6 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLikes();
@@ -122,65 +119,13 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-white">Portfolio</h2>
-        {isOwnPortfolio && (
-          <Button
-            onClick={() => navigate('/my-portfolio')}
-            className="bg-modelboard-dark hover:bg-modelboard-gray text-white"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Portfolio
-          </Button>
-        )}
-      </div>
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-        {portfolio.map((item) => {
-          const isPending = item.moderation_status === 'pending';
-          
-          return (
-            <Card
-              key={item.id}
-              className="bg-modelboard-gray overflow-hidden break-inside-avoid mb-6"
-            >
-              <div className="relative">
-                <img
-                  src={item.media_url}
-                  alt={item.title}
-                  className={`w-full object-cover ${isPending ? 'blur-md' : ''}`}
-                  loading="lazy"
-                />
-                {isPending && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">
-                    Pending Moderation
-                  </div>
-                )}
-              </div>
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">{item.title}</h3>
-                    {item.description && (
-                      <p className="text-gray-300">{item.description}</p>
-                    )}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`flex items-center gap-1 ${
-                      likedItems[item.id] ? "text-red-500" : "text-gray-400"
-                    }`}
-                    onClick={() => handleLike(item.id)}
-                  >
-                    <Heart className={`h-4 w-4 ${likedItems[item.id] ? "fill-current" : ""}`} />
-                    <span>{likeCounts[item.id] || 0}</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <PortfolioHeader isOwnPortfolio={isOwnPortfolio} />
+      <PortfolioGrid
+        items={portfolio}
+        likedItems={likedItems}
+        likeCounts={likeCounts}
+        onLike={handleLike}
+      />
     </>
   );
 };
