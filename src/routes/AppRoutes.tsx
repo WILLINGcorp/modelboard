@@ -11,8 +11,8 @@ import Location from "@/pages/Location";
 import Pricing from "@/pages/Pricing";
 import ModelProfile from "@/pages/ModelProfile";
 import ModelDirectory from "@/pages/ModelDirectory";
-import PrivateRoute from "@/components/auth/PrivateRoute";
-import ProfileSetupGuard from "@/components/auth/ProfileSetupGuard";
+import { PrivateRoute } from "@/components/auth/PrivateRoute";
+import { ProfileSetupGuard } from "@/components/auth/ProfileSetupGuard";
 
 const AppRoutes = () => {
   return (
