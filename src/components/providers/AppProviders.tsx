@@ -19,19 +19,21 @@ interface AppProvidersProps {
   children: React.ReactNode;
 }
 
-const AppProviders = ({ children }: AppProvidersProps) => {
+const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AppLayout>
-            {children}
-            <Toaster />
-            <Sonner />
-          </AppLayout>
+          <TooltipProvider>
+            <AppLayout>
+              {children}
+              <Toaster />
+              <Sonner />
+            </AppLayout>
+          </TooltipProvider>
         </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
