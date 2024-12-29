@@ -28,9 +28,9 @@ const AppRoutes = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/collabs" element={<Collabs />} />
           <Route path="/ads" element={<Ads />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/location" element={<Location />} />
+          <Route path="/my-profile" element={<Profile />} />
+          <Route path="/my-portfolio" element={<Portfolio />} />
+          <Route path="/my-location" element={<Location />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/network" element={<ModelDirectory />} />
           <Route path="/models/:id" element={<ModelProfile />} />
