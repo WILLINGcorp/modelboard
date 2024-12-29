@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface UserMenuProps {
   isAuthenticated: boolean;
@@ -10,11 +11,25 @@ interface UserMenuProps {
 
 export const UserMenu = ({ isAuthenticated, onMobileMenuClose, isMobile = false }: UserMenuProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-    onMobileMenuClose?.();
+    try {
+      await supabase.auth.signOut();
+      navigate("/");
+      onMobileMenuClose?.();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account",
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAuthClick = () => {
