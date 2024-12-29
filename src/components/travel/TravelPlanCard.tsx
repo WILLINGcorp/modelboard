@@ -104,7 +104,7 @@ const TravelPlanCard = ({ plan, onLocationUpdate }: TravelPlanCardProps) => {
         <p className="text-gray-400">{plan.description}</p>
       )}
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col space-y-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-gray-400">
             <CalendarIcon className="h-4 w-4" />
