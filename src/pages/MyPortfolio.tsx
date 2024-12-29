@@ -5,12 +5,12 @@ import { useToast } from "@/hooks/use-toast";
 import PortfolioForm from "@/components/portfolio/PortfolioForm";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
 
-type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
+type PortfolioItemType = Database['public']['Tables']['portfolio_items']['Row'];
 
 const MyPortfolio = () => {
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [portfolio, setPortfolio] = useState<PortfolioItemType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [itemToEdit, setItemToEdit] = useState<PortfolioItem | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<PortfolioItemType | null>(null);
   const { toast } = useToast();
 
   const fetchPortfolio = async () => {
@@ -78,7 +78,7 @@ const MyPortfolio = () => {
     }
   };
 
-  const handleUpdate = (item: PortfolioItem) => {
+  const handleUpdate = (item: PortfolioItemType) => {
     setItemToEdit(item);
   };
 
