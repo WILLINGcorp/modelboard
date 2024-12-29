@@ -26,6 +26,7 @@ export const uploadPortfolioImage = async (
   } catch (error) {
     showToast({
       title: "Error",
+      description: "Failed to upload image",
       variant: "destructive",
     });
     return null;
