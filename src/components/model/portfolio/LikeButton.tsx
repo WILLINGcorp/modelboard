@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // Fixed import path
 
 interface LikeButtonProps {
   isLiked: boolean;
