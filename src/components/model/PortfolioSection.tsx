@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, Edit } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
@@ -15,11 +16,19 @@ interface PortfolioSectionProps {
 const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLikes();
+    getCurrentUser();
   }, [portfolio]);
+
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id || null);
+  };
 
   const fetchLikes = async () => {
     try {
@@ -109,9 +118,22 @@ const PortfolioSection = ({ portfolio }: PortfolioSectionProps) => {
     }
   };
 
+  const isOwnPortfolio = portfolio.length > 0 && portfolio[0].profile_id === currentUserId;
+
   return (
     <>
-      <h2 className="text-2xl font-bold text-white mb-6">Portfolio</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-white">Portfolio</h2>
+        {isOwnPortfolio && (
+          <Button
+            onClick={() => navigate('/my-portfolio')}
+            className="bg-modelboard-dark hover:bg-modelboard-gray text-white"
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Portfolio
+          </Button>
+        )}
+      </div>
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
         {portfolio.map((item) => {
           const isPending = item.moderation_status === 'pending';

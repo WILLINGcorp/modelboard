@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare, HandshakeIcon } from "lucide-react";
+import { MessageSquare, HandshakeIcon, Edit } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import {
   Dialog,
@@ -17,6 +17,7 @@ import { CurrentMood } from "./profile-header/CurrentMood";
 import { PhysicalAttributes } from "./profile-header/PhysicalAttributes";
 import { BrandsWorkedWith } from "./profile-header/BrandsWorkedWith";
 import { MoodUpdater } from "./profile-header/MoodUpdater";
+import { useNavigate } from "react-router-dom";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -28,6 +29,7 @@ interface ProfileHeaderProps {
 const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -36,6 +38,8 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
     };
     getCurrentUser();
   }, []);
+
+  const isOwnProfile = currentUserId === profile.id;
 
   const platforms = Array.isArray(profile.creator_platforms) 
     ? profile.creator_platforms.filter(
@@ -84,7 +88,7 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   };
 
   return (
-    <div className="bg-modelboard-gray rounded-lg p-8 mb-8 animate-fadeIn">
+    <div className="bg-modelboard-gray rounded-lg p-8 mb-8 animate-fadeIn shadow-lg hover:shadow-xl transition-shadow">
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <UserAvatar profile={profile} />
 
@@ -118,42 +122,53 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
         </div>
 
         <div className="flex flex-col gap-2 self-start">
-          <Button
-            onClick={onMessageClick}
-            className="bg-modelboard-red hover:bg-red-600 text-white"
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Message
-          </Button>
-
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button 
+          {isOwnProfile ? (
+            <>
+              <Button
+                onClick={() => navigate('/my-profile')}
                 className="bg-modelboard-dark hover:bg-modelboard-gray text-white"
               >
-                <HandshakeIcon className="h-4 w-4 mr-2" />
-                Send Proposal
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
               </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-modelboard-gray text-white">
-              <DialogHeader>
-                <DialogTitle>Send Collaboration Proposal</DialogTitle>
-              </DialogHeader>
-              <CollabProposalForm
-                travelPlanId=""
-                receiverId={profile.id}
-                location={profile.location || ""}
-                onSuccess={() => setIsDialogOpen(false)}
-                onClose={() => setIsDialogOpen(false)}
+              <MoodUpdater 
+                profileId={profile.id} 
+                initialMood={profile.current_mood || ""}
               />
-            </DialogContent>
-          </Dialog>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={onMessageClick}
+                className="bg-modelboard-red hover:bg-red-600 text-white"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Message
+              </Button>
 
-          {currentUserId === profile.id && (
-            <MoodUpdater 
-              profileId={profile.id} 
-              initialMood={profile.current_mood || ""}
-            />
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    className="bg-modelboard-dark hover:bg-modelboard-gray text-white"
+                  >
+                    <HandshakeIcon className="h-4 w-4 mr-2" />
+                    Send Proposal
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-modelboard-gray text-white">
+                  <DialogHeader>
+                    <DialogTitle>Send Collaboration Proposal</DialogTitle>
+                  </DialogHeader>
+                  <CollabProposalForm
+                    travelPlanId=""
+                    receiverId={profile.id}
+                    location={profile.location || ""}
+                    onSuccess={() => setIsDialogOpen(false)}
+                    onClose={() => setIsDialogOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+            </>
           )}
         </div>
       </div>
