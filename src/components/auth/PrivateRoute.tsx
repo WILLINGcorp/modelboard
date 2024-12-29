@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 
-interface PrivateRouteProps {
-  children: React.ReactNode;
-}
-
-export const PrivateRoute = ({ children }: PrivateRouteProps) => {
+export const PrivateRoute = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -46,5 +42,5 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   // If authenticated, render the protected route
-  return children;
+  return <Outlet />;
 };

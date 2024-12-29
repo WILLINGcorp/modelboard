@@ -1,33 +1,41 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth";
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
-
-export const ProfileSetupGuard = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+export const ProfileSetupGuard = () => {
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkProfileSetup = async () => {
-      if (!user) return;
+    const checkProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("profile_type, username")
+          .eq("id", session.user.id)
+          .single();
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("profile_type, username")
-        .eq("id", user.id)
-        .single();
-
-      // If no profile type or username, redirect to profile setup
-      if (!profile?.profile_type || !profile?.username) {
-        navigate("/profile");
+        setIsProfileComplete(!!profile?.profile_type && !!profile?.username);
       }
+      setLoading(false);
     };
 
-    checkProfileSetup();
-  }, [user, navigate]);
+    checkProfile();
+  }, []);
 
-  return <>{children}</>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isProfileComplete) {
+    return <Navigate to="/profile" replace />;
+  }
+
+  return <Outlet />;
 };
