@@ -46,7 +46,7 @@ export const PortfolioCard = ({ item, isLiked, likeCount, onLike }: PortfolioCar
           <LikeButton 
             isLiked={isLiked} 
             likeCount={likeCount} 
-            onClick={onLike} 
+            onLike={onLike} 
           />
         </div>
       </CardContent>
