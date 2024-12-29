@@ -19,79 +19,22 @@ export const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Dashboard />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/models"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <ModelDirectory />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/messages"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Messages />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/collabs"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Collabs />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/ads"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Ads />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-      <Route
-        path="/portfolio"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Portfolio />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/location"
-        element={
-          <PrivateRoute>
-            <ProfileSetupGuard>
-              <Location />
-            </ProfileSetupGuard>
-          </PrivateRoute>
-        }
-      />
-      <Route path="/models/:id" element={<ModelProfile />} />
-      <Route path="/pricing" element={<Pricing />} />
+      
+      {/* Protected Routes */}
+      <Route element={<PrivateRoute />}>
+        <Route element={<ProfileSetupGuard />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/network" element={<ModelDirectory />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/collabs" element={<Collabs />} />
+          <Route path="/ads" element={<Ads />} />
+          <Route path="/my-profile" element={<Profile />} />
+          <Route path="/my-portfolio" element={<Portfolio />} />
+          <Route path="/my-location" element={<Location />} />
+          <Route path="/model/:id" element={<ModelProfile />} />
+          <Route path="/pricing" element={<Pricing />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };
