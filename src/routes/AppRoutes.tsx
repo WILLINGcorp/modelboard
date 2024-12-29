@@ -17,6 +17,7 @@ import { ProfileSetupGuard } from "@/components/auth/ProfileSetupGuard";
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       
