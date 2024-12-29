@@ -96,7 +96,7 @@ const ModelProfile = () => {
           profile={profile} 
           onMessageClick={() => setIsMessageModalOpen(true)}
         />
-        <TravelPlansSection travelPlans={travelPlans} />
+        <TravelPlansSection plans={travelPlans} />
         <PortfolioSection portfolio={portfolio} />
 
         <MessagingModal

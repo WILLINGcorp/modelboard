@@ -5,8 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { TravelPlansGrid } from "@/components/travel/plan/TravelPlansGrid";
 import TravelPlansHeader from "@/components/location/TravelPlansHeader";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
+import type { TravelPlan } from "@/components/travel/plan/types";
 
-const TravelPlansSection = () => {
+interface TravelPlansSectionProps {
+  plans?: TravelPlan[];
+}
+
+const TravelPlansSection = ({ plans }: TravelPlansSectionProps) => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -48,7 +53,10 @@ const TravelPlansSection = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !plans, // Only fetch if plans are not provided as props
   });
+
+  const displayPlans = plans || travelPlans || [];
 
   return (
     <div className="min-h-screen bg-modelboard-dark p-4">
@@ -60,7 +68,7 @@ const TravelPlansSection = () => {
         />
 
         <TravelPlansGrid 
-          plans={travelPlans || []} 
+          plans={displayPlans} 
           onLocationUpdate={refetch}
         />
 
