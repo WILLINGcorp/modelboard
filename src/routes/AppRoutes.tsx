@@ -11,6 +11,7 @@ import Portfolio from "@/pages/Portfolio";
 import Profile from "@/pages/Profile";
 import Collabs from "@/pages/Collabs";
 import Ads from "@/pages/Ads";
+import Pricing from "@/pages/Pricing";
 import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 
 const AppRoutes = () => {
@@ -18,6 +19,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/pricing" element={<Pricing />} />
       <Route
         path="/dashboard"
         element={
