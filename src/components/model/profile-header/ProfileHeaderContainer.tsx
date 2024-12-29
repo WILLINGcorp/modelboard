@@ -34,31 +34,50 @@ export const ProfileHeaderContainer = ({
 
   return (
     <div className="flex flex-col md:flex-row gap-8 items-start">
-      <UserAvatar profile={profile} />
-
-      <div className="flex-1 space-y-4">
-        <UserInfo profile={profile} />
-        <CurrentMood profile={profile} />
-        
-        {profile.bio && (
-          <p className="text-gray-300 whitespace-pre-wrap">{profile.bio}</p>
-        )}
-        
-        <PhysicalAttributes profile={profile} />
-        <BrandsWorkedWith profile={profile} />
-        <SocialPlatforms 
-          platforms={platforms}
-          socialMedia={socialMedia}
-        />
+      <div className="w-full md:w-auto flex justify-center">
+        <UserAvatar profile={profile} />
       </div>
 
-      <ActionButtons 
-        isOwnProfile={isOwnProfile}
-        profileId={profile.id}
-        currentMood={profile.current_mood || ""}
-        location={profile.location || ""}
-        onMessageClick={onMessageClick}
-      />
+      <div className="flex-1 space-y-6">
+        <UserInfo profile={profile} />
+        
+        {profile.current_mood && (
+          <div className="animate-fadeIn delay-100">
+            <CurrentMood profile={profile} />
+          </div>
+        )}
+        
+        {profile.bio && (
+          <p className="text-gray-300 whitespace-pre-wrap leading-relaxed animate-fadeIn delay-200">
+            {profile.bio}
+          </p>
+        )}
+        
+        <div className="animate-fadeIn delay-300">
+          <PhysicalAttributes profile={profile} />
+        </div>
+        
+        <div className="animate-fadeIn delay-400">
+          <BrandsWorkedWith profile={profile} />
+        </div>
+        
+        <div className="animate-fadeIn delay-500">
+          <SocialPlatforms 
+            platforms={platforms}
+            socialMedia={socialMedia}
+          />
+        </div>
+      </div>
+
+      <div className="w-full md:w-auto">
+        <ActionButtons 
+          isOwnProfile={isOwnProfile}
+          profileId={profile.id}
+          currentMood={profile.current_mood || ""}
+          location={profile.location || ""}
+          onMessageClick={onMessageClick}
+        />
+      </div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import TravelPlansSection from "@/components/model/TravelPlansSection";
 import PortfolioSection from "@/components/model/PortfolioSection";
 import MessagingModal from "@/components/messaging/MessagingModal";
 import { useTrackProfileVisit } from "@/hooks/use-track-profile-visit";
+import { Loader2 } from "lucide-react";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
@@ -21,7 +22,6 @@ const ModelProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
-  // Track profile visit
   useTrackProfileVisit(id);
 
   useEffect(() => {
@@ -33,7 +33,6 @@ const ModelProfile = () => {
           return;
         }
 
-        // Fetch profile
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select()
@@ -43,7 +42,6 @@ const ModelProfile = () => {
         if (profileError) throw profileError;
         setProfile(profileData);
 
-        // Fetch portfolio items
         const { data: portfolioData, error: portfolioError } = await supabase
           .from("portfolio_items")
           .select()
@@ -53,7 +51,6 @@ const ModelProfile = () => {
         if (portfolioError) throw portfolioError;
         setPortfolio(portfolioData);
 
-        // Fetch upcoming travel plans
         const { data: travelData, error: travelError } = await supabase
           .from("travel_plans")
           .select()
@@ -75,29 +72,44 @@ const ModelProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center px-[100px]">
-        <div className="text-white">Loading profile...</div>
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+        <div className="text-white flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <p className="text-lg">Loading profile...</p>
+        </div>
       </div>
     );
   }
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center px-[100px]">
-        <div className="text-white">{error || "Profile not found"}</div>
+      <div className="min-h-screen bg-modelboard-dark flex items-center justify-center">
+        <div className="text-white text-lg bg-modelboard-gray p-6 rounded-lg shadow-lg">
+          {error || "Profile not found"}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-modelboard-dark p-4 pt-24 px-[100px]">
-      <div className="max-w-7xl mx-auto">
-        <ProfileHeader 
-          profile={profile} 
-          onMessageClick={() => setIsMessageModalOpen(true)}
-        />
-        <TravelPlansSection plans={travelPlans} />
-        <PortfolioSection portfolio={portfolio} />
+    <div className="min-h-screen bg-modelboard-dark">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 space-y-8">
+        <div className="animate-fadeIn">
+          <ProfileHeader 
+            profile={profile} 
+            onMessageClick={() => setIsMessageModalOpen(true)}
+          />
+        </div>
+
+        {travelPlans.length > 0 && (
+          <div className="animate-fadeIn delay-100">
+            <TravelPlansSection plans={travelPlans} />
+          </div>
+        )}
+
+        <div className="animate-fadeIn delay-200">
+          <PortfolioSection portfolio={portfolio} />
+        </div>
 
         <MessagingModal
           isOpen={isMessageModalOpen}

@@ -24,7 +24,7 @@ const ProfileHeader = ({ profile, onMessageClick }: ProfileHeaderProps) => {
   const isOwnProfile = currentUserId === profile.id;
 
   return (
-    <div className="bg-modelboard-gray rounded-lg p-8 mb-8 animate-fadeIn shadow-lg hover:shadow-xl transition-shadow">
+    <div className="bg-gradient-to-br from-modelboard-gray to-modelboard-dark rounded-xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
       <ProfileHeaderContainer 
         profile={profile}
         isOwnProfile={isOwnProfile}
