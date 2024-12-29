@@ -104,24 +104,26 @@ const TravelPlanCard = ({ plan, onLocationUpdate }: TravelPlanCardProps) => {
         <p className="text-gray-400">{plan.description}</p>
       )}
       
-      <div className="flex items-center space-x-2 text-gray-400">
-        <CalendarIcon className="h-4 w-4" />
-        <span>
-          {format(new Date(plan.start_date), "dd/MM/yyyy")} -{" "}
-          {format(new Date(plan.end_date), "dd/MM/yyyy")}
-        </span>
-      </div>
-      
-      <div className="flex justify-between items-center">
-        <span
-          className={`px-2 py-1 rounded-full text-sm ${
-            plan.status === "upcoming"
-              ? "bg-blue-500/20 text-blue-500"
-              : "bg-green-500/20 text-green-500"
-          }`}
-        >
-          {plan.status === "upcoming" ? "Upcoming" : "Completed"}
-        </span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 text-gray-400">
+            <CalendarIcon className="h-4 w-4" />
+            <span>
+              {format(new Date(plan.start_date), "dd/MM/yyyy")} -{" "}
+              {format(new Date(plan.end_date), "dd/MM/yyyy")}
+            </span>
+          </div>
+          
+          <span
+            className={`px-2 py-1 rounded-full text-sm ${
+              plan.status === "upcoming"
+                ? "bg-blue-500/20 text-blue-500"
+                : "bg-green-500/20 text-green-500"
+            }`}
+          >
+            {plan.status === "upcoming" ? "Upcoming" : "Completed"}
+          </span>
+        </div>
         
         <div className="flex space-x-2">
           <Button
