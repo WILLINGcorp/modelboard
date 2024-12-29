@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
 import PortfolioForm from "@/components/portfolio/PortfolioForm";
 import PortfolioItem from "@/components/portfolio/PortfolioItem";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 
 type PortfolioItemType = Database['public']['Tables']['portfolio_items']['Row'];
 
@@ -115,6 +116,8 @@ const Portfolio = () => {
             />
           ))}
         </div>
+
+        <SponsorFeaturedMembers />
       </div>
     </div>
   );

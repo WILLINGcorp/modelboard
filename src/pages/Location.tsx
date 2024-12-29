@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import TravelPlanCard from "@/components/travel/TravelPlanCard";
 import CurrentLocationSection from "@/components/location/CurrentLocationSection";
 import TravelPlansHeader from "@/components/location/TravelPlansHeader";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 
 const TravelPlans = () => {
   const navigate = useNavigate();
@@ -63,9 +64,15 @@ const TravelPlans = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {travelPlans?.map((plan) => (
-            <TravelPlanCard key={plan.id} plan={plan} />
+            <TravelPlanCard 
+              key={plan.id} 
+              plan={plan} 
+              onLocationUpdate={refetch}
+            />
           ))}
         </div>
+
+        <SponsorFeaturedMembers />
       </div>
     </div>
   );

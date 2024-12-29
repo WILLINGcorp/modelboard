@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { MapPin, Calendar as CalendarIcon, UserPlus } from "lucide-react";
+import { MapPin, Calendar as CalendarIcon, UserPlus, CheckSquare, Edit2, XOctagon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,6 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import CollabProposalForm from "./CollabProposalForm";
 
 interface TravelPlan {
@@ -21,8 +24,53 @@ interface TravelPlan {
   profile_id: string;
 }
 
-const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
+interface TravelPlanCardProps {
+  plan: TravelPlan;
+  onLocationUpdate: () => void;
+}
+
+const TravelPlanCard = ({ plan, onLocationUpdate }: TravelPlanCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
+
+  const setAsCurrentLocation = useMutation({
+    mutationFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) throw new Error("No session");
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ location: plan.destination })
+        .eq("id", session.session.user.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      onLocationUpdate();
+      toast({
+        title: "Location updated",
+        description: "Your current location has been updated successfully.",
+      });
+    },
+  });
+
+  const deleteTravelPlan = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("travel_plans")
+        .delete()
+        .eq("id", plan.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      onLocationUpdate();
+      toast({
+        title: "Travel plan deleted",
+        description: "Your travel plan has been deleted successfully.",
+      });
+    },
+  });
 
   return (
     <div className="bg-modelboard-gray rounded-lg p-6 space-y-4">
@@ -45,15 +93,17 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
               travelPlanId={plan.id}
               receiverId={plan.profile_id}
               location={plan.destination}
-              onSuccess={() => {}}
+              onSuccess={() => setIsDialogOpen(false)}
               onClose={() => setIsDialogOpen(false)}
             />
           </DialogContent>
         </Dialog>
       </div>
+      
       {plan.description && (
         <p className="text-gray-400">{plan.description}</p>
       )}
+      
       <div className="flex items-center space-x-2 text-gray-400">
         <CalendarIcon className="h-4 w-4" />
         <span>
@@ -61,6 +111,7 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
           {format(new Date(plan.end_date), "dd/MM/yyyy")}
         </span>
       </div>
+      
       <div className="flex justify-between items-center">
         <span
           className={`px-2 py-1 rounded-full text-sm ${
@@ -71,6 +122,38 @@ const TravelPlanCard = ({ plan }: { plan: TravelPlan }) => {
         >
           {plan.status === "upcoming" ? "Upcoming" : "Completed"}
         </span>
+        
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setAsCurrentLocation.mutate()}
+            className="text-white hover:text-modelboard-red"
+          >
+            <CheckSquare className="h-4 w-4 mr-2" />
+            Set as Current
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {/* TODO: Implement edit functionality */}}
+            className="text-white hover:text-modelboard-red"
+          >
+            <Edit2 className="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => deleteTravelPlan.mutate()}
+            className="text-white hover:text-modelboard-red"
+          >
+            <XOctagon className="h-4 w-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Camera } from "lucide-react";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { ProfileTypeSelector, type ProfileType } from "@/components/profile/ProfileTypeSelector";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -181,6 +182,8 @@ const Profile = () => {
             <ProfileForm profile={profile} onProfileUpdate={setProfile} />
           </>
         )}
+
+        <SponsorFeaturedMembers />
       </div>
     </div>
   );
