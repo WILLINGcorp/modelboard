@@ -10,7 +10,7 @@ interface AppProvidersProps {
   children: React.ReactNode;
 }
 
-export const AppProviders = ({ children }: AppProvidersProps) => {
+export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -21,14 +21,18 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
   }));
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AppLayout>{children}</AppLayout>
+          <TooltipProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+            <Toaster />
+            <Sonner />
+          </TooltipProvider>
         </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
