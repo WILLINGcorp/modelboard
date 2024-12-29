@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 
 const ModelDirectory = () => {
   const [filter, setFilter] = useState("location");
@@ -58,6 +59,10 @@ const ModelDirectory = () => {
         profiles={profiles} 
         isOnline={isOnline} 
       />
+
+      <div className="mt-24">
+        <SponsorFeaturedMembers />
+      </div>
     </div>
   );
 };
