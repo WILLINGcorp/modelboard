@@ -6,10 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 
-interface AppProvidersProps {
-  children: React.ReactNode;
-}
-
 // Initialize QueryClient outside of the component to avoid re-creation on every render
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,18 +16,26 @@ const queryClient = new QueryClient({
   },
 });
 
-export const AppProviders = ({ children }: AppProvidersProps) => {
+interface AppProvidersProps {
+  children: React.ReactNode;
+}
+
+const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <AppLayout>
-            {children}
-          </AppLayout>
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <TooltipProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+            <Toaster />
+            <Sonner />
+          </TooltipProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
+
+export default AppProviders;
