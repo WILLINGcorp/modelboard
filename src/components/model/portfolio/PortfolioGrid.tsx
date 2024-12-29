@@ -1,5 +1,6 @@
 import type { Database } from "@/integrations/supabase/types";
 import { PortfolioCard } from "./PortfolioCard";
+import { motion } from "framer-motion";
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'];
 
@@ -17,16 +18,27 @@ export const PortfolioGrid = ({
   onLike 
 }: PortfolioGridProps) => {
   return (
-    <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+    <motion.div 
+      className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       {items.map((item) => (
-        <PortfolioCard
+        <motion.div
           key={item.id}
-          item={item}
-          isLiked={likedItems[item.id]}
-          likeCount={likeCounts[item.id] || 0}
-          onLike={() => onLike(item.id)}
-        />
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <PortfolioCard
+            item={item}
+            isLiked={likedItems[item.id]}
+            likeCount={likeCounts[item.id] || 0}
+            onLike={() => onLike(item.id)}
+          />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };

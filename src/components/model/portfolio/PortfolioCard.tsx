@@ -15,26 +15,32 @@ export const PortfolioCard = ({ item, isLiked, likeCount, onLike }: PortfolioCar
   const isPending = item.moderation_status === 'pending';
 
   return (
-    <Card className="bg-modelboard-gray overflow-hidden break-inside-avoid mb-6">
-      <div className="relative">
+    <Card className="bg-modelboard-gray overflow-hidden break-inside-avoid mb-6 hover:shadow-xl transition-all duration-300">
+      <div className="relative group">
         <img
           src={item.media_url}
           alt={item.title}
-          className={`w-full object-cover ${isPending ? 'blur-md' : ''}`}
+          className={`w-full object-cover transition-all duration-300 ${
+            isPending ? 'blur-md' : 'group-hover:scale-105'
+          }`}
           loading="lazy"
         />
         {isPending && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">
-            Pending Moderation
+            <span className="bg-modelboard-dark px-4 py-2 rounded-full text-sm font-medium">
+              Pending Moderation
+            </span>
           </div>
         )}
       </div>
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="text-xl font-bold text-white">{item.title}</h3>
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-white group-hover:text-modelboard-red transition-colors">
+              {item.title}
+            </h3>
             {item.description && (
-              <p className="text-gray-300">{item.description}</p>
+              <p className="text-gray-300 text-sm">{item.description}</p>
             )}
           </div>
           <LikeButton 
