@@ -10,16 +10,17 @@ interface AppProvidersProps {
   children: React.ReactNode;
 }
 
-export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: 1,
-        refetchOnWindowFocus: false,
-      },
+// Initialize QueryClient outside of the component to avoid re-creation on every render
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
     },
-  });
+  },
+});
 
+export const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
