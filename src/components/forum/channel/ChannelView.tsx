@@ -24,33 +24,43 @@ export const ChannelView = () => {
 
   if (isLoadingChannel) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-1/4 bg-modelboard-gray" />
-        <Skeleton className="h-4 w-1/2 bg-modelboard-gray" />
-        <Skeleton className="h-[400px] w-full bg-modelboard-gray" />
+      <div className="space-y-6 animate-fadeIn">
+        <div className="bg-modelboard-gray rounded-xl p-6">
+          <Skeleton className="h-8 w-1/4 bg-modelboard-dark" />
+          <Skeleton className="h-4 w-1/2 bg-modelboard-dark mt-4" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-[200px] w-full bg-modelboard-dark rounded-xl" />
+          <Skeleton className="h-[200px] w-full bg-modelboard-dark rounded-xl" />
+        </div>
       </div>
     );
   }
 
   if (!channel) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center py-8 bg-modelboard-gray rounded-xl">
         <p className="text-gray-400">Channel not found</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="bg-modelboard-gray rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
         <h1 className="text-2xl font-bold text-white">#{channel.name}</h1>
         {channel.description && (
-          <p className="text-gray-400 mt-1">{channel.description}</p>
+          <p className="text-gray-400 mt-2">{channel.description}</p>
         )}
       </div>
       
-      <CreatePost channelId={channel.id} />
-      <PostList channelId={channel.id} />
+      <div className="bg-modelboard-gray rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <CreatePost channelId={channel.id} />
+      </div>
+
+      <div className="bg-modelboard-gray rounded-xl p-6 shadow-lg">
+        <PostList channelId={channel.id} />
+      </div>
     </div>
   );
 };
