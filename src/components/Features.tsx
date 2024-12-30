@@ -96,11 +96,11 @@ const Features = () => {
           className="text-center mb-24"
         >
           <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-            Discover the Reason Why<br />
-            <span className="text-modelboard-red">Our Members Have More Fun</span>
+            Join the Ultimate Work Tool for Creators<br />
+            <span className="text-modelboard-red">to Network & Collab</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Join thousands of creators who are already experiencing the benefits of our premium platform.
+            Manage your Career, Build your Portfolio & Streamline your Collab Workflow
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">

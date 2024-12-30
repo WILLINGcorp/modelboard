@@ -20,7 +20,7 @@ export const SponsorAccountCard = () => {
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-modelboard-red" />
-            <span className="text-gradient">Sponsor Account</span>
+            <span className="text-gradient">Become a Sponsor</span>
           </span>
           <TooltipProvider>
             <Tooltip>
@@ -28,13 +28,13 @@ export const SponsorAccountCard = () => {
                 <Info className="h-4 w-4 text-modelboard-red" />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Premium features for your account</p>
+                <p>Premium Ad Placements across the Platform</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </CardTitle>
         <p className="text-sm text-gray-400">
-          Premium features for your account
+          Get Augmented Exposure
         </p>
       </CardHeader>
       <CardContent className="flex flex-col flex-grow">

@@ -5,7 +5,7 @@ export const SponsorFeaturesList: FC = () => {
     "Sponsor account badge",
     "Advanced analytics",
     "Priority support",
-    "Be featured in the Sponsor section and in premium placements across the platform",
+    "Be featured among the Sponsor Members in premium placements across the platform",
   ];
 
   return (
