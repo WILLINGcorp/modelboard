@@ -3,6 +3,7 @@ import { ProfileVisitors } from "@/components/dashboard/ProfileVisitors";
 import { NotificationCards } from "@/components/dashboard/NotificationCards";
 import { PricingTable } from "@/components/dashboard/PricingTable";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
+import { ForumSection } from "@/components/forum/ForumSection";
 
 const Dashboard = () => {
   return (
@@ -13,6 +14,7 @@ const Dashboard = () => {
           <ProfileVisitors />
         </div>
         <NotificationCards />
+        <ForumSection />
         <PricingTable />
         <SponsorFeaturedMembers />
       </div>
