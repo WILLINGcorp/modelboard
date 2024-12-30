@@ -21,20 +21,66 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       
       <Route element={<PrivateRoute />}>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/network" element={<ModelDirectory />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/collabs" element={<Collabs />} />
-          <Route path="/ads" element={<Ads />} />
-          <Route path="/my-location" element={<Location />} />
-          <Route path="/my-portfolio" element={<MyPortfolio />} />
-          <Route path="/my-profile" element={<Profile />} />
-          <Route path="/models/:id" element={<ModelProfile />} />
-          <Route path="/moderation" element={<ModerationPanel />} />
-          <Route path="/forum/channels/:channelId" element={<ChannelView />} />
-        </Route>
+        <Route path="/" element={
+          <AppLayout>
+            <Dashboard />
+          </AppLayout>
+        } />
+        <Route path="/dashboard" element={
+          <AppLayout>
+            <Dashboard />
+          </AppLayout>
+        } />
+        <Route path="/network" element={
+          <AppLayout>
+            <ModelDirectory />
+          </AppLayout>
+        } />
+        <Route path="/messages" element={
+          <AppLayout>
+            <Messages />
+          </AppLayout>
+        } />
+        <Route path="/collabs" element={
+          <AppLayout>
+            <Collabs />
+          </AppLayout>
+        } />
+        <Route path="/ads" element={
+          <AppLayout>
+            <Ads />
+          </AppLayout>
+        } />
+        <Route path="/my-location" element={
+          <AppLayout>
+            <Location />
+          </AppLayout>
+        } />
+        <Route path="/my-portfolio" element={
+          <AppLayout>
+            <MyPortfolio />
+          </AppLayout>
+        } />
+        <Route path="/my-profile" element={
+          <AppLayout>
+            <Profile />
+          </AppLayout>
+        } />
+        <Route path="/models/:id" element={
+          <AppLayout>
+            <ModelProfile />
+          </AppLayout>
+        } />
+        <Route path="/moderation" element={
+          <AppLayout>
+            <ModerationPanel />
+          </AppLayout>
+        } />
+        <Route path="/forum/channels/:channelId" element={
+          <AppLayout>
+            <ChannelView />
+          </AppLayout>
+        } />
       </Route>
     </Routes>
   );
