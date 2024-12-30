@@ -16,12 +16,13 @@ import MyPortfolio from "@/pages/MyPortfolio";
 import Pricing from "@/pages/Pricing";
 import { ChannelView } from "@/components/forum/channel/ChannelView";
 import { ModerationPanel } from "@/components/moderation/ModerationPanel";
+import { Outlet } from "react-router-dom";
 
 const AppRoutes = () => {
   return (
     <Routes>
       {/* Public routes with navigation */}
-      <Route element={<AppLayout />}>
+      <Route element={<AppLayout><Outlet /></AppLayout>}>
         <Route path="/" element={<Index />} />
         <Route path="/pricing" element={<Pricing />} />
       </Route>
@@ -31,7 +32,7 @@ const AppRoutes = () => {
       
       {/* Protected routes with navigation */}
       <Route element={<PrivateRoute />}>
-        <Route element={<AppLayout />}>
+        <Route element={<AppLayout><Outlet /></AppLayout>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/network" element={<ModelDirectory />} />
           <Route path="/messages" element={<Messages />} />
