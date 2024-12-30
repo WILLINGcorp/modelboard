@@ -34,7 +34,7 @@ export const SponsorAccountCard = () => {
           </TooltipProvider>
         </CardTitle>
         <p className="text-sm text-gray-400">
-          Premium features for your account
+          30 Days of Augmented Exposure
         </p>
       </CardHeader>
       <CardContent className="flex flex-col flex-grow">

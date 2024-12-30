@@ -25,7 +25,7 @@ export const AdTypeSelect = ({ value, onChange }: AdTypeSelectProps) => {
           <SelectItem value="filming_location">Finding a Filming Location</SelectItem>
           <SelectItem value="collaborator_replacement">Finding a Collaborator Replacement</SelectItem>
           <SelectItem value="videographer">Finding a Videographer</SelectItem>
-          <SelectItem value="accommodation">Finding a Host for the Night</SelectItem>
+          <SelectItem value="accommodation">Finding a Host during a trip</SelectItem>
           <SelectItem value="fixer">Finding a Fixer</SelectItem>
           <SelectItem value="special_props">Finding Special Props</SelectItem>
         </SelectContent>

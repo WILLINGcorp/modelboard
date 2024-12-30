@@ -15,7 +15,7 @@ export const CollabToolsuiteCard = () => {
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-modelboard-red" />
-            <span className="text-gradient">Collab Toolsuite</span>
+            <span className="text-gradient">Premium Membership</span>
           </span>
           <TooltipProvider>
             <Tooltip>
@@ -29,7 +29,7 @@ export const CollabToolsuiteCard = () => {
           </TooltipProvider>
         </CardTitle>
         <p className="text-sm text-gray-400">
-          Streamlined Collaboration Workflow
+          Premium Features & Streamlined Collaboration Workflow
         </p>
       </CardHeader>
       <CardContent className="flex flex-col flex-grow">
@@ -40,19 +40,19 @@ export const CollabToolsuiteCard = () => {
         <ul className="space-y-3 text-sm mb-6">
           <li className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
+            Premium members appear first in the grid
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
+            100 Gb Storage for File Sharing & Release Assets Management
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
+            Connect your Google Drive for Unlimited Storage
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
             Managed Regulatory Compliance™
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            File sharing
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Schedule management
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-modelboard-red/50" />
-            Release Assets management
           </li>
         </ul>
         <div className="mt-auto">
