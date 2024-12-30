@@ -11,7 +11,7 @@ export const ForumSection = () => {
         .from("forum_categories")
         .select("*, forum_channels(*)")
         .order("order_position", { ascending: true })
-        .neq('name', 'Technical Support'); // Filter out Technical Support
+        .neq('name', 'Technical Support');
 
       if (error) throw error;
       return data;
@@ -20,20 +20,20 @@ export const ForumSection = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-20 w-full bg-modelboard-gray" />
-        <Skeleton className="h-20 w-full bg-modelboard-gray" />
-        <Skeleton className="h-20 w-full bg-modelboard-gray" />
+      <div className="space-y-6">
+        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
+        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
+        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">Community Forum</h2>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold text-white">Community Forum</h2>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {categories?.map((category) => (
           <ForumCategory key={category.id} category={category} />
         ))}
