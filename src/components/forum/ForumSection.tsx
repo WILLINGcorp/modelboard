@@ -20,20 +20,20 @@ export const ForumSection = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
-        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
-        <Skeleton className="h-[200px] w-full bg-modelboard-gray rounded-lg" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Skeleton className="h-[300px] w-full bg-modelboard-gray rounded-lg" />
+        <Skeleton className="h-[300px] w-full bg-modelboard-gray rounded-lg" />
+        <Skeleton className="h-[300px] w-full bg-modelboard-gray rounded-lg" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-white">Community Forum</h2>
       </div>
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {categories?.map((category) => (
           <ForumCategory key={category.id} category={category} />
         ))}

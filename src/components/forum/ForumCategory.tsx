@@ -19,7 +19,7 @@ interface ForumCategoryProps {
 
 export const ForumCategory = ({ category }: ForumCategoryProps) => {
   return (
-    <Card className="bg-modelboard-dark border-modelboard-gray/20 p-6 animate-fadeIn">
+    <Card className="bg-modelboard-dark border-modelboard-gray/20 p-6 animate-fadeIn hover:border-modelboard-red/20 transition-colors duration-300">
       <div className="flex items-center gap-3 mb-6">
         <div className="text-2xl text-modelboard-red">{category.icon}</div>
         <div>
