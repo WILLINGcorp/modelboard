@@ -10,7 +10,8 @@ export const ForumSection = () => {
       const { data, error } = await supabase
         .from("forum_categories")
         .select("*, forum_channels(*)")
-        .order("order_position", { ascending: true });
+        .order("order_position", { ascending: true })
+        .neq('name', 'Technical Support'); // Filter out Technical Support
 
       if (error) throw error;
       return data;
