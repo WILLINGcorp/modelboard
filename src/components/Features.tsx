@@ -1,4 +1,5 @@
 import { Camera, Map, MessageSquare, Users, FileText, Shield, Share2, Calendar, Film, Briefcase, Megaphone } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
@@ -58,33 +59,99 @@ const features = [
   },
 ];
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
+
 const Features = () => {
   return (
-    <section id="features" className="py-20">
+    <section id="features" className="py-32 bg-gradient-to-b from-background via-modelboard-dark to-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Everything you need to succeed
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-24"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent">
+            Elevate Your Creative Journey
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            ModelBoard provides all the tools and features you need to manage your career
-            and grow your professional network.
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            ModelBoard provides industry-leading tools and features designed to transform your professional portfolio 
+            and expand your creative network.
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="glass p-6 rounded-xl hover-effect"
-              style={{ animationDelay: `${index * 0.1}s` }}
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="p-6 glass rounded-xl"
             >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
-            </div>
+              <h3 className="text-3xl font-bold text-modelboard-red mb-2">10K+</h3>
+              <p className="text-gray-400">Active creators</p>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="p-6 glass rounded-xl"
+            >
+              <h3 className="text-3xl font-bold text-modelboard-red mb-2">50K+</h3>
+              <p className="text-gray-400">Collaborations</p>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="p-6 glass rounded-xl"
+            >
+              <h3 className="text-3xl font-bold text-modelboard-red mb-2">100+</h3>
+              <p className="text-gray-400">Countries</p>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              className="p-6 glass rounded-xl"
+            >
+              <h3 className="text-3xl font-bold text-modelboard-red mb-2">4.9/5</h3>
+              <p className="text-gray-400">User rating</p>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+        >
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              variants={item}
+              className="glass p-8 rounded-xl hover:bg-modelboard-gray/50 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <div className="mb-6 p-4 rounded-full bg-modelboard-gray/30 inline-block">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-semibold mb-4 text-white">{feature.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
