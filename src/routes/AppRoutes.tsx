@@ -13,15 +13,19 @@ import Portfolio from "@/pages/Portfolio";
 import Profile from "@/pages/Profile";
 import ModelProfile from "@/pages/ModelProfile";
 import MyPortfolio from "@/pages/MyPortfolio";
+import Pricing from "@/pages/Pricing";
 import { ChannelView } from "@/components/forum/channel/ChannelView";
 import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/pricing" element={<Pricing />} />
       
+      {/* Protected routes */}
       <Route element={<PrivateRoute />}>
         <Route path="/dashboard" element={
           <AppLayout>
