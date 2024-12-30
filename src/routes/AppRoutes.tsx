@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
+import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import ModelDirectory from "@/pages/ModelDirectory";
@@ -18,14 +19,10 @@ import { ModerationPanel } from "@/components/moderation/ModerationPanel";
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={
-          <AppLayout>
-            <Dashboard />
-          </AppLayout>
-        } />
         <Route path="/dashboard" element={
           <AppLayout>
             <Dashboard />
