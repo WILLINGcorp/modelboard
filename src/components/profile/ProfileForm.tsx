@@ -7,6 +7,7 @@ import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { PhysicalAttributesSection } from "./sections/PhysicalAttributesSection";
 import { SexualPreferencesSection } from "./sections/SexualPreferencesSection";
 import { ProducerProfileSection } from "./sections/ProducerProfileSection";
+import { StudioProfileSection } from "./sections/StudioProfileSection";
 import type { Database, Json } from "@/integrations/supabase/types";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -54,6 +55,8 @@ export const ProfileForm = ({ profile, onProfileUpdate }: ProfileFormProps) => {
       <div className="space-y-6">
         {profile.profile_type === "producer" ? (
           <ProducerProfileSection profile={profile} onProfileUpdate={onProfileUpdate} />
+        ) : profile.profile_type === "studio" ? (
+          <StudioProfileSection profile={profile} onProfileUpdate={onProfileUpdate} />
         ) : (
           <>
             <BasicInfoSection profile={profile} onProfileUpdate={onProfileUpdate} />

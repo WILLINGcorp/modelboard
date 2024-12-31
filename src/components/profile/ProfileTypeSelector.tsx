@@ -43,7 +43,7 @@ export const ProfileTypeSelector = ({
     },
     {
       id: "studio" as const,
-      title: "Studio Executive",
+      title: "Studio",
       subtitle: "Casting / Institutional",
       icon: Building,
       buttonText: "Make a Studio Profile",
