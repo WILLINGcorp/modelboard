@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
+import { ProfileSetupGuard } from "@/components/auth/ProfileSetupGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -16,7 +17,6 @@ import MyPortfolio from "@/pages/MyPortfolio";
 import Pricing from "@/pages/Pricing";
 import { ChannelView } from "@/components/forum/channel/ChannelView";
 import { ModerationPanel } from "@/components/moderation/ModerationPanel";
-import { Outlet } from "react-router-dom";
 
 const AppRoutes = () => {
   return (
@@ -33,17 +33,21 @@ const AppRoutes = () => {
       {/* Protected routes with navigation */}
       <Route element={<PrivateRoute />}>
         <Route element={<AppLayout><Outlet /></AppLayout>}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/network" element={<ModelDirectory />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/collabs" element={<Collabs />} />
-          <Route path="/ads" element={<Ads />} />
-          <Route path="/my-location" element={<Location />} />
-          <Route path="/my-portfolio" element={<MyPortfolio />} />
-          <Route path="/my-profile" element={<Profile />} />
-          <Route path="/models/:id" element={<ModelProfile />} />
-          <Route path="/moderation" element={<ModerationPanel />} />
-          <Route path="/forum/channels/:channelId" element={<ChannelView />} />
+          <Route path="/profile" element={<Profile />} />
+          
+          {/* Routes that require completed profile */}
+          <Route element={<ProfileSetupGuard />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/network" element={<ModelDirectory />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/collabs" element={<Collabs />} />
+            <Route path="/ads" element={<Ads />} />
+            <Route path="/my-location" element={<Location />} />
+            <Route path="/my-portfolio" element={<MyPortfolio />} />
+            <Route path="/models/:id" element={<ModelProfile />} />
+            <Route path="/moderation" element={<ModerationPanel />} />
+            <Route path="/forum/channels/:channelId" element={<ChannelView />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
