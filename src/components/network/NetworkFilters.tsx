@@ -2,13 +2,21 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface NetworkFiltersProps {
   onFilterChange: (filter: string) => void;
   onLocationSearch: (location: string) => void;
+  onGenderFilter: (gender: string) => void;
+  onNicheTagFilter: (tag: string) => void;
 }
 
-export const NetworkFilters = ({ onFilterChange, onLocationSearch }: NetworkFiltersProps) => {
+export const NetworkFilters = ({ 
+  onFilterChange, 
+  onLocationSearch,
+  onGenderFilter,
+  onNicheTagFilter 
+}: NetworkFiltersProps) => {
   const [activeFilter, setActiveFilter] = useState("location");
   const [searchLocation, setSearchLocation] = useState("");
 
@@ -22,8 +30,12 @@ export const NetworkFilters = ({ onFilterChange, onLocationSearch }: NetworkFilt
     onLocationSearch(searchLocation);
   };
 
+  const commonNicheTags = [
+    "Glamour", "Fetish", "Cosplay", "Alternative", "Artistic", "Fashion"
+  ];
+
   return (
-    <div className="mb-8">
+    <div className="mb-8 space-y-4">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex flex-wrap gap-2">
           <Button
@@ -31,7 +43,7 @@ export const NetworkFilters = ({ onFilterChange, onLocationSearch }: NetworkFilt
             onClick={() => handleFilterClick("location")}
             className="hover:text-white"
           >
-            Actual Location
+            Browse by Location
           </Button>
           <Button
             variant={activeFilter === "online" ? "default" : "outline"}
@@ -41,27 +53,40 @@ export const NetworkFilters = ({ onFilterChange, onLocationSearch }: NetworkFilt
             Online Now
           </Button>
           <Button
-            variant={activeFilter === "creators" ? "default" : "outline"}
-            onClick={() => handleFilterClick("creators")}
+            variant={activeFilter === "premium" ? "default" : "outline"}
+            onClick={() => handleFilterClick("premium")}
             className="hover:text-white"
           >
-            Content Creators
-          </Button>
-          <Button
-            variant={activeFilter === "producers" ? "default" : "outline"}
-            onClick={() => handleFilterClick("producers")}
-            className="hover:text-white"
-          >
-            Indie Producers
-          </Button>
-          <Button
-            variant={activeFilter === "studios" ? "default" : "outline"}
-            onClick={() => handleFilterClick("studios")}
-            className="hover:text-white"
-          >
-            Studio Executives
+            Premium Members
           </Button>
         </div>
+      </div>
+
+      <div className="flex flex-wrap gap-4">
+        <Select onValueChange={onGenderFilter}>
+          <SelectTrigger className="w-[180px] bg-modelboard-gray border-modelboard-gray text-white">
+            <SelectValue placeholder="Filter by Gender" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Genders</SelectItem>
+            <SelectItem value="female">Female</SelectItem>
+            <SelectItem value="male">Male</SelectItem>
+            <SelectItem value="non-binary">Non-Binary</SelectItem>
+            <SelectItem value="transgender">Transgender</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={onNicheTagFilter}>
+          <SelectTrigger className="w-[180px] bg-modelboard-gray border-modelboard-gray text-white">
+            <SelectValue placeholder="Filter by Niche" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Niches</SelectItem>
+            {commonNicheTags.map(tag => (
+              <SelectItem key={tag} value={tag.toLowerCase()}>{tag}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         
         <form onSubmit={handleLocationSearch} className="flex gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
