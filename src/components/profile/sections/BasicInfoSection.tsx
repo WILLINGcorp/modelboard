@@ -7,6 +7,7 @@ import { User } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { Badge } from "@/components/ui/badge";
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -14,13 +15,6 @@ interface BasicInfoSectionProps {
   profile: Profile;
   onProfileUpdate: (profile: Profile) => void;
 }
-
-const GENDER_OPTIONS = [
-  { value: "female", label: "Female" },
-  { value: "male", label: "Male" },
-  { value: "non-binary", label: "Non-Binary" },
-  { value: "other", label: "Other" },
-];
 
 const SOCIAL_MEDIA_PLATFORMS = [
   { id: "twitter", label: "X (Twitter)" },
@@ -77,19 +71,40 @@ export const BasicInfoSection = ({ profile, onProfileUpdate }: BasicInfoSectionP
     onProfileUpdate({ ...profile, social_media: updatedSocialMedia });
   };
 
+  const getProfileTypeLabel = (type: string | null) => {
+    switch (type) {
+      case 'producer':
+        return 'Indie Producer';
+      case 'creator':
+        return 'Content Creator';
+      case 'studio':
+        return 'Studio Executive';
+      default:
+        return 'Unknown Type';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center gap-4">
-        <Avatar className="h-32 w-32 ring-4 ring-modelboard-red ring-offset-4 ring-offset-modelboard-gray">
-          <AvatarImage 
-            src={profile.avatar_url || "/creator_default_profile.jpg"} 
-            alt={profile.display_name || "Profile picture"}
-            className={profile.avatar_moderation_status === 'pending' ? 'blur-md' : ''}
-          />
-          <AvatarFallback>
-            <User className="h-16 w-16" />
-          </AvatarFallback>
-        </Avatar>
+        <div className="relative">
+          <Avatar className="h-32 w-32 ring-4 ring-modelboard-red ring-offset-4 ring-offset-modelboard-gray">
+            <AvatarImage 
+              src={profile.avatar_url || "/creator_default_profile.jpg"} 
+              alt={profile.display_name || "Profile picture"}
+              className={profile.avatar_moderation_status === 'pending' ? 'blur-md' : ''}
+            />
+            <AvatarFallback>
+              <User className="h-16 w-16" />
+            </AvatarFallback>
+          </Avatar>
+          <Badge 
+            variant="secondary" 
+            className="absolute -top-2 right-0 bg-modelboard-dark text-white"
+          >
+            {getProfileTypeLabel(profile.profile_type)}
+          </Badge>
+        </div>
         
         <div className="flex flex-col items-center gap-2">
           <Button
@@ -134,13 +149,6 @@ export const BasicInfoSection = ({ profile, onProfileUpdate }: BasicInfoSectionP
         label="Location"
         value={profile.location || ""}
         onChange={(value) => onProfileUpdate({ ...profile, location: value })}
-      />
-
-      <SelectFormField
-        label="Gender"
-        value={profile.gender || ""}
-        options={GENDER_OPTIONS}
-        onChange={(value) => onProfileUpdate({ ...profile, gender: value })}
       />
 
       <div className="space-y-4">
