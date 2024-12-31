@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
 import { ProfileSetupGuard } from "@/components/auth/ProfileSetupGuard";
 import { AppLayout } from "@/components/layout/AppLayout";
