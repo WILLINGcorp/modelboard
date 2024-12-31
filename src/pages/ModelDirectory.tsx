@@ -8,12 +8,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
 import { NetworkFilters } from "@/components/network/NetworkFilters";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const ModelDirectory = () => {
   const [filter, setFilter] = useState("location");
   const [locationSearch, setLocationSearch] = useState("");
   const [genderFilter, setGenderFilter] = useState("all");
   const [nicheFilter, setNicheFilter] = useState("all");
+  const [studioSearch, setStudioSearch] = useState("");
+  const [studioLocation, setStudioLocation] = useState("");
+  const [studioNiche, setStudioNiche] = useState("all");
   const { user } = useAuth();
   const { isOnline } = useOnlinePresence(user?.id);
 
@@ -26,16 +31,49 @@ const ModelDirectory = () => {
         query = query.eq("profile_type", "content_creator");
       } else if (filter === "producers") {
         query = query.eq("profile_type", "indie_producer");
-      } else if (filter === "studios") {
-        query = query.eq("profile_type", "studio_executive");
       }
 
       if (locationSearch) {
         query = query.ilike("location", `%${locationSearch}%`);
       }
 
+      if (genderFilter !== "all") {
+        query = query.eq("gender", genderFilter);
+      }
+
+      if (nicheFilter !== "all") {
+        query = query.contains("roles", [nicheFilter]);
+      }
+
       const { data } = await query;
       return data || [];
+    },
+  });
+
+  // Query for studio accounts with filtering
+  const { data: studioProfiles = [] } = useQuery({
+    queryKey: ["studio-profiles", studioLocation, studioNiche, studioSearch],
+    queryFn: async () => {
+      let query = supabase
+        .from("profiles")
+        .select("*")
+        .eq("profile_type", "studio_executive");
+
+      if (studioLocation) {
+        query = query.ilike("location", `%${studioLocation}%`);
+      }
+
+      if (studioNiche !== "all") {
+        query = query.contains("roles", [studioNiche]);
+      }
+
+      if (studioSearch) {
+        query = query.or(`display_name.ilike.%${studioSearch}%,username.ilike.%${studioSearch}%`);
+      }
+
+      const { data } = await query;
+      // Randomly shuffle the studio profiles
+      return data ? data.sort(() => Math.random() - 0.5) : [];
     },
   });
 
@@ -54,18 +92,6 @@ const ModelDirectory = () => {
   const handleNicheFilter = (niche: string) => {
     setNicheFilter(niche);
   };
-
-  // Query for studio accounts
-  const { data: studioProfiles = [] } = useQuery({
-    queryKey: ["studio-profiles"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("profile_type", "studio_executive");
-      return data || [];
-    },
-  });
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
@@ -89,9 +115,46 @@ const ModelDirectory = () => {
         <SponsorFeaturedMembers />
       </div>
 
-      {/* Studio Accounts Section */}
+      {/* Partnering Studios Section */}
       <div className="mt-24">
-        <h2 className="text-2xl font-bold mb-8">Studio Accounts</h2>
+        <h2 className="text-2xl font-bold mb-8">Partnering Studios</h2>
+        
+        {/* Studio Filters */}
+        <div className="flex flex-wrap gap-4 mb-8">
+          <div className="relative flex-1 max-w-md">
+            <Input
+              type="text"
+              placeholder="Search studios by name..."
+              value={studioSearch}
+              onChange={(e) => setStudioSearch(e.target.value)}
+              className="bg-modelboard-gray border-modelboard-gray text-white pr-10"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          </div>
+          
+          <div className="relative flex-1 max-w-md">
+            <Input
+              type="text"
+              placeholder="Filter by location..."
+              value={studioLocation}
+              onChange={(e) => setStudioLocation(e.target.value)}
+              className="bg-modelboard-gray border-modelboard-gray text-white"
+            />
+          </div>
+
+          <Select onValueChange={setStudioNiche}>
+            <SelectTrigger className="w-[180px] bg-modelboard-gray border-modelboard-gray text-white">
+              <SelectValue placeholder="Filter by Niche" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Niches</SelectItem>
+              {commonNicheTags.map(tag => (
+                <SelectItem key={tag} value={tag.toLowerCase()}>{tag}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {studioProfiles.map((profile) => (
             <ModelCard 

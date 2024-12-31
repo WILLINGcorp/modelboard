@@ -35,34 +35,30 @@ export const NetworkFilters = ({
   ];
 
   return (
-    <div className="mb-8 space-y-4">
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={activeFilter === "location" ? "default" : "outline"}
-            onClick={() => handleFilterClick("location")}
-            className="hover:text-white"
-          >
-            Browse by Location
-          </Button>
-          <Button
-            variant={activeFilter === "online" ? "default" : "outline"}
-            onClick={() => handleFilterClick("online")}
-            className="hover:text-white"
-          >
-            Online Now
-          </Button>
-          <Button
-            variant={activeFilter === "premium" ? "default" : "outline"}
-            onClick={() => handleFilterClick("premium")}
-            className="hover:text-white"
-          >
-            Premium Members
-          </Button>
-        </div>
-      </div>
+    <div className="mb-8">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <Button
+          variant={activeFilter === "location" ? "default" : "outline"}
+          onClick={() => handleFilterClick("location")}
+          className="hover:text-white"
+        >
+          Browse by Location
+        </Button>
+        <Button
+          variant={activeFilter === "online" ? "default" : "outline"}
+          onClick={() => handleFilterClick("online")}
+          className="hover:text-white"
+        >
+          Online Now
+        </Button>
+        <Button
+          variant={activeFilter === "premium" ? "default" : "outline"}
+          onClick={() => handleFilterClick("premium")}
+          className="hover:text-white"
+        >
+          Premium Members
+        </Button>
 
-      <div className="flex flex-wrap gap-4">
         <Select onValueChange={onGenderFilter}>
           <SelectTrigger className="w-[180px] bg-modelboard-gray border-modelboard-gray text-white">
             <SelectValue placeholder="Filter by Gender" />
