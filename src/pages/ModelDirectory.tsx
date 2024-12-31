@@ -1,5 +1,6 @@
 import { FeaturedProfiles } from "@/components/network/FeaturedProfiles";
 import { ModelGrid } from "@/components/network/ModelGrid";
+import { ModelCard } from "@/components/network/ModelCard";
 import { useOnlinePresence } from "@/hooks/use-online-presence";
 import { useAuth } from "@/hooks/use-auth";
 import { useState } from "react";
