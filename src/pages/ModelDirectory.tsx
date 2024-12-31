@@ -11,11 +11,13 @@ import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMemb
 const ModelDirectory = () => {
   const [filter, setFilter] = useState("location");
   const [locationSearch, setLocationSearch] = useState("");
+  const [genderFilter, setGenderFilter] = useState("all");
+  const [nicheFilter, setNicheFilter] = useState("all");
   const { user } = useAuth();
   const { isOnline } = useOnlinePresence(user?.id);
 
   const { data: profiles = [] } = useQuery({
-    queryKey: ["profiles", filter, locationSearch],
+    queryKey: ["profiles", filter, locationSearch, genderFilter, nicheFilter],
     queryFn: async () => {
       let query = supabase.from("profiles").select("*");
 
@@ -44,6 +46,14 @@ const ModelDirectory = () => {
     setLocationSearch(location);
   };
 
+  const handleGenderFilter = (gender: string) => {
+    setGenderFilter(gender);
+  };
+
+  const handleNicheFilter = (niche: string) => {
+    setNicheFilter(niche);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
       <div id="featured-section">
@@ -53,6 +63,8 @@ const ModelDirectory = () => {
       <NetworkFilters 
         onFilterChange={handleFilterChange}
         onLocationSearch={handleLocationSearch}
+        onGenderFilter={handleGenderFilter}
+        onNicheTagFilter={handleNicheFilter}
       />
       
       <ModelGrid 
