@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMembers";
+import { AccountManagementSection } from "@/components/profile/sections/AccountManagementSection";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
@@ -47,6 +48,7 @@ const Profile = () => {
           profile={profile} 
           onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)} 
         />
+        <AccountManagementSection />
         <SponsorFeaturedMembers />
       </div>
     </div>
