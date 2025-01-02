@@ -10,6 +10,13 @@ import { SponsorFeaturedMembers } from "@/components/sponsor/SponsorFeaturedMemb
 import { NetworkFilters } from "@/components/network/NetworkFilters";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue 
+} from "@/components/ui/select";
 
 const ModelDirectory = () => {
   const [filter, setFilter] = useState("location");
@@ -92,6 +99,10 @@ const ModelDirectory = () => {
   const handleNicheFilter = (niche: string) => {
     setNicheFilter(niche);
   };
+
+  const commonNicheTags = [
+    "Glamour", "Fetish", "Cosplay", "Alternative", "Artistic", "Fashion"
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
